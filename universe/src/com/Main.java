@@ -20,7 +20,6 @@ public class Main {
         }
 
         launcher = new Launcher(x);
-
     }
 
 }
