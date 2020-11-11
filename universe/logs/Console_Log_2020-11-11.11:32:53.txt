@@ -1,0 +1,329 @@
+[Console] Initialized!
+[DatabaseManager] Attempting database connection to jdbc:mysql://localhost:3306/jbend?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Chicago
+[DatabaseManager] Connection opened successfully!
+[LoginHandler] Login handler launched successfully!
+[DatabaseManager] Attempting query: create table if not exists maps(mapcode INTEGER, data TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists users(id INTEGER PRIMARY KEY AUTO_INCREMENT, username TEXT, password TEXT, email TEXT, privileges INTEGER)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists players(username TEXT, x INTEGER, y INTEGER, z INTEGER)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists settings(name TEXT, value TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists bans(name TEXT, ip TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: select name from bans where name!='none'
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: select ip from bans where ip!='none'
+[DatabaseManager] Query complete.
+[TCP] Attempting to start server on port 43594...
+[TCP] Started successfully!
+[HTTP] Attempting to start server on port 8069...
+[HTTP] Started successfully!
+[WebSocket] Attempting to start server on port 42069...
+[WebSocket] Started successfully!
+[CareTaker] Server caretaker started successfully!
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61800,localport=8069]
+nextCon,numCon,MAXCON:0,1,100
+Registered new connectionID=0 to Socket[addr=/127.0.0.1,port=61800,localport=8069]
+[HTTP] [Request] GET / from [Connection: id=0 port=61800 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+sending reply to [Connection: id=0 port=61800 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29983 
+Disconnecting Socket[addr=/127.0.0.1,port=61800,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61801,localport=8069]
+nextCon,numCon,MAXCON:1,1,100
+Registered new connectionID=1 to Socket[addr=/127.0.0.1,port=61801,localport=8069]
+[HTTP] [Request] GET /bootstrap/css/bootstrap.min.css from [Connection: id=1 port=61801 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/css/bootstrap.min.css
+sending reply to [Connection: id=1 port=61801 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61801,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61803,localport=8069]
+nextCon,numCon,MAXCON:2,1,100
+Registered new connectionID=2 to Socket[addr=/127.0.0.1,port=61803,localport=8069]
+[HTTP] [Request] GET /navbar-top-fixed.css from [Connection: id=2 port=61803 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+HTTP/1.1 200 OK
+Content-Type: text/css
+
+/* Show it is fixed to the top */
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+sending reply to [Connection: id=2 port=61803 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61803,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61804,localport=8069]
+nextCon,numCon,MAXCON:3,1,100
+Registered new connectionID=3 to Socket[addr=/127.0.0.1,port=61804,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=3 port=61804 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=3 port=61804 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61804,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61805,localport=8069]
+nextCon,numCon,MAXCON:4,1,100
+Registered new connectionID=4 to Socket[addr=/127.0.0.1,port=61805,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=4 port=61805 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=4 port=61805 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61805,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61823,localport=8069]
+nextCon,numCon,MAXCON:5,1,100
+Registered new connectionID=5 to Socket[addr=/127.0.0.1,port=61823,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=5 port=61823 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+sending reply to [Connection: id=5 port=61823 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61823,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61833,localport=8069]
+nextCon,numCon,MAXCON:6,1,100
+Registered new connectionID=6 to Socket[addr=/127.0.0.1,port=61833,localport=8069]
+[HTTP] [Request] GET /pages/login/login.html from [Connection: id=6 port=61833 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=6 port=61833 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61833,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61834,localport=8069]
+nextCon,numCon,MAXCON:7,1,100
+Registered new connectionID=7 to Socket[addr=/127.0.0.1,port=61834,localport=8069]
+[HTTP] [Request] GET /pages/login/login.js from [Connection: id=7 port=61834 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+sending reply to [Connection: id=7 port=61834 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29998 
+Disconnecting Socket[addr=/127.0.0.1,port=61834,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61835,localport=8069]
+nextCon,numCon,MAXCON:8,1,100
+Registered new connectionID=8 to Socket[addr=/127.0.0.1,port=61835,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=8 port=61835 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=8 port=61835 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61835,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61844,localport=8069]
+nextCon,numCon,MAXCON:9,1,100
+Registered new connectionID=9 to Socket[addr=/127.0.0.1,port=61844,localport=8069]
+[HTTP] [Request] GET /index.html from [Connection: id=9 port=61844 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=9 port=61844 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61844,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61845,localport=8069]
+nextCon,numCon,MAXCON:10,1,100
+Registered new connectionID=10 to Socket[addr=/127.0.0.1,port=61845,localport=8069]
+[HTTP] [Request] GET /bootstrap/css/bootstrap.min.css from [Connection: id=10 port=61845 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/css/bootstrap.min.css
+sending reply to [Connection: id=10 port=61845 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61845,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61846,localport=8069]
+nextCon,numCon,MAXCON:11,1,100
+Registered new connectionID=11 to Socket[addr=/127.0.0.1,port=61846,localport=8069]
+[HTTP] [Request] GET /navbar-top-fixed.css from [Connection: id=11 port=61846 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+HTTP/1.1 200 OK
+Content-Type: text/css
+
+/* Show it is fixed to the top */
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+sending reply to [Connection: id=11 port=61846 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61846,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61847,localport=8069]
+nextCon,numCon,MAXCON:12,1,100
+Registered new connectionID=12 to Socket[addr=/127.0.0.1,port=61847,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=12 port=61847 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=12 port=61847 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61847,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61848,localport=8069]
+nextCon,numCon,MAXCON:13,1,100
+Registered new connectionID=13 to Socket[addr=/127.0.0.1,port=61848,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=13 port=61848 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=13 port=61848 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61848,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61849,localport=8069]
+nextCon,numCon,MAXCON:14,1,100
+Registered new connectionID=14 to Socket[addr=/127.0.0.1,port=61849,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=14 port=61849 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=14 port=61849 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61849,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61854,localport=8069]
+nextCon,numCon,MAXCON:15,1,100
+Registered new connectionID=15 to Socket[addr=/127.0.0.1,port=61854,localport=8069]
+[HTTP] [Request] GET /pages/login/register.html from [Connection: id=15 port=61854 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=15 port=61854 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61854,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61855,localport=8069]
+nextCon,numCon,MAXCON:16,1,100
+Registered new connectionID=16 to Socket[addr=/127.0.0.1,port=61855,localport=8069]
+[HTTP] [Request] GET /pages/login/register.js from [Connection: id=16 port=61855 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+sending reply to [Connection: id=16 port=61855 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29998 
+Disconnecting Socket[addr=/127.0.0.1,port=61855,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61856,localport=8069]
+nextCon,numCon,MAXCON:17,1,100
+Registered new connectionID=17 to Socket[addr=/127.0.0.1,port=61856,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=17 port=61856 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=17 port=61856 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61856,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61866,localport=8069]
+nextCon,numCon,MAXCON:18,1,100
+Registered new connectionID=18 to Socket[addr=/127.0.0.1,port=61866,localport=8069]
+[HTTP] [Request] GET /index.html from [Connection: id=18 port=61866 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=18 port=61866 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61866,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61867,localport=8069]
+nextCon,numCon,MAXCON:19,1,100
+Registered new connectionID=19 to Socket[addr=/127.0.0.1,port=61867,localport=8069]
+[HTTP] [Request] GET /bootstrap/css/bootstrap.min.css from [Connection: id=19 port=61867 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/css/bootstrap.min.css
+sending reply to [Connection: id=19 port=61867 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61867,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61868,localport=8069]
+nextCon,numCon,MAXCON:20,1,100
+Registered new connectionID=20 to Socket[addr=/127.0.0.1,port=61868,localport=8069]
+[HTTP] [Request] GET /navbar-top-fixed.css from [Connection: id=20 port=61868 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+HTTP/1.1 200 OK
+Content-Type: text/css
+
+/* Show it is fixed to the top */
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+sending reply to [Connection: id=20 port=61868 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61868,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61869,localport=8069]
+nextCon,numCon,MAXCON:21,1,100
+Registered new connectionID=21 to Socket[addr=/127.0.0.1,port=61869,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=21 port=61869 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=21 port=61869 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29998 
+Disconnecting Socket[addr=/127.0.0.1,port=61869,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61870,localport=8069]
+nextCon,numCon,MAXCON:22,1,100
+Registered new connectionID=22 to Socket[addr=/127.0.0.1,port=61870,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=22 port=61870 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=22 port=61870 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61870,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61884,localport=8069]
+nextCon,numCon,MAXCON:23,1,100
+Registered new connectionID=23 to Socket[addr=/127.0.0.1,port=61884,localport=8069]
+[HTTP] [Request] GET /pages/dev/gamedev.html from [Connection: id=23 port=61884 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=23 port=61884 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61884,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61885,localport=8069]
+nextCon,numCon,MAXCON:24,1,100
+Registered new connectionID=24 to Socket[addr=/127.0.0.1,port=61885,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=24 port=61885 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29987 
+sending reply to [Connection: id=24 port=61885 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29987 
+Disconnecting Socket[addr=/127.0.0.1,port=61885,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61895,localport=8069]
+nextCon,numCon,MAXCON:25,1,100
+Registered new connectionID=25 to Socket[addr=/127.0.0.1,port=61895,localport=8069]
+[HTTP] [Request] GET /index.html from [Connection: id=25 port=61895 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=25 port=61895 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61895,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61896,localport=8069]
+nextCon,numCon,MAXCON:26,1,100
+Registered new connectionID=26 to Socket[addr=/127.0.0.1,port=61896,localport=8069]
+[HTTP] [Request] GET /bootstrap/css/bootstrap.min.css from [Connection: id=26 port=61896 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/css/bootstrap.min.css
+sending reply to [Connection: id=26 port=61896 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61896,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61897,localport=8069]
+nextCon,numCon,MAXCON:27,1,100
+Registered new connectionID=27 to Socket[addr=/127.0.0.1,port=61897,localport=8069]
+[HTTP] [Request] GET /navbar-top-fixed.css from [Connection: id=27 port=61897 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+HTTP/1.1 200 OK
+Content-Type: text/css
+
+/* Show it is fixed to the top */
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+sending reply to [Connection: id=27 port=61897 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61897,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61898,localport=8069]
+nextCon,numCon,MAXCON:28,1,100
+Registered new connectionID=28 to Socket[addr=/127.0.0.1,port=61898,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=28 port=61898 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=28 port=61898 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61898,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61899,localport=8069]
+nextCon,numCon,MAXCON:29,1,100
+Registered new connectionID=29 to Socket[addr=/127.0.0.1,port=61899,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=29 port=61899 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=29 port=61899 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61899,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61900,localport=8069]
+nextCon,numCon,MAXCON:30,1,100
+Registered new connectionID=30 to Socket[addr=/127.0.0.1,port=61900,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=30 port=61900 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=30 port=61900 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61900,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61905,localport=8069]
+nextCon,numCon,MAXCON:31,1,100
+Registered new connectionID=31 to Socket[addr=/127.0.0.1,port=61905,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=31 port=61905 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=31 port=61905 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61905,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61932,localport=8069]
+nextCon,numCon,MAXCON:32,1,100
+Registered new connectionID=32 to Socket[addr=/127.0.0.1,port=61932,localport=8069]
+[HTTP] [Request] GET /pages/login/login.html from [Connection: id=32 port=61932 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=32 port=61932 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61932,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61933,localport=8069]
+nextCon,numCon,MAXCON:33,1,100
+Registered new connectionID=33 to Socket[addr=/127.0.0.1,port=61933,localport=8069]
+[HTTP] [Request] GET /pages/login/login.js from [Connection: id=33 port=61933 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=33 port=61933 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61933,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61934,localport=8069]
+nextCon,numCon,MAXCON:34,1,100
+Registered new connectionID=34 to Socket[addr=/127.0.0.1,port=61934,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=34 port=61934 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=34 port=61934 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61934,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61939,localport=8069]
+nextCon,numCon,MAXCON:35,1,100
+Registered new connectionID=35 to Socket[addr=/127.0.0.1,port=61939,localport=8069]
+[HTTP] [Request] GET /index.html from [Connection: id=35 port=61939 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=35 port=61939 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61939,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61940,localport=8069]
+nextCon,numCon,MAXCON:36,1,100
+Registered new connectionID=36 to Socket[addr=/127.0.0.1,port=61940,localport=8069]
+[HTTP] [Request] GET /bootstrap/css/bootstrap.min.css from [Connection: id=36 port=61940 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/css/bootstrap.min.css
+sending reply to [Connection: id=36 port=61940 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61940,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61941,localport=8069]
+nextCon,numCon,MAXCON:37,1,100
+Registered new connectionID=37 to Socket[addr=/127.0.0.1,port=61941,localport=8069]
+[HTTP] [Request] GET /navbar-top-fixed.css from [Connection: id=37 port=61941 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+HTTP/1.1 200 OK
+Content-Type: text/css
+
+/* Show it is fixed to the top */
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+sending reply to [Connection: id=37 port=61941 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61941,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61942,localport=8069]
+nextCon,numCon,MAXCON:38,1,100
+Registered new connectionID=38 to Socket[addr=/127.0.0.1,port=61942,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=38 port=61942 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=38 port=61942 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=29999 
+Disconnecting Socket[addr=/127.0.0.1,port=61942,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61943,localport=8069]
+nextCon,numCon,MAXCON:39,1,100
+Registered new connectionID=39 to Socket[addr=/127.0.0.1,port=61943,localport=8069]
+[HTTP] [Request] GET /bootstrap/js/bootstrap.bundle.min.js from [Connection: id=39 port=61943 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+[HTTP] Resource not found! res/front/bootstrap/js/bootstrap.bundle.min.js
+sending reply to [Connection: id=39 port=61943 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61943,localport=8069]
+[HTTP] Attempting to register connection for Socket[addr=/127.0.0.1,port=61944,localport=8069]
+nextCon,numCon,MAXCON:40,1,100
+Registered new connectionID=40 to Socket[addr=/127.0.0.1,port=61944,localport=8069]
+[HTTP] [Request] GET /favicon.ico from [Connection: id=40 port=61944 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+sending reply to [Connection: id=40 port=61944 ip=/127.0.0.1 ping=false pong= ttr=0 nextPing=30000 
+Disconnecting Socket[addr=/127.0.0.1,port=61944,localport=8069]

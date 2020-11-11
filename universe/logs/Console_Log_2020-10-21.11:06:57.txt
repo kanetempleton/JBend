@@ -1,0 +1,45 @@
+[Console] Initialized!
+[DatabaseManager] Attempting database connection to jdbc:mysql://localhost:3306/jbend?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Chicago
+[DatabaseManager] Connection opened successfully!
+[LoginHandler] Login handler launched successfully!
+[DatabaseManager] Attempting query: create table if not exists maps(mapcode INTEGER, data TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists users(id INTEGER PRIMARY KEY AUTO_INCREMENT, username TEXT, password TEXT, email TEXT, privileges INTEGER)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists players(username TEXT, x INTEGER, y INTEGER, z INTEGER)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists settings(name TEXT, value TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: create table if not exists bans(name TEXT, ip TEXT)
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: select name from bans where name!='none'
+[DatabaseManager] Query complete.
+[DatabaseManager] Attempting query: select ip from bans where ip!='none'
+[DatabaseManager] Query complete.
+[TCP] Attempting to start server on port 43594...
+[TCP] Started successfully!
+[HTTP] Attempting to start server on port 8069...
+[HTTP] Started successfully!
+[WebSocket] Attempting to start server on port 42069...
+[WebSocket] Started successfully!
+[CareTaker] Server caretaker started successfully!
+testing lexer...
+lexer testing line {test!}
+false
+Exception in thread "Thread-6" java.util.regex.PatternSyntaxException: Unclosed character class near index 0
+[
+^
+	at java.base/java.util.regex.Pattern.error(Pattern.java:2027)
+	at java.base/java.util.regex.Pattern.clazz(Pattern.java:2696)
+	at java.base/java.util.regex.Pattern.sequence(Pattern.java:2138)
+	at java.base/java.util.regex.Pattern.expr(Pattern.java:2068)
+	at java.base/java.util.regex.Pattern.compile(Pattern.java:1782)
+	at java.base/java.util.regex.Pattern.<init>(Pattern.java:1429)
+	at java.base/java.util.regex.Pattern.compile(Pattern.java:1069)
+	at com.util.Regex.match(Regex.java:14)
+	at com.util.Regex.match(Regex.java:31)
+	at com.db.crud.lang.Lexer.processLine(Lexer.java:68)
+	at com.Launcher.startNextThread(Launcher.java:159)
+	at com.Launcher.nextStage(Launcher.java:130)
+	at com.util.CareTaker.run(CareTaker.java:20)
+	at java.base/java.lang.Thread.run(Thread.java:830)
