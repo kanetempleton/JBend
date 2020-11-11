@@ -1,2 +1,0 @@
-[Console] Initialized!
-[DatabaseManager] Attempting database connection to jdbc:mysql://localhost:3306/jbend?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Chicago
