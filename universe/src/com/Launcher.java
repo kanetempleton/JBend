@@ -140,6 +140,10 @@ public class Launcher {
         HTTP http = new HTTP(HTTP.DEFAULT_HOME_DIRECTORY,port);
         loadThread(new Server(http));
     }
+    public void addHTTPServer(String homeDir, int port) {
+        HTTP http = new HTTP(homeDir,port);
+        loadThread(new Server(http));
+    }
     public void addWebSocketServer(int port) {
         WebSocket ws = new WebSocket(port);
         loadThread(new Server(ws));
