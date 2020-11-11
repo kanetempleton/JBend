@@ -6,3 +6,4 @@
 /.idea
 *.idea
 */logs/Console*.txt
+*/out/com
