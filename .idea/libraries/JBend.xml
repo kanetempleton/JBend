@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="JBend">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/universe/res/lib/JBend.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
