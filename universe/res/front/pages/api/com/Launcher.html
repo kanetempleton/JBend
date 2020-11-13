@@ -1,0 +1,88 @@
+
+<style>
+table,tr,td {
+    border: 1px solid black;
+  /*border-collapse: collapse;*/
+}
+td {
+    padding: 2.5px;
+}
+thead {
+    background-color: moccasin;
+}
+tbody {
+    background-color: papayawhip;
+}
+body {
+    background-color: oldlace;
+}
+testing {
+    color: green;
+}
+</style>
+<body>
+<h1 style="color: maroon;">Class: Launcher</h1>
+<h3 style="color: brown;">package: <a style="color:maroon;" href="info.html">com</a></h3>
+<p>Coordinates functionality of backend components.&nbsp;</p>
+<strong><em style="color:darkorange;font-size:18px;">* Documentation in progress.</em></strong>
+<h2 style="color: brown;">Constructors:</h2>
+<table style="width: 544px;">
+    <thead>
+    <tr id="testing">
+        <td style="width: 224px;text-align: center;"><b>Constructor</b></td>
+        <td style="width: 320px;text-align: center;"><b>Description</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <p><strong>Launcher()</strong></p>
+            <p><em>default</em></p>
+        </td>
+        <td>&nbsp;Initializes launcher with a maximum capacity of 10 threads and initializes the Console thread.</td>
+    </tr>
+    <tr>
+        <td>
+            <p><strong>Launcher(</strong>int<strong>&nbsp;</strong>maxThreads<strong>)</strong></p>
+        </td>
+        <td>&nbsp;Same as default but enables specification of maximum thread capacity.</td>
+    </tr>
+    <tr>
+        <td>
+            <p><strong>Launcher(</strong>String<strong>&nbsp;</strong>settings<strong>)</strong></p>
+            <p><em>Depreciated on initial release.</em></p>
+        </td>
+        <td>Old way of initializing the launcher. Automatically loads and initiates all backend threads in a certain order.</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2 style="color: brown;">Methods:</h2>
+<table style="width: 624px;">
+    <thead>
+    <tr>
+        <td style="width: 48px;text-align: center;"><b>Return type</b></td>
+        <td style="width: 192px;text-align: center;"><b>Method</b></td>
+        <td style="width: 384px;text-align: center;"><b>Description</b></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>void</td>
+        <td>
+            <p><strong>loadThread</strong>(Runnable r)</p>
+        </td>
+        <td><em>Adds any runnable thread object into the loading queue. Thread will begin running once the previous thread in the queue has been started.</em></td>
+    </tr>
+    <tr>
+        <td>void</td>
+        <td>
+            <p><strong>startThreads</strong>()</p>
+        </td>
+        <td><em>Begins launching loaded threads stored in the loading queue one at a time in the order which they were inserted.</em></td>
+    </tr>
+    </tbody>
+</table>
+<p><strong>&nbsp;</strong></p>
+<p><strong>&nbsp;</strong></p>
+</body>
