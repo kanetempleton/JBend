@@ -19,7 +19,9 @@ public class Main {
             }
         }
 
-        launcher = new Launcher(x);
+        launcher = new Launcher();
+        launcher.addStandardThreads();
+        launcher.startThreads();
     }
 
 }

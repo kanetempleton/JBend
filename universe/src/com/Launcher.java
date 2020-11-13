@@ -26,11 +26,8 @@ public class Launcher {
     private LoginHandler loginHandler;
     private CryptoHandler cryptoHandler;
     private CareTaker caretaker;
-    private String cfg;
-
+    private String cfg[][];
     public static int stage;
-
-
     public static DatabaseLock databaseLock;
 
     private Runnable threads[];
@@ -38,32 +35,95 @@ public class Launcher {
 
     public Launcher() {
         stage=0;
-        cfg="local";
+        cfg=new String[10][2];
+        for (int i=0; i<cfg.length; i++) {
+            for (int j=0; j<cfg[i].length; j++) {
+                cfg[i][j]="DNE";
+            }
+        }
         numThreads=0;
         threads=new Runnable[10];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
+        loadConfig();
         addConsole();
-        //launch();
     }
+
 
     public Launcher(int maxThreads) {
         stage=0;
-        cfg="local";
+        cfg=new String[10][2];
+        for (int i=0; i<cfg.length; i++) {
+            for (int j=0; j<cfg[i].length; j++) {
+                cfg[i][j]="DNE";
+            }
+        }
         numThreads=0;
         threads=new Runnable[maxThreads];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
+        loadConfig();
         addConsole();
-        //launch();
     }
 
     public Launcher(String settings) {
         stage=0;
-        cfg=settings;
+        cfg=new String[10][2];
+        for (int i=0; i<cfg.length; i++) {
+            for (int j=0; j<cfg[i].length; j++) {
+                cfg[i][j]="DNE";
+            }
+        }
         numThreads=0;
-        threads=new Runnable[8];
-        launch();
+        threads=new Runnable[10];
+        databaseLock = new DatabaseLock();
+        cryptoHandler = new CryptoHandler();
+        if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
+            loadConfig();
+        addConsole();
+    }
+
+
+    public void loadConfig() {
+        System.out.println("loading configuration...");
+        String conf = FileManager.fileDataAsString("env.cfg").replace("\n","");
+        int i=0;
+        if (!conf.equalsIgnoreCase("DNE")) {
+            String pairs[] = conf.split("=;");
+            for (String p: pairs) {
+                String parts[] = p.split(":=");
+                if (parts.length==2) {
+                    String field = parts[0];
+                    String value = parts[1];
+                    if (field.startsWith("#")) {
+                        field = "DNE";
+                        value = "DNE";
+                    }
+                    if (i<cfg.length) {
+                        cfg[i][0] = field;
+                        cfg[i][1] = value;
+                        i++;
+                    }
+                } else {
+                    System.out.println("misformatted line: "+p);
+                }
+            }
+        } else {
+            System.out.println("can't find config file:"+conf);
+        }
+        System.out.println("config loaded.");
+    }
+
+    public String getConfig(String s) {
+        if (cfg==null)
+            return "DNE";
+        for (String[] c: cfg) {
+            if (c==null || c[0]==null || c[1]==null)
+                return "DNE";
+            if (c[0].equals(s))
+                return c[1];
+        }
+        return "DNE";
     }
 
     public void loadThread(Runnable r) {
@@ -102,7 +162,7 @@ public class Launcher {
 
     public void addStandardThreads() {
         //addConsole();
-        addDatabaseManager("localhost","jbend","root","admin");
+        addDatabaseManager();
         addLoginHandler();
         addCareTaker(1800000);
         addTCPServer(43594);
@@ -118,8 +178,13 @@ public class Launcher {
             loadThread(new Console(br));
         }
     }
-    public void addDatabaseManager(String dbURL, String dbName, String dbUser, String dbPass) {
+    public void addDatabaseManager() {
         DatabaseManager m = new DatabaseManager();
+
+        String dbURL = getConfig("db_addr").equalsIgnoreCase("DNE") ? "localhost" : getConfig("db_addr");
+        String dbName = getConfig("db_name").equalsIgnoreCase("DNE") ? "jbend" : getConfig("db_name");
+        String dbUser = getConfig("db_user").equalsIgnoreCase("DNE") ? "root" : getConfig("db_user");
+        String dbPass = getConfig("db_pass").equalsIgnoreCase("DNE") ? "admin" : getConfig("db_pass");
         m.setDB_url(dbURL);
         m.setDB_name(dbName);
         m.setDB_user(dbUser);
@@ -218,12 +283,12 @@ public class Launcher {
         //new Thread(websocketserver).start();
 
         databaseManager = new DatabaseManager();
-        if (cfg.equalsIgnoreCase("local")) {
+        //if (cfg.equalsIgnoreCase("local")) {
             databaseManager.setDB_url("localhost");
             databaseManager.setDB_name("jbend");
             databaseManager.setDB_user("root");
             databaseManager.setDB_pass("admin");
-        }
+        //}
         //new Thread(databaseManager).start();
 
         loginHandler = new LoginHandler();

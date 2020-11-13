@@ -177,19 +177,29 @@ public class HTTP extends Protocol {
             }
             File f = new File(path);
             if (f.exists()) {
-                if (uri.contains("play.js") || uri.contains("menu.js") || uri.contains("player.js")
-                        || uri.contains("sprite.js")|| uri.contains("spritestore.js")||uri.contains("button.js")
-                        || uri.contains("text.js")) {
-                    String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/,uri);
-                    System.out.println(dx);
-                    return dx;
+                if (uri.contains("play.js")) {
+                    String rspHead =  HTTP_OK_JS+"\r\n";
+                    String adr = Main.launcher.getConfig("ws_addr");
+                    String rspIPLine = adr.equalsIgnoreCase("DNE") ? "ws://127.0.0.1:"+Main.launcher.getWebsocketServer().getPort()+"/ws" : adr;
+                    rspIPLine = "var wsUri = \""+rspIPLine+"\";";
+                    String rspBody = fileData(fullPath(uri));
+                    String rsp = rspHead+rspIPLine+rspBody;
+                    return rsp;
+                } else {
+                    if ( uri.contains("menu.js") || uri.contains("player.js")
+                            || uri.contains("sprite.js") || uri.contains("spritestore.js") || uri.contains("button.js")
+                            || uri.contains("text.js")) {
+                        String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, uri);
+                        System.out.println(dx);
+                        return dx;
+                    }
+                    if (uri.contains(".css")) {
+                        String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, uri);
+                        System.out.println(dx);
+                        return dx;
+                    }
+                    return fileResponse(HTTP_OK, uri);
                 }
-                if (uri.contains(".css")) {
-                    String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/,uri);
-                    System.out.println(dx);
-                    return dx;
-                }
-                return fileResponse(HTTP_OK, uri);
             }
             else {
                 Console.output("Resource not found! "+path);

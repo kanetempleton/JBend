@@ -505,6 +505,10 @@ public class Server implements Runnable {
 
     }
 
+    public int getPort() {
+        return port;
+    }
+
     public void sendMessage(ServerConnection c, String s) {
         activeProtocol.sendMessage(c,s);
     }
