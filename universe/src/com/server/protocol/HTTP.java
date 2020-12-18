@@ -190,12 +190,12 @@ public class HTTP extends Protocol {
                             || uri.contains("sprite.js") || uri.contains("spritestore.js") || uri.contains("button.js")
                             || uri.contains("text.js")) {
                         String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, uri);
-                        System.out.println(dx);
+                       // System.out.println(dx);
                         return dx;
                     }
                     if (uri.contains(".css")) {
                         String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, uri);
-                        System.out.println(dx);
+                       // System.out.println(dx);
                         return dx;
                     }
                     return fileResponse(HTTP_OK, uri);

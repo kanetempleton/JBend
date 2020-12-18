@@ -46,11 +46,7 @@ public class TCP extends Protocol {
     }
 
     @Override
-    public void processCustomMessage(ServerConnection c, String data) {
-
-    }
-
-
+    public void processCustomMessage(ServerConnection c, String data) { }
     public int getPort() { return portNum; }
     public int getID() { return Protocol.TCP;}
     public String getName() { return "TCP";}

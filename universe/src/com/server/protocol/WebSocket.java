@@ -50,9 +50,10 @@ public class WebSocket extends Protocol {
                 c.getServer().dropConnection(c);
             }
         } else { //receiving messages from client after handshake
-            Console.output("Received web message from "+c+":\n\t <"+data+">");
+            //Console.output("Received web message from "+c+":\n\t");// <"+data+">");
             String dhex = Main.launcher.cryptography().bytesToHex(data.getBytes());
-            Console.output("as bytes = "+dhex);
+           // Console.output("as bytes = "+dhex);
+            Console.output("Received web message from "+c+":\n\t"+dhex);// <"+data+">");
             if (dhex.equals("03 EF BF BD")) {
                 System.out.println("websocket client force closed, disconnecting...");
                 c.disconnect();
@@ -69,7 +70,6 @@ public class WebSocket extends Protocol {
                // Main.launcher.game().getPacketHandler().handleNetworkPacket(c,plen,data.split("::")[2]);
             }
             //sendMessage(c, "testing ");
-
         }
     }
 

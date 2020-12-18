@@ -50,9 +50,10 @@ testing {
     <tr>
         <td>
             <p><strong>Launcher(</strong>String<strong>&nbsp;</strong>settings<strong>)</strong></p>
-            <p><em>Depreciated on initial release.</em></p>
         </td>
-        <td>Old way of initializing the launcher. Automatically loads and initiates all backend threads in a certain order.</td>
+        <td>Same as default but can pass settings="local" or settings="development" to skip
+            loading the environment-specific settings from the configuration file and use
+            localhost values instead.</td>
     </tr>
     </tbody>
 </table>
