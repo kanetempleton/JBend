@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+    <title>JBend Development - Update 2</title>
+    <style>
+    ul {
+        list-style-type: circle;
+        list-style-position: inside;
+    transform: rotate(180deg);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+ul > li {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    list-style-type: circle;
+    list-style-position: inside;
+    transform: rotate(-180deg);
+}
+    </style>
+    <style>
+h1 {
+    color: maroon;
+}
+h2,h3,h4 {
+    color: brown;
+}
+body {
+    background-color: oldlace;
+}
+a {
+    color: maroon;
+}
+</style>
+</head>
+<body>
+<p><a href="../../../index.html"><<< Return to API home page</a></p>
+<p><a href="../index.html"><< Return to development blog</a></p>
+<h1>Game Development - Update 2: System Foundations</h1>
+	<p>This update consists mostly of technical improvements to stengthen the core backend that the game engine runs on.
+    </p>
+    <h4><u>Web</u></h4>
+    <ul>
+    <li>users who are banned during their login session will be logged out the next time they make a web request
+    </li><li>support for reading cookies from front-end web pages
+    </li><li>changed game page to only allow websocket connections for users who are logged in
+    </li><li>changed login page to reflect your current login status; displays your username and "log out" button
+    </li>
+    </ul>
+    <h4><u>Admin</u></h4>
+    <ul>
+    <li>created admin ban and unban commands; targets a specific username or IP address
+    </li><li>added "kick all" support to kick command
+    </li><li>created ping command to issue a ping to all TCP and WebSocket connections
+    </li><li>added more details to the connection display command
+    </li><li>added admin web portal for executing certain server console commands
+    </li><li>created admin kick command
+    </li>
+    </ul>
+	<h4><u>Security</u></h4>
+	<ul>
+    <li>passwords are now salted before being stored in database so that they are never visible in plaintext
+</li><li>support to store/retrieve IV and other message data from CBC crypto methods
+</li><li>touched up RSA encryption methods
+</li><li>passwords are now encrypted before being transmitted when registering or logging in
+</li><li>added RSA encryption to server
+</li><li>tried adding ElGamal encryption to server; gave up
+</li><li>added symmetric CBC encryption methods to server
+</li><li>performed more DoS stress tests after implementing connection control mechanisms; web queries slowed down but no servers crashed
+</li><li>performed stress tests for DoS attacks from single IP; TCP and WebSocket crashed immediately, HTTP was fine
+</li></ul>
+
+
+	<h4><u>Connection Management</u></h4>
+	<ul>
+		<li>saving/loading/checking of banned IPs and usernames; banned IPs are unable to make connections
+</li><li>increased the max connections per second threshold of HTTP server to avoid denying web requests from legitimate users
+</li><li>connection manager keeps track of number of connection attempts an IP has made; if this number exceeds a threshold within a short amount of time, the IP will be temporarily banned from making connections
+</li><li>added connection manager to servers which keeps track of data for specific IPs
+</li><li>added a thread to occasionally check the "health" of the database connections; sends queries every 30 mins, then resets the database connection if the query does not successfully complete
+</li><li>fixed a bug where a server reaching the maximum amount of connections would crash when attempting to register another connection
+</li><li>created ping pong system for server to kick inactive connections; server requests a specific response from clients, if connection sends wrong response or doesn't reply in time, it is disconnected from the server
+</li><li>changed server behavior for registering connections so that connections on the HTTP server are only registered when they are sending a packet of data containing an HTTP request; this fixed another issue with extra connections getting stuck in the server
+</li><li>fixed an issue in the HTTP server which did not always drop connections after sending an HTTP response, causing connections to sometimes get stuck in the server
+</li><li>added server support to kick a specific connection ID
+</li><li>touched up connection registration code which always registered incoming connections as websocket connections awaiting a handshake
+</li>
+	</ul>
+    <h4><u>Login System</u></h4>
+	<ul>
+    <li>added some bruteforce password protection: five incorrect password attempts for any username will temporarily prevent login attempts for that name
+</li><li>prevent registration of multiple users with the same email address
+</li><li>added email requirements: must contain @ sign, minimum/maximum character requirements
+</li><li>added username requirements: minimum of 1 character, max of 14 characters, only letters and numbers
+</li><li>added password requirements: minimum of 6 characters, max of 20 characters, only printable chars, and no @ sign
+</li><li>deleted all user accounts so that the password encryption scheme can be properly used moving forward
+</li>
+	</ul>
+    <h4><u>Engine Improvements</u></h4>
+	<ul>
+    <li>console thread and database manager thread start before any server threads; prevents some nullpointer bugs
+</li><li>added launcher support for starting threads in a specific order
+</li><li>toggle option for displaying text of outgoing network messages
+</li><li>store console output to text file logs
+</li>
+	</ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>
+</html>

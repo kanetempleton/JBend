@@ -3,6 +3,7 @@ package com.server.protocol;
 import com.server.entity.ServerConnection;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
 import com.Main;
@@ -122,7 +123,9 @@ public class HTTP extends Protocol {
         }
         String response = "";
 
-        if (words[1].contains(".png")) {
+        //@TODO: add all of the image formats
+        //https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+        if (words[1].contains(".png")||words[1].contains(".jpg")) {
             imageRequest=true;
         }
 
@@ -134,8 +137,10 @@ public class HTTP extends Protocol {
                     c.disconnect();
                     return;
                 }
-                else
-                    response = response_GET(c,words[1],words[2]);
+                else {
+                    //System.out.println("notIMAGE REQUEST");
+                    response = response_GET(c, words[1], words[2]);
+                }
                 //Console.output("GET:\n"+data+"\n:GET.");
                 break;
             case "POST":
@@ -305,26 +310,34 @@ public class HTTP extends Protocol {
     }
 
     protected String fileData(String path)  {
-       // path = path.replace("//","/");
+        path = path.replace("//","/");
         //String str = FileUtils.readFileToString(file);
         try {
+            //System.out.println("path:"+path);
             String str = Files.readString(Paths.get(path));
+            //str = str.replace("//","/");
             return str;
         } catch (Exception e) {
-            System.out.println("Error finding path "+path);
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+            //System.out.println("Current relative path is: " + s);
+            System.out.println("[fileData]Error finding path "+path);
             e.printStackTrace();
         }
         return "";
     }
 
     protected byte[] imageData(String path)  {
-        // path = path.replace("//","/");
+         path = path.replace("//","/");
         //String str = FileUtils.readFileToString(file);
         try {
             byte[] dat = Files.readAllBytes(Paths.get(path));
             return dat;
         } catch (Exception e) {
-            System.out.println("Error reading from path "+path);
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+           // System.out.println("Current relative path is: " + s);
+            System.out.println("[imageData]Error reading from path "+path);
             e.printStackTrace();
         }
         return (new String("")).getBytes();

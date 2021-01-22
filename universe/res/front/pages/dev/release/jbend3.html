@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <title>JBend Development - Update 3</title>
+</head>
+<style>
+h1 {
+    color: maroon;
+}
+h2,h3,h4 {
+    color: brown;
+}
+body {
+    background-color: oldlace;
+}
+a {
+    color: maroon;
+}
+</style>
+<body>
+<p><a href="../../../index.html"><<< Return to API home page</a></p>
+<p><a href="../index.html"><< Return to development blog</a></p>
+<h1>JBend - Update 3: Presentability</h1>
+	The goal of this update is to restructure and modularize the JBend library,
+	as well as make its showcasing look more presentable online.
+&nbsp;
+&nbsp;
+&nbsp;
+<h4>Goals:</h4>
+<ul>
+	<li>recreate github page and follow good commit practice</li>
+	<li>modularize JBend as a single library so it can be used for any application's backend</li>
+	<li>write API documentation for the JBend library</li>
+	<li>add some basic styling to webpages</li>
+	<li>separate development and production environments for smooth transitioning</li>
+	<li>revamp the development blog to include more older updates</li>
+	<li>begin following good software engineering practices such as scrum</li>
+	<li>heavier emphasis on planning phase; need diagrams and estimations for future JBend work</li>
+</ul>
+<h4>Scrum Board (courtesy of online-convert.com):</h4>
+<table cellspacing="0" border="0">
+	<colgroup width="89"></colgroup>
+	<colgroup width="351"></colgroup>
+	<colgroup width="355"></colgroup>
+	<colgroup span="2" width="349"></colgroup>
+	<tr>
+		<td height="23" align="center" valign=middle><b><font color="#000000"><br></font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign=middle bgcolor="#E7E6E6"><b><font color="#000000">What got done yesterday?</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign=middle bgcolor="#E7E6E6"><b><font color="#000000">What will get done today?</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign=middle bgcolor="#E7E6E6"><b><font color="#000000">Roadblocks?</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="center" valign=middle bgcolor="#E7E6E6"><b><font color="#000000">Touchups needed for work completed?</font></b></td>
+	</tr>
+	<tr>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="123" align="center" valign=middle bgcolor="#E7E6E6" sdnum="1033;0;D-MMM"><b><font color="#000000">Sat Nov-14 2020</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">separated production/development via config file that loads environment-specific data when program starts, touched up the Jbend development blog</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000"><br></font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000"><br></font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">need to pull the game webpage sending stuff out of the Jbend engine (esp the config part)</font></td>
+	</tr>
+	<tr>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="137" align="center" valign=middle bgcolor="#E7E6E6" sdnum="1033;0;D-MMM"><b><font color="#000000">Fri Nov-13 2020</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">Started draft for Launcher api, spent time learning html tables and css, added styling to api pages</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">finish Launcher api, production/development environments, Jbend update log</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">YESTERDAY: had homework to do yesterday and didn't have a ton of time for development. Got distracted with css and spent too much time styling. TODAY: still unsure how to automate the switch to/from production/development</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">css is still extremely spotty for api docs, launcher still needs finished</font></td>
+	</tr>
+	<tr>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" height="120" align="center" valign=middle bgcolor="#E7E6E6" sdnum="1033;0;D-MMM"><b><font color="#000000">Th Nov-12 2020</font></b></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">Modularized jbend launcher, updated git page for jbend and for game, started api docs, restructured game code to use jbend library instead of being intertwined with jbend code</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">write Launcher api, production/development environments, Jbend update log</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">don’t know how to automate changing details from web host to local host, might forget details of JBend from past updates</font></td>
+		<td style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000" align="left" valign=middle bgcolor="#F2F2F2"><font color="#000000">tons of modularization still needed for Jbend (will need a large overhaul over time), api docs are incomplete (and so is their outline), many game or app specific features still intertwined with Jbend library that need to be removed</font></td>
+	</tr>
+</table>
+<!-- ************************************************************************** -->
+</body>
+</html>
