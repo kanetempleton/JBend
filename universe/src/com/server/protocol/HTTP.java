@@ -38,6 +38,19 @@ class Response {
     }
 }
 
+
+class Route {
+    String uri;
+    String res;
+    Route(String u,String r) {
+        uri=u;
+        res=r;
+    }
+    String getURI() {return uri;}
+    String getResource() {return res;}
+    public String toString() {return uri+":"+res;}
+}
+
 public class HTTP extends Protocol {
 
     public static final String DEFAULT_HOME_DIRECTORY = "res/front/";
@@ -46,6 +59,7 @@ public class HTTP extends Protocol {
 
     protected String indexDirectory;
     protected ArrayList<Cookie> cookies;
+    protected ArrayList<Route> routes;
     private int port;
 
     public HTTP(String indDir, int prt) {
@@ -53,6 +67,7 @@ public class HTTP extends Protocol {
         indexDirectory=indDir;
         port=prt;
         cookies = new ArrayList<Cookie>();
+        routes = new ArrayList<Route>();
     }
 
     /* processMessage(c,data):
@@ -180,8 +195,17 @@ public class HTTP extends Protocol {
             if (uri.contains("favicon")) {
                 return HTTP_OK+"\r\nnofavicon";
             }
+            System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
+            for (Route r: routes) {
+                String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
+                System.out.println("route: "+r);
+                if (relURI.equalsIgnoreCase(r.getURI())) {
+                    System.out.println("checking fullpath: "+fullPath(r.getResource()));
+                    return HTTP_OK+"\r\n"+fileData(fullPath(r.getResource()));
+                }
+            }
             File f = new File(path);
-            if (f.exists()) {
+            if (f.exists()) { //only do this if we allow direct GETs
                 if (uri.contains("play.js")) {
                     String rspHead =  HTTP_OK_JS+"\r\n";
                     String adr = Main.launcher.getConfig("ws_addr");
@@ -193,7 +217,7 @@ public class HTTP extends Protocol {
                 } else {
                     if ( uri.contains("menu.js") || uri.contains("player.js")
                             || uri.contains("sprite.js") || uri.contains("spritestore.js") || uri.contains("button.js")
-                            || uri.contains("text.js")) {
+                            || uri.contains("text.js") || uri.contains(".js")) {
                         String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, uri);
                        // System.out.println(dx);
                         return dx;
@@ -341,6 +365,10 @@ public class HTTP extends Protocol {
             e.printStackTrace();
         }
         return (new String("")).getBytes();
+    }
+
+    public void addRoute(String uri, String res) {
+        routes.add(new Route(uri,res));
     }
 
     protected String notSupported(String nos) {

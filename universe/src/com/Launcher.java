@@ -126,6 +126,21 @@ public class Launcher {
         return "DNE";
     }
 
+    public Server getHTTPServer(int port) {
+        for (int i=0; i<numThreads; i++) {
+            Runnable r = threads[i];
+            if (threads[i]==null)
+                continue;
+            if (r instanceof Server) {
+                if (((Server)r).getAPI().getName().equals("HTTP")){
+                    if (((Server) r).getPort() == port)
+                        return (Server) r;
+                }
+            }
+        }
+        return null;
+    }
+
     public void loadThread(Runnable r) {
         if (numThreads>=threads.length) {
             System.out.println("Launcher cannot hold any more threads.");
