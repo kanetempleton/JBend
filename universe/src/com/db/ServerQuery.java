@@ -171,6 +171,19 @@ public class ServerQuery {
 
     }
 
+    public String getResponseField(int i) {
+        String r = multiResponse.get(i);
+        return r.substring(1,r.length()-2).split("=")[0];
+    }
+    public String getResponseValue(int i) {
+        String r = multiResponse.get(i);
+        return r.substring(1,r.length()-2).split("=")[1];
+    }
+    public String[] getResponse(int i) {
+        String r = multiResponse.get(i);
+        return r.substring(1,r.length()-2).split("=");
+    }
+
     public int type() {return type;}
     public Server fromServer() {return fromServer;}
     public ServerConnection fromConnection() {return query.from();}
