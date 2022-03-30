@@ -171,17 +171,62 @@ public class ServerQuery {
 
     }
 
-    public String getResponseField(int i) {
-        String r = multiResponse.get(i);
-        return r.substring(1,r.length()-2).split("=")[0];
+
+    // response = 1 row from database table
+    public String getResponse(int i) {
+        return multiResponse.get(i);
     }
-    public String getResponseValue(int i) {
-        String r = multiResponse.get(i);
-        return r.substring(1,r.length()-2).split("=")[1];
+
+    public int responseSize() {
+        return multiResponse.size();
     }
-    public String[] getResponse(int i) {
-        String r = multiResponse.get(i);
-        return r.substring(1,r.length()-2).split("=");
+
+    //returns the first index of a response with fieldname=field, value=val
+    //ex: responseIndex("user","kane") will get the
+    public int responseIndex(String field, String val) {
+        for (int i=0; i<this.responseSize(); i++) {
+            if (responseParamValue(i,field).equals(val))
+                return i;
+        }
+        return -1; //not found
+    }
+
+    public String responseParamValue(int i, String field) {
+        String r = getResponse(i);
+        String[][] params = responseParams(i);
+        for (int j=0; j<params[0].length; j++) {
+            if (params[0][j].equals(field)) {
+                return params[1][j];
+            }
+        }
+        return "DNE"; //field does not exist
+    }
+
+    public String[][] responseParams(int i) {
+        String r = getResponse(i);
+        String field = "";
+        String val = "";
+        String build = "";
+        boolean open = false;
+        for (int j=0; j<r.length(); j++) {
+            char c = r.charAt(j);
+            if (c == '[') {
+                open = true;
+            }
+            else if (c == '=' && open) {
+                field += build+",;,";
+                build = "";
+            }
+            else if (c == ']') {
+                open = false;
+                val += build+",;,";
+                build = "";
+            }
+            else if (open) {
+                build+=c;
+            }
+        }
+        return new String[][]{field.split(",;,"),val.split(",;,")};
     }
 
     public int type() {return type;}
