@@ -33,6 +33,8 @@ public class Launcher {
     private Runnable threads[];
     private int numThreads;
 
+    public static final boolean USING_LOGIN_ENCRYPTION = false;
+
     public Launcher() {
         stage=0;
         cfg=new String[10][2];
@@ -102,6 +104,7 @@ public class Launcher {
                     if (i<cfg.length) {
                         cfg[i][0] = field;
                         cfg[i][1] = value;
+                        System.out.println("loaded configuration: "+field+": "+value);
                         i++;
                     }
                 } else {

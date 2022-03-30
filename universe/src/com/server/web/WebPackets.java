@@ -12,8 +12,15 @@ public class WebPackets {
 
     }
 
+    public void processPOST(ServerConnection c, String uri, int packetID, String[] fields, String[] values) {
+
+        System.out.println("Custom POST processing for uri="+uri+", packetID="+packetID);
+
+    }
+
     //THIS PROCESSES POST REQUESTS
     public void processWebPacket(ServerConnection c, String uri, String data) {
+        System.out.println("PROCESSING WEB PACKET!!!!");
         String[] pairs = data.split("&");
         String[] fields = new String[pairs.length-1];
         String[] values = new String[pairs.length-1];
@@ -36,6 +43,7 @@ public class WebPackets {
         }
         Console.output("packetype was "+packetType);
         String usr = "";
+        processPOST(c,uri,packetType,fields,values);
         switch (packetType) {
             case 0:
                 handleRegistration(c,fields,values);
@@ -95,7 +103,7 @@ public class WebPackets {
                     if (co.field().equals("usr"))
                         usr=co.value();
                 }
-                if (usr.equals("") || !uri.equals("/pages/util/fuzz")) {
+                if (usr.equals("") || !uri.equals("/pages/portal/fuzz")) {
                     c.sendMessage(HTTP.HTTP_OK+"\r\nwyd");
                     c.disconnect();
                     return;
@@ -133,7 +141,7 @@ public class WebPackets {
                                     if (newCom.split(" ")[0].equalsIgnoreCase("mysql")) {
                                         rBuf[0]="you cannot do database queries thru the web portal yet";
                                     } else {
-                                        //Main.launcher.console().processCommand(newCom, rBuf);
+                                        Main.launcher.console().processCommand(newCom, rBuf);
                                     }
                                     reply+=rBuf[0];
                                     sendHTTP(reply);
@@ -185,7 +193,11 @@ public class WebPackets {
                     email = values[i];
                     break;
                 case "password":
-                    pass = new String(Main.launcher.cryptography().rsaDecrypt(199,193,values[i].getBytes()));
+                    if (Main.launcher.USING_LOGIN_ENCRYPTION) {
+                        pass = new String(Main.launcher.cryptography().rsaDecrypt(199, 193, values[i].getBytes()));
+                    } else {
+                        pass = values[i];
+                    }
                     break;
             }
         }

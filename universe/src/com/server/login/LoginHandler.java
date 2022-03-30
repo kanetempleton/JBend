@@ -73,16 +73,29 @@ public class LoginHandler extends DatabaseUtility implements Runnable {
             }
         }
         try {
-            String sendpw = "";
-            byte[] k = (new String("jjf8943hr203hfao")).getBytes();//block size = 16
-            byte[] IV = (new String("1234567890abcdef")).getBytes();
-            String cat = "" + (new String(IV)) + "";
-            String checkq = "SELECT COUNT(*) FROM users WHERE username='" + user + "';";
-            String q = "SELECT password FROM users WHERE username='" + user + "';";
-            String info = user + "," + pass;
-            //new ServerQuery(this,Main.launcher.getWebserver(),c,ServerQuery.LOGIN_REQUEST,q);
-            c.setName(user);
-            new ServerQuery(this, c.getServer(), c, ServerQuery.CHECK_FOR_USER, checkq, q, new String[]{info});
+            if (Main.launcher.USING_LOGIN_ENCRYPTION) {
+                String sendpw = "";
+                byte[] k = (new String("jjf8943hr203hfao")).getBytes();//block size = 16
+                byte[] IV = (new String("1234567890abcdef")).getBytes();
+                String cat = "" + (new String(IV)) + "";
+                String checkq = "SELECT COUNT(*) FROM users WHERE username='" + user + "';";
+                String q = "SELECT password FROM users WHERE username='" + user + "';";
+                String info = user + "," + pass;
+                //new ServerQuery(this,Main.launcher.getWebserver(),c,ServerQuery.LOGIN_REQUEST,q);
+                c.setName(user);
+                new ServerQuery(this, c.getServer(), c, ServerQuery.CHECK_FOR_USER, checkq, q, new String[]{info});
+            } else {
+                String sendpw = "";
+               // byte[] k = (new String("jjf8943hr203hfao")).getBytes();//block size = 16
+               // byte[] IV = (new String("1234567890abcdef")).getBytes();
+               // String cat = "" + (new String(IV)) + "";
+                String checkq = "SELECT COUNT(*) FROM users WHERE username='" + user + "';";
+                String q = "SELECT password FROM users WHERE username='" + user + "';";
+                String info = user + "," + pass;
+                //new ServerQuery(this,Main.launcher.getWebserver(),c,ServerQuery.LOGIN_REQUEST,q);
+                c.setName(user);
+                new ServerQuery(this, c.getServer(), c, ServerQuery.CHECK_FOR_USER, checkq, q, new String[]{info});
+            }
         } catch (Exception e) {
             e.printStackTrace(); //fuck bounds checkin ass bitch
         }
@@ -171,28 +184,33 @@ public class LoginHandler extends DatabaseUtility implements Runnable {
                 break;
             case ServerQuery.LOGIN_REQUEST:
                // System.out.println("login request result: "+q.getResponse());
-                String[] rs = q.getResponse().split("=");
-                if (rs.length!=2) {
-                    Console.output("login format error: couldn't find password");
-                    q.sendHTTP("loginsilly");
-                    q.close();
-                    return;
+                String result = "";
+                if (Main.launcher.USING_LOGIN_ENCRYPTION) {
+                    String[] rs = q.getResponse().split("=");
+                    if (rs.length != 2) {
+                        Console.output("login format error: couldn't find password");
+                        q.sendHTTP("loginsilly");
+                        q.close();
+                        return;
+                    }
+                    result = q.getResponse().split("=")[1];
+                    if (result.length() <= 16) {
+                        Console.output("login format error: password too short");
+                        q.sendHTTP("loginsilly");
+                        q.close();
+                        return;
+                    }
+                    byte[] k = (new String("jjf8943hr203hfao")).getBytes();//block size = 16
+                    String iv = result.substring(0, 16); //get IV from the password
+                    byte[] IV = iv.getBytes();
+                    String cat = "" + (new String(IV)) + "";
+                    String cppw = result.substring(16);
+                    byte[] cpw = Main.launcher.cryptography().hexToBytes(cppw);
+                    byte[] decpw = Main.launcher.cryptography().cbcDecrypt(cpw, k, IV);
+                    result = new String(decpw);
+                } else {
+                    result = q.getResponse().split("=")[1];
                 }
-                String result = q.getResponse().split("=")[1];
-                if (result.length()<=16) {
-                    Console.output("login format error: password too short");
-                    q.sendHTTP("loginsilly");
-                    q.close();
-                    return;
-                }
-                byte[] k = (new String("jjf8943hr203hfao")).getBytes();//block size = 16
-                String iv = result.substring(0,16); //get IV from the password
-                byte[] IV = iv.getBytes();
-                String cat = ""+(new String(IV))+"";
-                String cppw = result.substring(16);
-                byte[] cpw = Main.launcher.cryptography().hexToBytes(cppw);
-                byte[] decpw = Main.launcher.cryptography().cbcDecrypt(cpw,k,IV);
-                result = new String(decpw);
                 if (result.length() > 0 && q.getPayload().contains(",")) {
                     String pwCheck = q.getPayload().split(",")[1];
 

@@ -53,8 +53,11 @@ class Help extends Command {
         Console.output("command\t\t\tdescription");
         Console.output("-------\t\t\t------------");
         Console.output("<any> -help\t\tprint detailed usage information");
-        for (Command c: Console.commands)
-            Console.output(c.name+""+c.tabSpacing()+""+c.info);
+        rBuf[0]="";
+        for (Command c: Console.commands) {
+            rBuf[0] += c.name+": "+c.info+"<br>";
+            Console.output(c.name + "" + c.tabSpacing() + "" + c.info);
+        }
     }
     void help() {
         Console.output("No additional info.");

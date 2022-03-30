@@ -255,8 +255,19 @@ public class Server implements Runnable {
             return;
         try {
             DataOutputStream outStream = new DataOutputStream(s.getChannel().socket().getOutputStream());
+            Console.log("[DEBUG] messageToClient(s,mes) with mes size = "+mes.length);
+
             ByteBuffer bytebuf = ByteBuffer.wrap(mes);
+
+            ByteBuffer b2 = ByteBuffer.allocateDirect(mes.length);
+            b2.put(mes);
+            //Console.log("[DEBUG] byte buffer is direct? "+b2.isDirect());
+            Console.log("[DEBUG] b1 array size = "+bytebuf.array().length+"; capacity = "+bytebuf.capacity()+"; limit = "+bytebuf.limit()+" readOnly = "+bytebuf.isReadOnly());
+
+           // Console.log("[DEBUG] b2 array size = "+b2.array().length+"; capacity = "+b2.capacity()+"; limit = "+b2.limit()+" readOnly = "+b2.isReadOnly());
+
             s.getChannel().write(bytebuf);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -518,6 +529,10 @@ public class Server implements Runnable {
     public Protocol getAPI() {return activeProtocol;}
 
     public WebPackets getWebPacketHandler() {return webPacketHandler;}
+
+    public void setWebPacketHandler(WebPackets wp) {
+        webPacketHandler = wp;
+    }
 
     public static final int HTTP_PORT = 80;
     public static final int RESTFUL_PORT = 8080;

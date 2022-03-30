@@ -251,8 +251,10 @@ public class HTTP extends Protocol {
             String filePath = "res/front/"+uri;
             File f = new File(filePath);
             if (f.exists()) {
-                String head = HTTP_OK+"Content-Type: image/png\r\n\r\n";
+//Transfer-Encoding: chunked
                 byte[] fr = imageData(filePath);
+                String head = "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nConnection: Keep-Alive\r\nContent-Length: "+fr.length+"\r\n\r\n";
+               // String head = "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\n\r\n";
                 byte[] hdr = head.getBytes();
                 byte[] sendme = new byte[fr.length+hdr.length];
                 int j=0;
@@ -262,6 +264,7 @@ public class HTTP extends Protocol {
                 for (int i=0; i<fr.length; i++) {
                     sendme[j++]=fr[i];
                 }
+                System.out.println("sendme=\n"+(new String(sendme)).substring(0,hdr.length+1));
                 return sendme;
             }
             else {
@@ -406,7 +409,7 @@ public class HTTP extends Protocol {
     private static final String NOT_FOUND_PATH = "pages/status/404.html";
     private static final String NOT_SUPPORTED_PATH = "pages/status/nosupport.html";
 
-    public static final String HTTP_OK = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n";
+    public static final String HTTP_OK = "HTTP/1.1 200 OK\r\nContent-Type: module\r\n";
     public static final String HTTP_OK_JS = "HTTP/1.1 200 OK\r\nContent-Type: text/javascript\r\n";
     public static final String HTTP_OK_CSS = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n";
     public static final String HTTP_BAD_REQUEST = "HTTP/1.1 400 BAD REQUEST\r\nContent-Type: text/html\r\n";

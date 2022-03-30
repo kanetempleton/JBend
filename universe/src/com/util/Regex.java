@@ -10,7 +10,7 @@ public class Regex {
         expr=x;
     }
 
-    public boolean match(String s) {
+     public boolean match(String s) {
         Pattern pattern = Pattern.compile(expr);
         Matcher matcher = pattern.matcher(s);
         return matcher.find();
