@@ -183,9 +183,28 @@ public class HTTP extends Protocol {
 
     protected String response_GET(ServerConnection c,String uri, String version) {
 
+
         uri = uri.replace("//","/");
+        String paramString = "";
+        if (uri.contains("?")) {
+            String[] split = uri.split("\\?");
+            if (split.length > 1) {
+                paramString = split[1];
+                uri = split[0];
+            }
+        }
         String path = fullPath(uri);
         path = path.replace("//","/");
+        String[] params = new String[]{};
+        if (paramString.length()>0) {
+            params = paramString.split("&");
+        }
+        for (String p: params) {
+            String[] dat = p.split("=");
+            if (dat.length>1) {
+                System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
+            }
+        }
         Console.output("[Request] GET "+path+" from "+c);
         if (uri.equals("/")) {
             Response R = new Response(fileContents(INDEX_PATH));
@@ -199,6 +218,7 @@ public class HTTP extends Protocol {
             for (Route r: routes) {
                 String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
                 System.out.println("route: "+r);
+                System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
                 if (relURI.equalsIgnoreCase(r.getURI())) {
                     System.out.println("checking fullpath: "+fullPath(r.getResource()));
                     return HTTP_OK+"\r\n"+fileData(fullPath(r.getResource()));
