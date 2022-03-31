@@ -199,10 +199,14 @@ public class HTTP extends Protocol {
         if (paramString.length()>0) {
             params = paramString.split("&");
         }
+        String pf = "";
+        String pv = "";
         for (String p: params) {
             String[] dat = p.split("=");
             if (dat.length>1) {
                 System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
+                pf+=dat[0]+",;,";
+                pv+=dat[1]+",;,";
             }
         }
         Console.output("[Request] GET "+path+" from "+c);
@@ -214,18 +218,22 @@ public class HTTP extends Protocol {
             if (uri.contains("favicon")) {
                 return HTTP_OK+"\r\nnofavicon";
             }
-            System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
-            for (Route r: routes) {
-                String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
-                System.out.println("route: "+r);
-                System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
-                if (relURI.equalsIgnoreCase(r.getURI())) {
-                    System.out.println("checking fullpath: "+fullPath(r.getResource()));
-                    return HTTP_OK+"\r\n"+fileData(fullPath(r.getResource()));
-                }
+            String routes = checkRoutes(uri);
+            if (routes!=null) {
+                return routes;
             }
             File f = new File(path);
             if (f.exists()) { //only do this if we allow direct GETs
+                byte[] custResponse;
+                if (pf.split(",;,").length>0 && pf.split(",;,")[0].length()>0 && pv.split(",;,").length>0 && pv.split(",;,")[0].length()>0) {
+                    custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
+                } else {
+                    custResponse = processGET(c,uri,new String[]{},new String[]{});
+                }
+               // byte[] custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
+                if (custResponse!=null) {
+                    return new String(custResponse);
+                }
                 if (uri.contains("play.js")) {
                     String rspHead =  HTTP_OK_JS+"\r\n";
                     String adr = Main.launcher.getConfig("ws_addr");
@@ -257,6 +265,59 @@ public class HTTP extends Protocol {
         }
 
     }
+
+    public String fileHTML(String uri) {
+        return fileData(fullPath(uri));
+    }
+
+    //multiHTMLResponse(HTTP_OK, "jizz-time:69", new String[]{"<html>extra shit</html>",fileHTML(uri)});
+
+    // extra header with no \r\n
+    public  String multiHTMLResponse(String header, String[] html) {
+        String out = header+"\r\n";
+        for (String h: html) {
+            out += h;
+        }
+        return out;
+    }
+
+    public String multiHTMLResponse_noTags(String header, String[] html) {
+        String out = header+"\r\n";
+        out += "<!doctype html><html>";
+        for (String h: html) {
+            out += h;
+        }
+        out +="</html>";
+        return out;
+    }
+
+    public String fileHTML_noTags(String uri) {
+        String out = fileData(fullPath(uri));
+        out = out.replace("<!doctype html>","");
+        out = out.replace("<html>","");
+        out = out.replace("</html>","");
+        return out;
+    }
+
+    public byte[] processGET(ServerConnection c, String uri, String[] paramFields, String[] paramValues) {
+        return null;
+    }
+
+    // private GET methods
+    private String checkRoutes(String uri) {
+        System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
+        for (Route r: routes) {
+            String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
+            System.out.println("route: "+r);
+            System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
+            if (relURI.equalsIgnoreCase(r.getURI())) {
+                System.out.println("checking fullpath: "+fullPath(r.getResource()));
+                return HTTP_OK+"\r\n"+fileData(fullPath(r.getResource()));
+            }
+        }
+        return null;
+    }
+
 
     protected byte[] response_GET_image(ServerConnection c,String uri, String version) {
         uri = uri.replace("//","/");
@@ -356,7 +417,7 @@ public class HTTP extends Protocol {
         //c.disconnect();
     }
 
-    protected String fileData(String path)  {
+    protected static String fileData(String path)  {
         path = path.replace("//","/");
         //String str = FileUtils.readFileToString(file);
         try {
