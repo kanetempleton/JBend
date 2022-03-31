@@ -25,6 +25,7 @@ public class ServerQuery {
     private String extra_data[];
     private ArrayList<Cookie> outgoingCookies;
     private ArrayList<String> multiResponse;
+    private String response_params[][][];
 
     public ServerQuery(ServerQuery S, ServerConnection c, String q) {
         util=S.util();
@@ -39,6 +40,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
 
@@ -55,6 +57,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
 
@@ -71,6 +74,7 @@ public class ServerQuery {
         query = new Query(null,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
     public ServerQuery(DatabaseUtility U, String q, boolean log) {
@@ -87,6 +91,7 @@ public class ServerQuery {
         query.setLog(log);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
 
@@ -103,6 +108,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q) {
@@ -118,6 +124,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p) {
@@ -133,6 +140,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p, String[] x) {
@@ -151,6 +159,7 @@ public class ServerQuery {
         query = new Query(c,this,q);
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
+        response_params = new String[][][]{};
         execute();
     }
 
@@ -160,6 +169,11 @@ public class ServerQuery {
     }
 
     public void finish(String re) {
+        System.out.println("done()! responseSize="+responseSize());
+        response_params = new String[responseSize()][2][];
+        for (int i=0; i<responseSize(); i++) {
+            loadResponseParams(i);
+        }
         response=re;
         completed=true;
         util.pendingRequests().remove(this);
@@ -168,6 +182,11 @@ public class ServerQuery {
     }
 
     public void done() {
+       /* System.out.println("done()! responseSize="+responseSize());
+        response_params = new String[responseSize()][2][];
+        for (int i=0; i<responseSize(); i++) {
+            loadResponseParams(i);
+        }*/
 
     }
 
@@ -193,16 +212,16 @@ public class ServerQuery {
 
     public String responseParamValue(int i, String field) {
         String r = getResponse(i);
-        String[][] params = responseParams(i);
-        for (int j=0; j<params[0].length; j++) {
-            if (params[0][j].equals(field)) {
-                return params[1][j];
+        //String[][] params = responseParams(i);
+        for (int j=0; j<response_params[i][0].length; j++) {
+            if (response_params[i][0][j].equals(field)) {
+                return response_params[i][1][j];
             }
         }
         return "DNE"; //field does not exist
     }
 
-    public String[][] responseParams(int i) {
+    public void loadResponseParams(int i) {
         String r = getResponse(i);
         String field = "";
         String val = "";
@@ -226,7 +245,18 @@ public class ServerQuery {
                 build+=c;
             }
         }
-        return new String[][]{field.split(",;,"),val.split(",;,")};
+        response_params[i] = new String[][]{field.split(",;,"),val.split(",;,")};
+    }
+
+    public String[][] responseParams(int i) {
+        if (response_params.length > 0 && response_params.length<=i+1) {
+            return response_params[i];
+        }
+        return new String[][]{{"not"},{"found"}};
+       /* else {
+            loadResponseParams(i);
+            return response_params[i];
+        }*/
     }
 
     public int type() {return type;}
