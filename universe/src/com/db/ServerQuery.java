@@ -323,4 +323,23 @@ public class ServerQuery {
         returnValue=r;
     }
     public String getReturnValue() {return returnValue;}
+
+    //response_params[i:0,..,numResults][j:0,1][k:0,..,numFields] =
+    // result i's field name k or value name k
+
+    public String[] response_getFields() {
+        return response_params[0][0];
+    }
+
+    public String[][] response_getValues() {
+        int numFields = response_params[0][0].length;
+        int numResults = response_params.length;
+        String[][] out = new String[numResults][numFields];
+        for (int i=0; i<numResults; i++) {
+            for (int j=0; j<numFields; j++) {
+                out[i][j] = response_params[i][1][j];
+            }
+        }
+        return out;
+    }
 }

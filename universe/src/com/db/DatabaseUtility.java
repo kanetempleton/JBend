@@ -1,9 +1,7 @@
 package com.db;
 
-import com.server.Server;
-
 import java.util.ArrayList;
-import com.util.HTMLGenerator;
+import com.util.html.HTMLGenerator;
 
 public abstract class DatabaseUtility {
     private ArrayList<ServerQuery> pending;
@@ -43,6 +41,10 @@ public abstract class DatabaseUtility {
     public void setTable(String t) {table=t;}
 
     public abstract void serverAction(ServerQuery q);
+
+    public ServerQuery select_html_table(String[] fieldNames) {
+        return select_html_table(fieldNames,null,null);
+    }
 
     public ServerQuery select_html_table(String[] fieldNames, String[] fieldConditions, String[] valueConditions) {
         String toSelect = "";
