@@ -27,6 +27,8 @@ public class ServerQuery {
     private ArrayList<String> multiResponse;
     private String response_params[][][];
 
+    private String returnValue;
+
     public ServerQuery(ServerQuery S, ServerConnection c, String q) {
         util=S.util();
         fromServer=c.getServer();
@@ -41,6 +43,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
 
@@ -58,6 +61,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
 
@@ -75,6 +79,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
     public ServerQuery(DatabaseUtility U, String q, boolean log) {
@@ -92,6 +97,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
 
@@ -109,6 +115,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q) {
@@ -125,6 +132,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p) {
@@ -141,6 +149,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p, String[] x) {
@@ -160,6 +169,7 @@ public class ServerQuery {
         outgoingCookies = new ArrayList<>();
         multiResponse = new ArrayList<>();
         response_params = new String[][][]{};
+        returnValue = "null";
         execute();
     }
 
@@ -308,4 +318,9 @@ public class ServerQuery {
     public ArrayList<String> getResponses() {
         return multiResponse;
     }
+
+    public void setReturnValue(String r) {
+        returnValue=r;
+    }
+    public String getReturnValue() {return returnValue;}
 }
