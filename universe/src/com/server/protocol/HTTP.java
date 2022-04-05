@@ -218,10 +218,12 @@ public class HTTP extends Protocol {
             if (uri.contains("favicon")) {
                 return HTTP_OK+"\r\nnofavicon";
             }
-            String routes = checkRoutes(uri);
+           /* String routes = checkRoutes(uri);
             if (routes!=null) {
                 return routes;
-            }
+            }*/
+            uri = route(uri); //use routes
+            path = fullPath(uri);
             File f = new File(path);
             if (f.exists()) { //only do this if we allow direct GETs
                 byte[] custResponse;
@@ -303,6 +305,19 @@ public class HTTP extends Protocol {
         return null;
     }
 
+    //return the uri if no route exists, else return the resource for the route
+    private String route(String uri) {
+        for (Route r: routes) {
+            String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
+            System.out.println("route: "+r);
+            System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
+            if (relURI.equalsIgnoreCase(r.getURI())) {
+                return r.getResource();
+            }
+        }
+        return uri;
+    }
+
     // private GET methods
     private String checkRoutes(String uri) {
         System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
@@ -317,6 +332,7 @@ public class HTTP extends Protocol {
         }
         return null;
     }
+
 
 
     protected byte[] response_GET_image(ServerConnection c,String uri, String version) {
