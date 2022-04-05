@@ -29,8 +29,9 @@ public class CareTaker implements Runnable {
     }
 
     private void doStuff() {
-        if (!ready)
-            ready=true;
+        if (!ready) {
+            ready = true;
+        }
         else {
            // Main.launcher.databaseManager().query(null,"select value from settings where name='dummyQuery';");
             new ServerQuery(Main.launcher.getLoginHandler(),"select value from settings where name='dummyQuery';",false) {

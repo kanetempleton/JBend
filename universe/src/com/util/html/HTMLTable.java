@@ -115,6 +115,26 @@ public class HTMLTable {
         }
     }
 
+    public void addFormToRow(String colHead, String rowMatch) {
+        int x = 0;
+        for (int i=0; i<column_names.length; i++) {
+            if (column_names[i].equals(colHead)) {
+                x=i;
+                break;
+            }
+        } //column[i][x] = data entry i for column x
+        int y = 0;
+        for (int i=0; i<column_names.length; i++) {
+            if (column_data[i][x].equals(rowMatch)) {
+                y=i;
+                break;
+            }
+        }
+        for (int i=0; i<column_data[y].length; i++) {
+            column_output[y][i] = "<input id=\"form_"+column_names[i]+"\" type=\"text\" value=\""+column_data[y][i]+"\">";
+        }
+    }
+
     public void addHrefToColumn(String colHead, String uri) {
         int x = 0;
         for (int i=0; i<column_names.length; i++) {
@@ -124,9 +144,9 @@ public class HTMLTable {
             }
         }
         for (int i=0; i<column_output.length; i++) {
-            System.out.println("what the fuck column_data[i][x]="+column_data[i][x]);
+           // System.out.println("what the fuck column_data[i][x]="+column_data[i][x]);
             column_output[i][x] = "<a href=\""+uri+"?"+column_names[x]+"="+column_data[i][x]+"\">"+column_output[i][x]+"</a>";
-            System.out.println("what the fuck 2 column_data[i][x]="+column_data[i][x]);
+           // System.out.println("what the fuck 2 column_data[i][x]="+column_data[i][x]);
             //<a href=\"tickets.html?id="+this.responseParamValue(i,"ticket_id")+"\">
         }
     }

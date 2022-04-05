@@ -309,8 +309,8 @@ public class HTTP extends Protocol {
     private String route(String uri) {
         for (Route r: routes) {
             String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
-            System.out.println("route: "+r);
-            System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
+          //  System.out.println("route: "+r);
+          //  System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
             if (relURI.equalsIgnoreCase(r.getURI())) {
                 return r.getResource();
             }
