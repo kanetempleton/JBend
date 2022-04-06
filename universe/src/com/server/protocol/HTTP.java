@@ -109,9 +109,9 @@ public class HTTP extends Protocol {
                     imageRequest = true;
                 }
             }*/
-            if (L.startsWith("Cookie:")) {
-                if (L.split("Cookie: ").length > 1) {
-                    String ck = L.split("Cookie: ")[1];
+            if (L.startsWith("Cookie:") || L.contains("cookie:") || L.contains("Cookie:")) {
+                if (L.split("ookie: ").length > 1) {
+                    String ck = L.split("ookie: ")[1];
                     for (String kv: ck.split("; ")) {
                         String[] v = kv.split("=");
                         if (v.length==2) {
@@ -156,7 +156,7 @@ public class HTTP extends Protocol {
                     //System.out.println("notIMAGE REQUEST");
                     System.out.println("showing cookies for GET:");
                     for (Cookie z: c.getCookies()) {
-                        System.out.println("Cookie:"+c);
+                        System.out.println("Cookie:"+z);
                     }
                     response = response_GET(c, words[1], words[2]);
                 }
