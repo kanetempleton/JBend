@@ -154,6 +154,10 @@ public class HTTP extends Protocol {
                 }
                 else {
                     //System.out.println("notIMAGE REQUEST");
+                    System.out.println("showing cookies for GET:");
+                    for (Cookie z: c.getCookies()) {
+                        System.out.println("Cookie:"+c);
+                    }
                     response = response_GET(c, words[1], words[2]);
                 }
                 //Console.output("GET:\n"+data+"\n:GET.");
