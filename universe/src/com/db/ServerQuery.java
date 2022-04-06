@@ -342,4 +342,6 @@ public class ServerQuery {
         }
         return out;
     }
+
+    public DatabaseUtility getUtil() {return util;}
 }
