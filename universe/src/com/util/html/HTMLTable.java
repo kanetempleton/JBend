@@ -173,6 +173,41 @@ public class HTMLTable {
     }
 
 
+    //col[toThisCol] gets href to refTo?colDatName=colDatValue
+    //toThisCol: name of column to add link to
+    //refTo: uri to link to
+    //colDatName: data for
+    public void addHrefToColumn(String toThisCol, String refTo, String colDatName, String colDatValue) {
+        int x = 0;
+        for (int i=0; i<column_names.length; i++) {
+            if (column_names[i].equals(toThisCol)) {
+                x=i;
+                break;
+            }
+        }
+        int y = 0;
+        for (int i=0; i<column_names.length; i++) {
+            if (column_names[i].equals(colDatName)) {
+                y=i;
+                break;
+            }
+        }
+       /* int z = 0;
+        for (int i=0; i<column_names.length; i++) {
+            if (column_names[i].equals(colDatValue)) {
+                z=i;
+                break;
+            }
+        }*/
+        for (int i=0; i<column_output.length; i++) {
+            //   System.out.println("column_data[i][y]="+column_data[i][y]);
+            column_output[i][x] = "<a href=\""+refTo+"?"+colDatName+"="+column_data[i][y]+"\">"+column_output[i][x]+"</a>";
+            //<a href=\"tickets.html?id="+this.responseParamValue(i,"ticket_id")+"\">
+        }
+    }
+
+
+
     public String toString() {
         String build = "<table";
         if (element_id!=null && element_id.length()>0) {
