@@ -226,15 +226,16 @@ public class HTTP extends Protocol {
             if (routes!=null) {
                 return routes;
             }*/
-            uri = route(uri); //use routes
-            path = fullPath(uri);
+           String route = route(uri);
+           // uri = route(uri); //use routes
+            path = fullPath(route);
             File f = new File(path);
             if (f.exists()) { //only do this if we allow direct GETs
                 byte[] custResponse;
                 if (pf.split(",;,").length>0 && pf.split(",;,")[0].length()>0 && pv.split(",;,").length>0 && pv.split(",;,")[0].length()>0) {
-                    custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
+                    custResponse = processGET(c,uri,route,pf.split(",;,"),pv.split(",;,"));
                 } else {
-                    custResponse = processGET(c,uri,new String[]{},new String[]{});
+                    custResponse = processGET(c,uri,route,new String[]{},new String[]{});
                 }
                // byte[] custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
                 if (custResponse!=null) {
@@ -249,19 +250,19 @@ public class HTTP extends Protocol {
                     String rsp = rspHead+rspIPLine+rspBody;
                     return rsp;
                 } else {
-                    if ( uri.contains("menu.js") || uri.contains("player.js")
-                            || uri.contains("sprite.js") || uri.contains("spritestore.js") || uri.contains("button.js")
-                            || uri.contains("text.js") || uri.contains(".js")) {
-                        String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, uri);
+                    if ( route.contains("menu.js") || route.contains("player.js")
+                            || route.contains("sprite.js") || route.contains("spritestore.js") || route.contains("button.js")
+                            || route.contains("text.js") || route.contains(".js") ) {
+                        String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
                        // System.out.println(dx);
                         return dx;
                     }
-                    if (uri.contains(".css")) {
-                        String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, uri);
+                    if (route.contains(".css")) {
+                        String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, route);
                        // System.out.println(dx);
                         return dx;
                     }
-                    return fileResponse(HTTP_OK, uri);
+                    return fileResponse(HTTP_OK, route);
                 }
             }
             else {
@@ -305,7 +306,7 @@ public class HTTP extends Protocol {
         return out;
     }
 
-    public byte[] processGET(ServerConnection c, String uri, String[] paramFields, String[] paramValues) {
+    public byte[] processGET(ServerConnection c, String uri, String resource, String[] paramFields, String[] paramValues) {
         return null;
     }
 
