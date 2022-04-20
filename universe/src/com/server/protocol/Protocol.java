@@ -3,6 +3,7 @@ package com.server.protocol;
 import com.Launcher;
 import com.Main;
 import com.console.Console;
+import com.server.Server;
 import com.server.entity.ServerConnection;
 
 public abstract class Protocol {
@@ -56,7 +57,7 @@ public abstract class Protocol {
             }
             String send = decodeMessage(c, data);
             if (Launcher.DEBUG_SERVER_LEVEL >= 1) {
-                Console.output("Received message: "+send);
+                Console.output("Received message: [buffer size = "+ Server.MESSAGE_BUFFER_SIZE+"]\n"+send);
             }
 
             processMessage(c, send);
