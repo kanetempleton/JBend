@@ -47,13 +47,15 @@ public class Server implements Runnable {
 
     private long lastTickTime;
 
+    public static final int MESSAGE_BUFFER_SIZE = 65536; //THIS IS EXTREMELY IMPORTANT!!!!!!
+
 
     public Server(Protocol protocol) {
 
         activeProtocol = protocol;
         port = protocol.getPort();
         socketChannel = null;
-        buffer = ByteBuffer.allocate(1024);
+        buffer = ByteBuffer.allocate(MESSAGE_BUFFER_SIZE);
         selector = null;
         dbLock = new DatabaseLock();
         sendDatabase=false;
