@@ -1,5 +1,8 @@
 package com.server.protocol;
 
+import com.Launcher;
+import com.Main;
+import com.console.Console;
 import com.server.entity.ServerConnection;
 
 public abstract class Protocol {
@@ -47,7 +50,15 @@ public abstract class Protocol {
      */
     public void processPacket(ServerConnection c, String data) {
         try {
+
+            if (Launcher.DEBUG_SERVER_LEVEL >= 2) {
+                Console.output("Received data: "+data);
+            }
             String send = decodeMessage(c, data);
+            if (Launcher.DEBUG_SERVER_LEVEL >= 1) {
+                Console.output("Received message: "+send);
+            }
+
             processMessage(c, send);
             processCustomMessage(c,send);
         } catch (Exception e) {
@@ -58,7 +69,7 @@ public abstract class Protocol {
     public abstract void processCustomMessage(ServerConnection c, String data);
 
     /* sendMessage(c,data,encode):
-        method called by server on any API to send data thru TCP socket.
+        method called by server on any protocol to send data thru TCP socket.
         if encode flag is set to true,
             attempts to encode message according to specific API,
             then sends encoded message across TCP connection.

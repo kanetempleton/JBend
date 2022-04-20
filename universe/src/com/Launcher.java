@@ -34,6 +34,7 @@ public class Launcher {
     private int numThreads;
 
     public static final boolean USING_LOGIN_ENCRYPTION = false;
+    public static int DEBUG_SERVER_LEVEL = 0;
 
     public Launcher() {
         stage=0;
