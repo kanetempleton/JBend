@@ -47,6 +47,8 @@ public class Server implements Runnable {
 
     private long lastTickTime;
 
+    private int messageBufferSize;
+
     public static final int MESSAGE_BUFFER_SIZE = 65536; //THIS IS EXTREMELY IMPORTANT!!!!!!
 
 
@@ -55,7 +57,8 @@ public class Server implements Runnable {
         activeProtocol = protocol;
         port = protocol.getPort();
         socketChannel = null;
-        buffer = ByteBuffer.allocate(MESSAGE_BUFFER_SIZE);
+        messageBufferSize = MESSAGE_BUFFER_SIZE;
+        buffer = ByteBuffer.allocate(messageBufferSize);
         selector = null;
         dbLock = new DatabaseLock();
         sendDatabase=false;
@@ -76,6 +79,33 @@ public class Server implements Runnable {
             connections[i]=null;
 
         //console = null;
+
+    }
+
+    public Server(Protocol protocol, int bufSize) {
+        activeProtocol = protocol;
+        port = protocol.getPort();
+        socketChannel = null;
+        messageBufferSize = bufSize;
+        buffer = ByteBuffer.allocate(messageBufferSize);
+        selector = null;
+        dbLock = new DatabaseLock();
+        sendDatabase=false;
+        sendDBText = "";
+        webPacketHandler = new WebPackets();
+        lastTickTime=0;
+        connectionManager = new ConnectionManager(protocol.getName());
+
+        /*databaseManager = new DatabaseManager();
+        new Thread(databaseManager).start();*/
+
+
+        numConnections = 0;
+        nextConnectionID=0;
+        recycledIDs = new LinkedList<>();
+        connections = new ServerConnection[MAX_CONNECTIONS];
+        for (int i=0; i<MAX_CONNECTIONS;i++)
+            connections[i]=null;
 
     }
 

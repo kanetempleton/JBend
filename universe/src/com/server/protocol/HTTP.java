@@ -10,6 +10,7 @@ import com.Main;
 import java.util.ArrayList;
 import com.server.web.*;
 import com.console.*;
+import com.util.FileManager;
 
 class Response {
     ArrayList<String> headers;
@@ -68,6 +69,22 @@ public class HTTP extends Protocol {
         port=prt;
         cookies = new ArrayList<Cookie>();
         routes = new ArrayList<Route>();
+        loadRoutes();
+    }
+
+    private void loadRoutes() {
+        String[] lines = FileManager.fileDataAsString("routes.cfg").split("\n");
+        for (String l: lines) {
+            String[] keyval = l.replace(" ","").split("->");
+            if (keyval.length!=2) {
+                Console.output("There is an error in your routes.cfg syntax! No routes were loaded.");
+                return;
+            }
+            String uri = keyval[0];
+            String rsc = keyval[1];
+            addRoute(uri,rsc);
+            Console.output("Added route: "+uri+"");
+        }
     }
 
     /* processMessage(c,data):
