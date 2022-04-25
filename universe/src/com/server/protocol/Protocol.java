@@ -81,10 +81,19 @@ public abstract class Protocol {
         try {
             if (encode) {
                 byte[] send = encodeMessage(c, data);
+                if (Launcher.DEBUG_SERVER_LEVEL >= 2) {
+                    Console.output("encoding data:\n"+data);
+                    Console.output("</data>");
+                    Console.output("sending message:\n"+send);
+                    Console.output("</message>");
+                }
                 c.getServer().messageToClient(c.getSocket(), send);
                 if (this.getName().equals("HTTP"))
                     c.disconnect();
             } else {
+                if (Launcher.DEBUG_SERVER_LEVEL >= 1) {
+                    Console.output("sending message:\n"+data);
+                }
                 c.getServer().messageToClient(c, data);
                 if (this.getName().equals("HTTP"))
                     c.disconnect();
@@ -94,16 +103,25 @@ public abstract class Protocol {
         }
     }
     public void sendMessage(ServerConnection c, String data) {
+        if (Launcher.DEBUG_SERVER_LEVEL>=1) {
+            Console.output("sending message:\n"+data);
+        }
         sendMessage(c,data,true);
     }
 
     public void sendText(ServerConnection c, String data) { //override for sending plain text
+        if (Launcher.DEBUG_SERVER_LEVEL>=1) {
+            Console.output("sending message:\n"+data);
+        }
         sendMessage(c,data,false);
     }
 
 
     public void sendBytes(ServerConnection c, byte[] bytes) {
         try {
+            if (Launcher.DEBUG_SERVER_LEVEL>=1) {
+                Console.output("sending message:\n"+new String(bytes));
+            }
             c.getServer().messageToClient(c.getSocket(), bytes);
         } catch (Exception e) {
             e.printStackTrace();

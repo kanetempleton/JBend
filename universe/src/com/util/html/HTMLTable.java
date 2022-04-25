@@ -116,6 +116,14 @@ public class HTMLTable {
     }
 
     public void addFormToRow(String colHead, String rowMatch) {
+        addFormToRow(colHead,rowMatch,null,null);
+    }
+
+    public void addFormToRow(String colHead, String rowMatch, String ignoreCol) {
+        addFormToRow(colHead,rowMatch,ignoreCol,null);
+    }
+
+    public void addFormToRow(String colHead, String rowMatch, String ignoreCol, String bigFormCol) {
         int x = 0;
         for (int i=0; i<column_names.length; i++) {
             if (column_names[i].equals(colHead)) {
@@ -131,7 +139,14 @@ public class HTMLTable {
             }
         }
         for (int i=0; i<column_data[y].length; i++) {
-            column_output[y][i] = "<input id=\"form_"+column_names[i]+"\" type=\"text\" value=\""+column_data[y][i]+"\">";
+            if (!column_names[i].equalsIgnoreCase(ignoreCol)) {
+                if (!column_names[i].equalsIgnoreCase(bigFormCol))
+                    column_output[y][i] = "<input id=\"form_" + column_names[i] + "\" type=\"text\" value=\"" + column_data[y][i] + "\">";
+                else
+                    column_output[y][i] = "<textarea id=\"form_" + column_names[i] + "\" value=\"" + column_data[y][i] + "\">"+column_data[y][i]+"</textarea>";
+            } else {
+                column_output[y][i] = "<p id=\"data_"+column_names[i]+"\">"+column_data[y][i]+"</p>";
+            }
         }
     }
 
