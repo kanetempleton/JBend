@@ -25,11 +25,17 @@ public class CRUDObject {
     }
 
     private boolean ignore(String field){
-        System.out.println("checking ignore factor for "+field);
         for (String g: handler.ignoreFields()) {
-            System.out.println("... compared to "+g);
             if (field.equals(g)) {
-                System.out.println("ignored");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean include(String field){
+        for (String g: handler.saveFields()) {
+            if (field.equals(g)) {
                 return true;
             }
         }
@@ -38,13 +44,19 @@ public class CRUDObject {
 
 
 
+
     // INTERFACE
 
     // set the instance variables
     public void setFields(String[] fields, Object[] values) {
         for (int i=0; i<fields.length; i++) {
-            if (!ignore(fields[i]))
-                this.setFieldValue(fields[i],values[i]);
+            if (handler.ignoreMode()) {
+                if (!ignore(fields[i]))
+                    this.setFieldValue(fields[i], values[i]);
+            } else {
+                if (include(fields[i]))
+                    this.setFieldValue(fields[i], values[i]);
+            }
         }
     }
 
@@ -139,15 +151,22 @@ public class CRUDObject {
         String b = "";
         for (Field field : fields) {
             //gives the names of the fields
-            if (!ignore(field.getName())) {
-                field.setAccessible(true);
-                b += field.getName() + ";;";
+            if (handler.ignoreMode()) {
+                if (!ignore(field.getName())) {
+                    field.setAccessible(true);
+                    b += field.getName() + ";;";
+                }
+            } else {
+                if (include(field.getName())) {
+                    field.setAccessible(true);
+                    b += field.getName() + ";;";
+                }
             }
         }
         return b.split(";;");
     }
 
-    public String[] fieldNames_include_ignores() {
+    public String[] fieldNames_include_all() {
         Field[] fields = CRUDObject.class.getDeclaredFields();
         String b = "";
         for (Field field : fields) {
