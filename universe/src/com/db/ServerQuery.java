@@ -1,5 +1,6 @@
 package com.db;
 
+import com.console.Console;
 import com.server.*;
 import com.server.entity.*;
 import com.Main;
@@ -179,7 +180,7 @@ public class ServerQuery {
     }
 
     public void finish(String re) {
-        System.out.println("done()! responseSize="+responseSize());
+        Console.output("complete! responseSize="+responseSize());
         response_params = new String[responseSize()][2][];
         for (int i=0; i<responseSize(); i++) {
             loadResponseParams(i);
@@ -248,6 +249,9 @@ public class ServerQuery {
             }
             else if (c == ']') {
                 open = false;
+                if (build.length()==0) {
+                    build = "-";
+                }
                 val += build+",;,";
                 build = "";
             }

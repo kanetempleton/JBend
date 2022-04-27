@@ -1,5 +1,7 @@
 package com.db.crud;
 
+import com.util.Tools;
+
 import java.lang.reflect.Field;
 
 public class CRUDObject {
@@ -65,8 +67,9 @@ public class CRUDObject {
 
     //INSERT INTO table (new entry)
     public void store() {
-        // CHECK IF ENTRY EXISTS -> ERROR
+        // TODO: CHECK IF ENTRY EXISTS -> ERROR
         // CREATE ENTRY
+        handler.create(this);
     }
 
     // SELECT FROM table (load existing entry)
@@ -164,6 +167,78 @@ public class CRUDObject {
             }
         }
         return b.split(";;");
+    }
+
+    public String[] fieldTypes() {
+        Field[] fields = CRUDObject.class.getDeclaredFields();
+        String b = "";
+        for (Field field : fields) {
+            //gives the names of the fields
+            if (handler.ignoreMode()) {
+                if (!ignore(field.getName())) {
+                    field.setAccessible(true);
+                    b += handler.getSQLTypeForField(field.getName()) + ";;";
+                }
+            } else {
+                if (include(field.getName())) {
+                    field.setAccessible(true);
+                    b += handler.getSQLTypeForField(field.getName()) + ";;";
+                }
+            }
+        }
+        return b.split(";;");
+    }
+
+    public Object[] fieldValues() {
+        Field[] fields = CRUDObject.class.getDeclaredFields();
+        String b = "";
+        int size = 0;
+        for (Field field : fields) {
+            //gives the names of the fields
+            if (handler.ignoreMode()) {
+                if (!ignore(field.getName())) {
+                    field.setAccessible(true);
+                    size++;
+                    //b += field.getName() + ";;";
+                }
+            } else {
+                if (include(field.getName())) {
+                    field.setAccessible(true);
+                    size++;
+                    //b += field.getName() + ";;";
+                }
+            }
+        }
+        Object[] out = new Object[size];
+        int i=0;
+        for (Field field : fields) {
+            //gives the names of the fields
+            if (handler.ignoreMode()) {
+                if (!ignore(field.getName())) {
+                    field.setAccessible(true);
+                    try {
+                        out[i++] = field.get(this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                   // size++;
+                    //b += field.getName() + ";;";
+                }
+            } else {
+                if (include(field.getName())) {
+                    field.setAccessible(true);
+                   // size++;
+                    //b += field.getName() + ";;";
+                    try {
+                        out[i++] = field.get(this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+       // System.out.println("computed field values here they are\n"+ Tools.string(out));
+        return out;
     }
 
     public String[] fieldNames_include_all() {

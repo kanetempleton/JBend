@@ -43,9 +43,9 @@ public class DatabaseManager implements Runnable  {
 
 
     public void runStartupDatabaseCheck() {
-        quickFunctions.createTable("maps","mapcode INTEGER, data TEXT");
+    //    quickFunctions.createTable("maps","mapcode INTEGER, data TEXT");
         quickFunctions.createTable("users","id INTEGER PRIMARY KEY AUTO_INCREMENT, username TEXT, password TEXT, email TEXT, privileges INTEGER");
-        quickFunctions.createTable("players","username TEXT, x INTEGER, y INTEGER, z INTEGER");
+    //    quickFunctions.createTable("players","username TEXT, x INTEGER, y INTEGER, z INTEGER");
         quickFunctions.createTable("settings","name TEXT, value TEXT");
         quickFunctions.createTable("bans","name TEXT, ip TEXT");
     }

@@ -98,7 +98,7 @@ public class Console implements Runnable {
             output(Class.forName(Thread.currentThread().getStackTrace()[2].getClassName()).getSimpleName(),msg);
             Main.launcher.console().needsRefresh=true;
         } catch (Exception e) {
-            System.out.println("[ERROR] problem with something");
+            System.out.println("[CONSOLE:ERROR] problem with something");
         }
     }
 
@@ -111,7 +111,7 @@ public class Console implements Runnable {
             output(Class.forName(Thread.currentThread().getStackTrace()[2].getClassName()).getSimpleName(),msg);
             Main.launcher.console().needsRefresh=true;
         } catch (Exception e) {
-            System.out.println("[ERROR] problem with something");
+            System.out.println("[CONSOLE:ERROR] problem with something");
         }
     }
 

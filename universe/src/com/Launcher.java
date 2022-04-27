@@ -5,6 +5,7 @@ import com.server.protocol.*;
 import com.db.crud.lang.*;
 //import com.game.*;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 import com.db.*;
@@ -36,6 +37,9 @@ public class Launcher {
     public static final boolean USING_LOGIN_ENCRYPTION = false;
     public static int DEBUG_SERVER_LEVEL = 0;
 
+    public HashMap<String,Integer> threadMap;
+    public HashMap<Integer,String> threadMapInverse;
+
     public Launcher() {
         stage=0;
         cfg=new String[10][2];
@@ -48,6 +52,8 @@ public class Launcher {
         threads=new Runnable[10];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
+        threadMap = new HashMap<>();
+        threadMapInverse = new HashMap<>();
         loadConfig();
         addConsole();
     }
@@ -65,6 +71,8 @@ public class Launcher {
         threads=new Runnable[maxThreads];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
+        threadMap = new HashMap<>();
+        threadMapInverse = new HashMap<>();
         loadConfig();
         addConsole();
     }
@@ -81,6 +89,8 @@ public class Launcher {
         threads=new Runnable[10];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
+        threadMap = new HashMap<>();
+        threadMapInverse = new HashMap<>();
         if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
             loadConfig();
         addConsole();
@@ -88,7 +98,7 @@ public class Launcher {
 
 
     public void loadConfig() {
-        System.out.println("loading configuration...");
+        //Console.output("loading configuration...");
         String conf = FileManager.fileDataAsString("env.cfg").replace("\n","");
         int i=0;
         if (!conf.equalsIgnoreCase("DNE")) {
@@ -105,7 +115,7 @@ public class Launcher {
                     if (i<cfg.length) {
                         cfg[i][0] = field;
                         cfg[i][1] = value;
-                        System.out.println("loaded configuration: "+field+": "+value);
+                        System.out.println("loaded configuration for: "+field+"");
                         i++;
                     }
                 } else {
@@ -145,10 +155,24 @@ public class Launcher {
         return null;
     }
 
-    public void loadThread(Runnable r) {
+    //TODO: bounds check
+    public Runnable getThread(String name) {
+        return threads[threadMap.get(name)];
+    }
+
+    public void loadThread(Runnable r, String name) {
         if (numThreads>=threads.length) {
             System.out.println("Launcher cannot hold any more threads.");
             return;
+        }
+        if (threadMap.containsKey(name)) {
+            String name2 = name+"_dupe";
+            threadMap.put(name2,numThreads);
+            threadMapInverse.put(numThreads,name2);
+            System.out.println("duplicate thread name, renamed to "+name2);
+        } else {
+            threadMap.put(name, numThreads); //store the index for this thread name
+            threadMapInverse.put(numThreads, name);
         }
         threads[numThreads]=r;
         if (r instanceof Console)
@@ -170,11 +194,14 @@ public class Launcher {
             if (s.getAPI().getName().equals("WebSocket"))
                 websocketserver = (Server) threads[numThreads];
         }
+        System.out.println("[LAUNCHER] Loaded thread["+numThreads+"]:"+threadMapInverse.get(numThreads));
         numThreads++;
     }
 
     public void startThreads() {
         if (stage<numThreads) {
+            String asdf = threadMapInverse.get(stage);
+            System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
             new Thread(threads[stage]).start();
         }
     }
@@ -194,7 +221,7 @@ public class Launcher {
     public void addConsole() {
         if (console==null) {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            loadThread(new Console(br));
+            loadThread(new Console(br),"Console");
         }
     }
     public void addDatabaseManager() {
@@ -208,29 +235,29 @@ public class Launcher {
         m.setDB_name(dbName);
         m.setDB_user(dbUser);
         m.setDB_pass(dbPass);
-        loadThread(m);
+        loadThread(m,"DatabaseManager");
     }
     public void addLoginHandler() {
-        loadThread(new LoginHandler());
+        loadThread(new LoginHandler(),"LoginHandler");
     }
     public void addCareTaker(long delay) {
-        loadThread(new CareTaker(delay));
+        loadThread(new CareTaker(delay),"CareTaker");
     }
     public void addTCPServer(int port) {
         TCP tcp = new TCP(port);
-        loadThread(new Server(tcp));
+        loadThread(new Server(tcp),"TCP");
     }
     public void addHTTPServer(int port) {
         HTTP http = new HTTP(HTTP.DEFAULT_HOME_DIRECTORY,port);
-        loadThread(new Server(http));
+        loadThread(new Server(http),"HTTP");
     }
     public void addHTTPServer(String homeDir, int port) {
         HTTP http = new HTTP(homeDir,port);
-        loadThread(new Server(http));
+        loadThread(new Server(http),"HTTP");
     }
     public void addWebSocketServer(int port) {
         WebSocket ws = new WebSocket(port);
-        loadThread(new Server(ws));
+        loadThread(new Server(ws),"WebSocket");
     }
 
 

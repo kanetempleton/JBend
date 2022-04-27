@@ -1,5 +1,6 @@
 package com.db.crud;
 
+import com.Main;
 import com.console.Console;
 import com.db.DatabaseUtility;
 import com.db.ServerQuery;
@@ -8,18 +9,32 @@ import com.util.Misc;
 import com.util.Tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+/* IMPORTANT!!!
+ * usage of CRUDHandler classes is implied that it will be running on a Launcher thread
+ * you MUST call Main.launcher.nextStage() once the table init phase is complete
+ * i mean.. i'm just gonna code that here now so it probably doesn't really matter
+ * but since i'm doing that, every CRUDHandler will automatically
+ * trigger the Launcher to start its next thread
+ */
 
 public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implements Runnable {
 
+    public static boolean DEBUG_CRUD = false;
+
     public static final String PRIMARY_KEY_STANDARD_TYPE = "VARCHAR(63)";
     public static final String PRIMARY_KEY_STANDARD_NAME = "id";
-    public static final String STANDARD_SQL_FIELD_TYPE = "TEXT";
+    public static final String STANDARD_SQL_FIELD_TYPE = "VARCHAR(2048)";
+    public static final String DEFAULT_NULL_VALUE = "UNASSIGNED";
 
     private String primaryKey; //field name of the identifying column
     private ArrayList<CRUDObject> objectList; //active objects
     private String ignoreFields[]; //names of instance variables to ignore when computing database structure
     private String savedFields[]; //names of instance variables to save to database
     private boolean ignore_mode;
+
+    private boolean ready;
 
     public CRUDHandler(String t, String p, boolean ig) {
         setTable(t);
@@ -28,6 +43,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         ignoreFields = new String[]{"default"};
         savedFields = new String[]{PRIMARY_KEY_STANDARD_NAME};
         ignore_mode = ig;
+        ready = false;
     }
 
     public CRUDHandler(String t, String p) {
@@ -37,27 +53,30 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         ignoreFields = new String[]{"default"};
         savedFields = new String[]{PRIMARY_KEY_STANDARD_NAME};
         ignore_mode = false;
+        ready = false;
     }
 
     /*public String[] syncedFields() {
         return new
     }*/
 
-    public void start() {
+    //hmmmmmmmmmmmmm.......... no fricking way.
+    //do i need to make sure this stays running?
+    //... yeahhhhh... i totally do -_-
+    //fuck this im going home
+    public void go() {
         initTable();
     }
 
     public void initTable() {
-        System.out.println("Initializing table "+getTable()+"...");
+        System.out.println(tag()+"Initializing table...");
         checkTableExistence();
-       // checkTableStructure();
-        System.out.println("Initialization complete!");
     }
 
     //TODO: get table structure
 
     private void checkTableExistence() {
-        System.out.println("Checking table existence for "+getTable()+"...");
+      //  System.out.println("Checking table existence for "+getTable()+"...");
 
         ServerQuery q = new TableExistsQuery(this) {
             public void finish() {
@@ -67,7 +86,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                 } else if(this.getReturnValue().equals("false")) {
                     CreateTableQuery q2 = new CreateTableQuery(this.getUtil());
                 } else {
-                    System.out.println("the return value was null.");
+                    System.out.println(tag()+"the return value was null.");
                 }
             }
         };
@@ -90,11 +109,10 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     //
     private void checkTableStructure() {
-        System.out.println("Checking table structure for "+getTable()+"...");
+        //System.out.println("Checking table structure for "+getTable()+"...");
 
         new ColumnInfoQuery(this,"both") {
-            public void done() {
-                System.out.println("finished col names query");
+            public void finish() {
                 String b = "";
                 String c = "";
                 for (String[] x: response_getValues()) {
@@ -105,25 +123,60 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                 String[] colTypes = c.split(";:;");
                 //System.out.println("the resulting structure is:\n"+structure_string(colNames,colTypes,true));
                 String classStructure = computeTableStructure();
+                String[] class_names = extractNamesFromStructure(classStructure);
+                String[] class_types = extractTypesFromStructure(classStructure);
                 String dbStructure = structure_string(colNames,colTypes,true);
                 int[][] compare = compare_structures(classStructure,dbStructure);
                 if (structures_match(compare)) {
-                    System.out.println("database structure matches! ALL GOOD!!");
+                    System.out.println(tag()+"database structure matches! ALL GOOD!!");
+                    finishInitPhase();
                 } else {
                     if (!structures_sameSize(compare)) { //added or deleted fields, main work here
                         int x = compare[0][0];
                         if (x > 0) {
-                            System.out.println("[UNHANDLED] size mismatch... Class has " + x + " more fields than database.");
+                            //TODO: this needs more checking
+                            // -> same # of fields should also check that each field is same
+                            System.out.println(tag()+"size mismatch... Class has " + x + " more fields than database.");
+                            //add fields from class to database table
+                            //Table.structure.append(F \ col); <--- need this function!
+                            Object[] xfields = Tools.subtract(class_names,colNames);
+                            String[] queries = new String[xfields.length];
+                            for (int i=0; i<xfields.length; i++) {
+                                queries[i] = xfields[i]+" "+STANDARD_SQL_FIELD_TYPE;
+                            }
+                            System.out.println(tag()+" the differing fields are: "+Tools.string(xfields));
+                            new AddColumnQuery(this.getUtil(),queries,"'"+DEFAULT_NULL_VALUE+"'") {
+                                public void done() {
+                                    finishInitPhase();
+                                }
+                            };
+
+                            //new AddColumnQuery(this,)
                         }
                         else {
-                            System.out.println("[UNHANDLED] size mismatch... Class has " + (-1 * x) + " fewer fields than database.");
+                            System.out.println(tag()+" size mismatch... Class has " + (-1 * x) + " fewer fields than database.");
+                            //drop extra fields from table
+                            //Table.structure.drop(col \ F);
+                            String[] dropCols = Tools.string_array(Tools.subtract(class_names,colNames));
+                            System.out.println(tag()+" the differing fields are: "+Tools.string(Tools.subtract(class_names,colNames)));
+
+                            new DropColumnQuery(this.getUtil(),dropCols) {
+                              public void done() {
+                                  finishInitPhase();
+                              }
+                            };
+
                         }
                     } else { //name or type mismatch, somewhat minor
+                        //TODO: unsure how to handle these mismatches
+                        // -> prompt the user with the issue and options for fixing...
                         if (!structures_namesMatch(compare)) {
                             System.out.println("[UNHANDLED] name mismatch... at columns: "+Tools.string(compare[1]));
+                            finishInitPhase();
                         }
-                        if (!structures_typesMatch(compare)) {
+                        else if (!structures_typesMatch(compare)) {
                             System.out.println("[UNHANDLED] type mismatch... at columns: "+Tools.string(compare[2]));
+                            finishInitPhase();
                         }
                     }
                 }
@@ -131,9 +184,15 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         };
     }
 
-    //delete the database table lmaooooooo
+    private void finishInitPhase() {
+        Console.output(tag()+" Table initialization complete!");
+        Main.launcher.nextStage();
+        ready = true;
+    }
+
+    //delete the table lmaooooooo
     public void drop() {
-        System.out.println("DELETING TABLE! "+getTable());
+        System.out.println(tag()+"DELETING TABLE!!!!!!!!!!!!!");
         new DeleteTableQuery(this);
     }
 
@@ -160,27 +219,55 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     public void run() {
         Console.output("starting CRUD handler for "+getTable());
-        start();
+        go();
     }
 
 
-    /// methodszzz
+    /// object-specific methods
+
+    // add entry x into database
+    public void create(CRUDObject x) {
+        if (!ready) {
+            Console.output("ERROR: tried to perform CRUD on an object before table "+getTable()+" was initialized.");
+            return;
+        }
+        //TODO: add option for ignore mode
+        String[] names = Misc.fieldNames_include(classtype,savedFields);
+        String[] vals = Tools.string_array(Misc.fieldValues_include(classtype,x,savedFields));
+        String[] types = Tools.string_array(Arrays.stream(names).map(this::getSQLTypeForField).toArray());
+
+
+        System.out.println("fields = "+Tools.string(names));
+        System.out.println("types = "+Tools.string(types));
+        System.out.println("values = "+Tools.string(vals));
+
+
+
+        /*
+        System.out.println("fields = "+Tools.string(x.fieldNames()));
+        System.out.println("types = "+Tools.string(x.fieldTypes()));
+        System.out.println("values = "+Tools.string(x.fieldValues()));
+
+         */
+        new InsertEntryQuery(this,x.fieldNames(),x.fieldTypes(),Tools.string_array(x.fieldValues()));
+    }
 
 
     // create a new database-sync'd object
     // should generate a blank-slate object
     // that is ready to be stored in database
     // note: args[0] should be the primary key
+    /*
     public CRUDObject create(String[] args) {
+
         CRUDObject o = new CRUDObject(this,args[0]);
         // store o in database
         return o;
     }
 
+     */
 
-    public String queryTableStructure() {
-        return "structure from select";
-    }
+
     public String structure_string(String[] names, String[] types, boolean pkey) {
         String b = "(";
         if (pkey)
@@ -219,18 +306,18 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
     //out[1] = indices of name mismatches
     //out[2] = indices of type mismatches
     public int[][] compare_structures(String a, String b) {
-        System.out.println("comparing structures...");
-        System.out.println("class structure: "+a);
-        System.out.println("DB structure: "+b);
+      //  System.out.println("comparing structures...");
+        debug("class structure: "+a);
+        debug("DB structure: "+b);
         int[][] out = new int[][]{{0},{-1},{-1}};
         String[] n1 = extractNamesFromStructure(a);
         String[] n2 = extractNamesFromStructure(b);
         String[] t1 = extractTypesFromStructure(a);
         String[] t2 = extractTypesFromStructure(b);
-        System.out.println("class[n]: "+Tools.string(n1));
-        System.out.println("class[t]: "+Tools.string(t1));
-        System.out.println("DB[n]: "+Tools.string(n2));
-        System.out.println("DB[t]: "+Tools.string(t2));
+        debug("class[n]: "+Tools.string(n1));
+        debug("class[t]: "+Tools.string(t1));
+        debug("DB[n]: "+Tools.string(n2));
+        debug("DB[t]: "+Tools.string(t2));
         if (n1.length!=n2.length)
             /*Tools.append(out[0],n1.length-n2.length);*/ out[0][0] = n1.length-n2.length;
         else if (t1.length!=t2.length)
@@ -244,7 +331,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
             if (!t1[i].equalsIgnoreCase(t2[i]))
                 /*Tools.append(out[2],i);*/ out[2][0] = i;
         }
-        System.out.println("comparison structure:\n"+Tools.string(out));
+        //System.out.println("comparison structure:\n"+Tools.string(out));
         return out;
     }
     private boolean structures_sameSize(int[][] compare) {
@@ -261,12 +348,14 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         return (structures_sameSize(compare) && structures_namesMatch(compare) && structures_typesMatch(compare));
     }
     public String computeTableStructure() {
-        System.out.println("computing table structure!!!");
+       // System.out.println("computing table structure!!!");
         if (classtype==null) {
-            System.out.println("class type has not been assigned for this handler.");
+            System.out.println(tag()+"class type has not been assigned for this handler.");
             return "null";
         }
-        String[] names = Misc.fieldNames(classtype,ignoreFields);//dummy.fieldNames();
+        //TODO: add ignore mode option
+        // - but i think i already roughly handled this...
+        String[] names = Misc.fieldNames_ignore(classtype,ignoreFields);//dummy.fieldNames();
         String out = "("+PRIMARY_KEY_STANDARD_NAME+" "+PRIMARY_KEY_STANDARD_TYPE+"";
         if (!ignore_mode) {
             for (int i = 0; i < savedFields.length; i++)
@@ -278,6 +367,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         out+=")";
         return out;
     }
+
     public String getSQLTypeForField(String field) {
         return STANDARD_SQL_FIELD_TYPE;
     }
@@ -286,7 +376,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     public void assignClass(Class<X> t) {
         classtype = t;
-        System.out.println("assigned class type : "+classtype.getName());
+        Console.output("assigned class type : "+classtype.getName());
     }
    // public static String
 
@@ -315,5 +405,16 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     public boolean ignoreMode(){return ignore_mode;}
     public void setIgnoreMode(boolean b){ignore_mode=b;}
+
+    private String tag() {
+        return "[SCHEMA:"+this.getTable()+"] ";
+    }
+
+    private void debug(String x) {
+        if (DEBUG_CRUD)
+            Console.output("[DEBUG] "+x);
+    }
+
+    public boolean ready(){return ready;}
 
 }
