@@ -101,7 +101,19 @@ public class Misc {
         return b.split(";;");
     }
 
+
     public static String[] fieldNames(Class k) {
         return fieldNames_ignore(k,new String[]{});
+    }
+
+    public static void setField(Class k, Object o, String f, Object to) {
+        System.out.println("Set field["+f+"] = "+to);
+        try {
+            Field F = k.getDeclaredField(f); //nope not this ...
+            F.setAccessible(true);
+            F.set(o,to);
+        } catch (Exception e ) {
+            e.printStackTrace();
+        }
     }
 }

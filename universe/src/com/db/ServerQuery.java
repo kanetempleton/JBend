@@ -20,7 +20,8 @@ public class ServerQuery {
 
     private DatabaseUtility util;
     private String response;
-    private boolean completed;
+    private boolean completed; //the query is completed
+    private boolean done; //the logic function is completed
     private Query query;
     private String payload;
     private String extra_data[];
@@ -34,6 +35,7 @@ public class ServerQuery {
         util=S.util();
         fromServer=c.getServer();
         completed=false;
+        done=false;
         response="";
         payload="";
         this.type=-1;
@@ -51,7 +53,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, ServerConnection c, String q) {
         util=U;
         fromServer=c.getServer();
-        completed=false;
+        completed=false;done=false;
         response="";
         payload="";
         this.type=-1;
@@ -69,7 +71,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, String q) {
         util=U;
         fromServer=null;
-        completed=false;
+        completed=false;done=false;
         response="";
         payload="";
         this.type=-1;
@@ -86,7 +88,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, String q, boolean log) {
         util=U;
         fromServer=null;
-        completed=false;
+        completed=false;done=false;
         response="";
         payload="";
         this.type=-1;
@@ -105,7 +107,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, ServerConnection c, int type, String q) {
         util=U;
         fromServer=c.getServer();
-        completed=false;
+        completed=false;done=false;
         response="";
         payload="";
         this.type=type;
@@ -122,7 +124,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q) {
         util=U;
         fromServer=s;
-        completed=false;
+        completed=false;done=false;
         response="";
         payload="";
         this.type=type;
@@ -139,7 +141,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p) {
         util=U;
         fromServer=s;
-        completed=false;
+        completed=false;done=false;
         response="";
         payload=p;
         this.type=type;
@@ -156,7 +158,7 @@ public class ServerQuery {
     public ServerQuery(DatabaseUtility U, Server s, ServerConnection c, int type, String q, String p, String[] x) {
         util=U;
         fromServer=s;
-        completed=false;
+        completed=false;done=false;
         response="";
         payload=p;
         this.type=type;
@@ -190,6 +192,7 @@ public class ServerQuery {
         util.pendingRequests().remove(this);
         util.serverAction(this);
         done();
+        done=true;
     }
 
     public void done() {
@@ -348,4 +351,6 @@ public class ServerQuery {
     }
 
     public DatabaseUtility getUtil() {return util;}
+
+    public boolean isDone(){return done;}
 }

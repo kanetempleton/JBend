@@ -26,11 +26,11 @@ public class DatabaseManager implements Runnable  {
     private DBFunctions quickFunctions;
 
     public DatabaseManager() {
-        dburl = "162.214.93.15";
+        dburl = "127.0.0.1";
         dbport = 3306;
-        dbname = "kanetem1_jbend";
-        dbuser = "kanetem1_root";
-        dbpass = "Igloo500!";
+        dbname = "jbend";
+        dbuser = "root";
+        dbpass = "admin";
         connection = null;
         queryQueue = new LinkedList<>();
         disconnect=awake=false;

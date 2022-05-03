@@ -84,7 +84,12 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                     //table exists, check structure
                     checkTableStructure();
                 } else if(this.getReturnValue().equals("false")) {
-                    CreateTableQuery q2 = new CreateTableQuery(this.getUtil());
+                    CreateTableQuery q2 = new CreateTableQuery(this.getUtil()) {
+                        public void done() {
+                            System.out.println(tag()+"Created database table: "+getTable());
+                            finishInitPhase();
+                        }
+                    };
                 } else {
                     System.out.println(tag()+"the return value was null.");
                 }
@@ -184,10 +189,15 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         };
     }
 
+    public void start() {
+        System.out.println("CRUD HANDLER RUNNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+
     private void finishInitPhase() {
         Console.output(tag()+" Table initialization complete!");
         Main.launcher.nextStage();
         ready = true;
+        start();
     }
 
     //delete the table lmaooooooo
@@ -225,10 +235,36 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     /// object-specific methods
 
-    // add entry x into database
+    public String[] fieldNames() {
+        if (!ignoreMode()) {
+            return Tools.join("id",Tools.newInstance(Misc.fieldNames_include(classtype,savedFields)));
+        }
+        else
+            return Tools.newInstance(Misc.fieldNames_ignore(classtype,ignoreFields));
+    }
+
+    public String[] fieldValues(CRUDObject x) {
+        if (!ignoreMode())
+            return Tools.join(x.getID(),Tools.string_array(Misc.fieldValues_include(classtype,x,savedFields)));
+        else
+            return Tools.string_array(Misc.fieldValues_include(classtype,x,savedFields)); //TODO
+    }
+
+    public String[] fieldTypes() {
+        return Tools.string_array(Arrays.stream(Tools.newInstance(fieldNames())).map(this::getSQLTypeForField).toArray());
+    }
+
+
+    ///// CRUD METHODS \\\\\
+
+    // add entry x into databas
     public void create(CRUDObject x) {
         if (!ready) {
             Console.output("ERROR: tried to perform CRUD on an object before table "+getTable()+" was initialized.");
+            return;
+        }
+        if (x.getID().equals("null")) {
+            Console.output("ERROR: tried to insert an object with unassigned ID to table "+getTable());
             return;
         }
         //TODO: add option for ignore mode
@@ -237,20 +273,90 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         String[] types = Tools.string_array(Arrays.stream(names).map(this::getSQLTypeForField).toArray());
 
 
-        System.out.println("fields = "+Tools.string(names));
-        System.out.println("types = "+Tools.string(types));
-        System.out.println("values = "+Tools.string(vals));
+        System.out.println("fields = "+Tools.comma_string(names));
+        System.out.println("types = "+Tools.comma_string(types));
+        System.out.println("values = "+Tools.comma_string(vals));
 
 
 
-        /*
-        System.out.println("fields = "+Tools.string(x.fieldNames()));
-        System.out.println("types = "+Tools.string(x.fieldTypes()));
-        System.out.println("values = "+Tools.string(x.fieldValues()));
 
-         */
+        System.out.println("x.fields = "+Tools.string(x.fieldNames()));
+        System.out.println("x.types = "+Tools.string(x.fieldTypes()));
+        System.out.println("x.values = "+Tools.string(x.fieldValues()));
+
+
         new InsertEntryQuery(this,x.fieldNames(),x.fieldTypes(),Tools.string_array(x.fieldValues()));
     }
+
+
+    //save data from database into object X
+    //TODO: fix threading issue
+    //TODO: handle nonexistent queries
+    public void read(CRUDObject X) {
+        Console.output("Reading into X...");
+        new SelectQuery(this,"id","'"+X.getID()+"'") {
+            public void done() {
+                Console.output("finished");
+                for (String f: this.response_getFields()) {
+                   // X.setFieldValue(f,this.responseParamValue(0,f));
+                    if (!f.equals("id"))
+                        Misc.setField(classtype,X,f,this.responseParamValue(0,f));
+                    else
+                        X.setID(this.responseParamValue(0,f));
+                }
+                X.LOAD();
+
+            }
+
+        };
+
+    }
+
+
+    //modify columns in database yeah
+    public void update(CRUDObject X, String[] updateFields, String[] updateValues) {
+
+    }
+
+    //this is prob what we should doo
+    public void update(CRUDObject X) {
+        Console.output("updating object "+X.getID()+"");
+        new UpdateQuery(this,X.fieldNames(),Tools.string_array(X.fieldValues()),Tools.A("id"),Tools.A(X.getID())) {
+            public void done() {
+                Console.output("the update was a success.");
+            }
+        };
+    }
+
+    public void delete(CRUDObject X) {
+        Console.output("deleting record of object "+X.getID()+"...");
+        new DeleteQuery(this,Tools.A("id"),Tools.A(X.getID())) {
+            public void done() {
+                Console.output("the deletion was a success.");
+            }
+        };
+    }
+
+    public void delete(String id) {
+        Console.output("deleting record of object "+id+"...");
+        new DeleteQuery(this,Tools.A("id"),Tools.A(id)) {
+            public void done() {
+                Console.output("the deletion was a success.");
+            }
+        };
+    }
+
+
+    //// END CRUD \\\\\\\
+
+    /*
+
+        select <cols> from <table> where <field> = <value>
+
+        select(cols, field, value)
+
+
+     */
 
 
     // create a new database-sync'd object
