@@ -4,6 +4,7 @@ import com.console.Console;
 import com.util.Tools;
 
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
 public class CRUDObject {
 
@@ -13,12 +14,15 @@ public class CRUDObject {
     private boolean loaded;
     private boolean updated;
 
+    private Function loadFn;
+
 
     public CRUDObject(CRUDHandler H, String id) {
         handler = H;
         this.id = id;
         updated = false;
         loaded = false;
+        loadFn = null;
     //    sync = new String[]{"key"};
     }
 
@@ -27,6 +31,7 @@ public class CRUDObject {
         this.id = "null";
         updated = false;
         loaded = false;
+        loadFn = null;
      //   sync = new String[]{"key"};
     }
 
@@ -82,6 +87,13 @@ public class CRUDObject {
     public void LOAD() {
         System.out.println("Loaded data to object "+id+"");
         loaded=true;
+        load(); //call custom load method lol....... no way
+    }
+
+    public void LOAD(Function f) {
+        System.out.println("Loaded data to object "+id+"");
+        loaded=true;
+        loadFn=f;
         load(); //call custom load method lol....... no way
     }
 

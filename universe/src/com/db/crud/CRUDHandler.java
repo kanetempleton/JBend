@@ -3,7 +3,7 @@ package com.db.crud;
 import com.Main;
 import com.console.Console;
 import com.db.DatabaseUtility;
-import com.db.ServerQuery;
+import com.db.queries.ServerQuery;
 import com.db.queries.*;
 import com.util.Misc;
 import com.util.Tools;
@@ -206,21 +206,6 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         new DeleteTableQuery(this);
     }
 
-    //not too sure about this one!
-    public void load(String identifier) {
-        //select * from table where id='crud_id'
-        //new CRUDObject(this,fields,values)
-        new ServerQuery(this,"SELECT * FROM "+getTable()+" WHERE "+primaryKey+"='"+identifier+"';") {
-            public void done() {
-                if (this.responseSize()==1) { //this should be the case...
-                    CRUDObject x = new CRUDObject((CRUDHandler) this.getUtil());
-                    String[] fields = this.response_getFields();
-                    String[] values = this.response_getValues()[0];
-                    x.setFields(fields,values);
-                }
-            }
-        };
-    }
 
 
     public void serverAction(ServerQuery Q) {
@@ -292,31 +277,72 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
     //save data from database into object X
     //TODO: fix threading issue
     //TODO: handle nonexistent queries
-    public void read(CRUDObject X) {
+    public void read(CRUDObject O) {
         Console.output("Reading into X...");
-        new SelectQuery(this,"id","'"+X.getID()+"'") {
+        new SelectQuery(this,"id","'"+O.getID()+"'") {
             public void done() {
-                Console.output("finished");
                 for (String f: this.response_getFields()) {
+                    if (this.responseSize() == 0) {
+                        System.out.println("LOADING ERROR. No object with the id "+O.getID()+" was found.");
+                        return;
+                    }
                    // X.setFieldValue(f,this.responseParamValue(0,f));
                     if (!f.equals("id"))
-                        Misc.setField(classtype,X,f,this.responseParamValue(0,f));
+                        Misc.setField(classtype,O,f,this.responseParamValue(0,f));
                     else
-                        X.setID(this.responseParamValue(0,f));
+                        O.setID(this.responseParamValue(0,f));
                 }
-                X.LOAD();
+                O.LOAD();
 
             }
 
         };
-
     }
 
+    public void load(String id, CRUDObject O) {
+        new SelectQuery(this,"id","'"+id+"'") {
+            public void done() {
+                for (String f: this.response_getFields()) {
+                    if (this.responseSize() == 0) {
+                        System.out.println("LOADING ERROR. No object with the id "+id+" was found.");
+                        return;
+                    }
+                    // X.setFieldValue(f,this.responseParamValue(0,f));
+                    if (!f.equals("id"))
+                        Misc.setField(classtype,O,f,this.responseParamValue(0,f));
+                    else
+                        O.setID(this.responseParamValue(0,f));
+                }
+                O.LOAD();
 
-    //modify columns in database yeah
-    public void update(CRUDObject X, String[] updateFields, String[] updateValues) {
+            }
 
+        };
     }
+
+    public X load(String id) {
+        X x = null;
+        new SelectQuery(this,"id","'"+id+"'") {
+            public void done() {
+                if (this.responseSize() == 0) {
+                    System.out.println("LOADING ERROR. No object with the id "+id+" was found.");
+                    return;
+                }
+                for (String f: this.response_getFields()) {
+                    // X.setFieldValue(f,this.responseParamValue(0,f));
+                    if (!f.equals("id"))
+                        Misc.setField(classtype,x,f,this.responseParamValue(0,f));
+                    else
+                        x.setID(this.responseParamValue(0,f));
+                }
+                x.LOAD();
+
+            }
+
+        };
+        return x;
+    }
+
 
     //this is prob what we should doo
     public void update(CRUDObject X) {
@@ -463,6 +489,27 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         // - but i think i already roughly handled this...
         String[] names = Misc.fieldNames_ignore(classtype,ignoreFields);//dummy.fieldNames();
         String out = "("+PRIMARY_KEY_STANDARD_NAME+" "+PRIMARY_KEY_STANDARD_TYPE+"";
+        if (!ignore_mode) {
+            for (int i = 0; i < savedFields.length; i++)
+                out += ", " + savedFields[i] + " " + getSQLTypeForField(names[i]) + "";
+        } else {
+            for (int i = 0; i < names.length; i++)
+                out += ", " + names[i] + " " + getSQLTypeForField(names[i]) + "";
+        }
+        out+=")";
+        return out;
+    }
+
+    public String computeTableDeclaration() {
+        // System.out.println("computing table structure!!!");
+        if (classtype==null) {
+            System.out.println(tag()+"class type has not been assigned for this handler.");
+            return "null";
+        }
+        //TODO: add ignore mode option
+        // - but i think i already roughly handled this...
+        String[] names = Misc.fieldNames_ignore(classtype,ignoreFields);//dummy.fieldNames();
+        String out = "("+PRIMARY_KEY_STANDARD_NAME+" "+PRIMARY_KEY_STANDARD_TYPE+" PRIMARY KEY UNIQUE";
         if (!ignore_mode) {
             for (int i = 0; i < savedFields.length; i++)
                 out += ", " + savedFields[i] + " " + getSQLTypeForField(names[i]) + "";

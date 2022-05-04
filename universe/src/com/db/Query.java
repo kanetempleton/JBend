@@ -1,5 +1,6 @@
 package com.db;
 
+import com.db.queries.ServerQuery;
 import com.server.entity.ServerConnection;
 
 public class Query {

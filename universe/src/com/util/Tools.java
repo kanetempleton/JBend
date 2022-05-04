@@ -1,6 +1,8 @@
 package com.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Function;
 
 public class Tools {
 
@@ -262,6 +264,19 @@ public class Tools {
 
     // f: (a,b) -> [ a b ]
     public static Object[] A(Object a, Object b) { return join(a,b); }
+
+
+    public Object[] map(Object[] X, Function F) {
+        return Arrays.stream(X).map(F).toArray();
+    }
+
+    public static Function<Integer, Integer> dbl = x -> x*2;
+    public static Function<String, String> dblS = (
+                s -> s+""+s
+            );
+    public static String doubleString(String x) {
+        return dblS.apply(x);
+    }
 }
 
 

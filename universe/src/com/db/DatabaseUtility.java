@@ -1,6 +1,8 @@
 package com.db;
 
 import java.util.ArrayList;
+
+import com.db.queries.ServerQuery;
 import com.util.html.HTMLGenerator;
 
 public abstract class DatabaseUtility {

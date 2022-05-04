@@ -1,7 +1,6 @@
 package com.db.queries;
 
 import com.db.DatabaseUtility;
-import com.db.ServerQuery;
 import com.util.Tools;
 
 public class DeleteQuery extends ServerQuery {

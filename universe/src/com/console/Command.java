@@ -1,10 +1,8 @@
 package com.console;
 
 import com.Main;
-import com.db.*;
 import com.db.crud.lang.*;
-
-import java.util.Arrays;
+import com.db.queries.ServerQuery;
 
 public abstract class Command {
     String name,info;

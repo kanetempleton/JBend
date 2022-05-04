@@ -1,6 +1,7 @@
 package com.server.login;
 
 import com.db.*;
+import com.db.queries.ServerQuery;
 import com.server.entity.*;
 import com.Main;
 import com.server.web.*;

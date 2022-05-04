@@ -1,6 +1,8 @@
 package com.db;
 
 
+import com.db.queries.ServerQuery;
+
 public class DBFunctions extends DatabaseUtility {
 
 

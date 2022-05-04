@@ -1,9 +1,8 @@
-View the API documentation (in progress): 
-
-http://kanetempleton.space:8069/apiweb/index.html
+JBend - Java Backend
 
 
-
-View the Development Blog for comprehensive list of updates:
-
-http://kanetempleton.space:8069/apiweb/pages/dev/index.html
+Functions:
+- server (TCP)
+- web server (HTTP over TCP)
+- database manager (MySQL)
+- objects with embedded CRUD functionality 
