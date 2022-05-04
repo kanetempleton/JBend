@@ -1,8 +1,8 @@
 package com.util;
 
 import com.Main;
+import com.db.*;
 import com.console.*;
-import com.db.queries.ServerQuery;
 
 public class CareTaker implements Runnable {
 

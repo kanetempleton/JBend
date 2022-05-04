@@ -1,6 +1,10 @@
 package com.db.queries;
 
 import com.db.DatabaseUtility;
+import com.db.ServerQuery;
+import com.util.Tools;
+
+import java.util.ArrayList;
 
 public class ColumnInfoQuery extends ServerQuery {
 

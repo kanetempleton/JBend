@@ -3,7 +3,7 @@ package com.db.crud;
 import com.Main;
 import com.console.Console;
 import com.db.DatabaseUtility;
-import com.db.queries.ServerQuery;
+import com.db.ServerQuery;
 import com.db.queries.*;
 import com.util.Misc;
 import com.util.Tools;

@@ -1,10 +1,10 @@
 package com.server.web;
 
-import com.db.queries.ServerQuery;
 import com.server.entity.*;
 import com.Main;
 import com.console.*;
 import com.server.protocol.HTTP;
+import com.db.*;
 
 public class WebPackets {
 
