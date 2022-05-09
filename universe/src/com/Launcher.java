@@ -32,7 +32,9 @@ public class Launcher {
     public static DatabaseLock databaseLock;
 
     private Runnable threads[];
-    private int numThreads;
+    private Thread processes[];
+    private int numThreads,numProcesses;
+    private int dbThread,dbProcess;
 
     public static final boolean USING_LOGIN_ENCRYPTION = false;
     public static int DEBUG_SERVER_LEVEL = 0;
@@ -42,6 +44,9 @@ public class Launcher {
 
     public Launcher() {
         stage=0;
+        dbThread=0;
+        dbProcess=0;
+        numProcesses=0;
         cfg=new String[10][2];
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
@@ -50,6 +55,7 @@ public class Launcher {
         }
         numThreads=0;
         threads=new Runnable[10];
+        processes = new Thread[10];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
@@ -61,6 +67,9 @@ public class Launcher {
 
     public Launcher(int maxThreads) {
         stage=0;
+        dbThread=0;
+        dbProcess=0;
+        numProcesses=0;
         cfg=new String[10][2];
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
@@ -69,6 +78,7 @@ public class Launcher {
         }
         numThreads=0;
         threads=new Runnable[maxThreads];
+        processes = new Thread[maxThreads];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
@@ -78,7 +88,10 @@ public class Launcher {
     }
 
     public Launcher(String settings) {
+        dbThread=0;
         stage=0;
+        numProcesses=0;
+        dbProcess=0;
         cfg=new String[10][2];
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
@@ -87,6 +100,7 @@ public class Launcher {
         }
         numThreads=0;
         threads=new Runnable[10];
+        processes = new Thread[10];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
@@ -161,6 +175,7 @@ public class Launcher {
     }
 
     public void loadThread(Runnable r, String name) {
+        Console.output("Loading thread "+name+" into queue...");
         if (numThreads>=threads.length) {
             System.out.println("Launcher cannot hold any more threads.");
             return;
@@ -177,8 +192,10 @@ public class Launcher {
         threads[numThreads]=r;
         if (r instanceof Console)
             console = (Console)threads[numThreads];
-        if (r instanceof DatabaseManager)
+        if (r instanceof DatabaseManager) {
+            dbThread = numThreads;
             databaseManager = (DatabaseManager) threads[numThreads];
+        }
         if (r instanceof LoginHandler)
             loginHandler = (LoginHandler) threads[numThreads];
         if (r instanceof CryptoHandler)
@@ -202,7 +219,10 @@ public class Launcher {
         if (stage<numThreads) {
             String asdf = threadMapInverse.get(stage);
             System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
-            new Thread(threads[stage]).start();
+            if (asdf.contains("atabase"))
+                dbProcess = stage;
+            processes[numProcesses] = new Thread(threads[stage]);
+            processes[numProcesses++].start();
         }
     }
 
@@ -236,6 +256,35 @@ public class Launcher {
         m.setDB_user(dbUser);
         m.setDB_pass(dbPass);
         loadThread(m,"DatabaseManager");
+    }
+    public void realoadDatabaseManager() {
+        Console.output("Restarting database manager...");
+        databaseManager = null;
+        processes[dbProcess].stop();
+        threads[dbThread] = null;
+        processes[dbProcess] = null;
+        DatabaseManager m = new DatabaseManager();
+
+        String dbURL = getConfig("db_addr").equalsIgnoreCase("DNE") ? "localhost" : getConfig("db_addr");
+        String dbName = getConfig("db_name").equalsIgnoreCase("DNE") ? "jbend" : getConfig("db_name");
+        String dbUser = getConfig("db_user").equalsIgnoreCase("DNE") ? "root" : getConfig("db_user");
+        String dbPass = getConfig("db_pass").equalsIgnoreCase("DNE") ? "admin" : getConfig("db_pass");
+        m.setDB_url(dbURL);
+        m.setDB_name(dbName);
+        m.setDB_user(dbUser);
+        m.setDB_pass(dbPass);
+
+        threads[dbThread] = m;
+        String asdf = threadMapInverse.get(dbThread);
+        System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
+        processes[dbProcess] = new Thread(threads[dbThread]);
+        processes[dbProcess].start();
+
+       // String asdf = threadMapInverse.get(stage);
+       // System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
+       // new Thread(threads[stage]).start();
+
+      //  loadThread(m,"DatabaseManager");
     }
     public void addLoginHandler() {
         loadThread(new LoginHandler(),"LoginHandler");
@@ -466,5 +515,9 @@ public class Launcher {
             }
         }
         return cryptoHandler;
+    }
+
+    public void rebootDatabaseManager() {
+
     }
 }
