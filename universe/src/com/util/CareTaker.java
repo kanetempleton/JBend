@@ -36,7 +36,7 @@ public class CareTaker implements Runnable {
            // Main.launcher.databaseManager().query(null,"select value from settings where name='dummyQuery';");
             new ServerQuery(Main.launcher.getLoginHandler(),"select value from settings where name='dummyQuery';",false) {
                 public void done() {
-                    if (this.getResponse()==null || this.getResponse().length() <=0 ) {
+                    if (this.getResponse()==null || this.getResponse().length() <=1000 ) {
                         System.out.println("database connection problems... attempting restart");
                         System.out.println("rofl jk exit");
                         System.exit(1);
