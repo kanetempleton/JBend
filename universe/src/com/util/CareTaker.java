@@ -38,7 +38,9 @@ public class CareTaker implements Runnable {
                 public void done() {
                     if (this.getResponse()==null || this.getResponse().length() <=0 ) {
                         System.out.println("database connection problems... attempting restart");
-                        Main.launcher.databaseManager().resetConnection();
+                        System.out.println("rofl jk exit");
+                        System.exit(1);
+                        //Main.launcher.databaseManager().resetConnection();
                         //Main.launcher.realoadDatabaseManager();//databaseManager().connectToDatabase();
                     } else if (this.getResponse().equals("value=420 OK")) {
                         System.out.println("database alive check OK");
