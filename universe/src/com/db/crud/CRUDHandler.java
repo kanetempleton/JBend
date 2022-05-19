@@ -8,8 +8,7 @@ import com.db.queries.*;
 import com.util.Misc;
 import com.util.Tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /* IMPORTANT!!!
  * usage of CRUDHandler classes is implied that it will be running on a Launcher thread
@@ -25,7 +24,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
 
     public static final String PRIMARY_KEY_STANDARD_TYPE = "VARCHAR(63)";
     public static final String PRIMARY_KEY_STANDARD_NAME = "id";
-    public static final String STANDARD_SQL_FIELD_TYPE = "VARCHAR(2048)";
+    public static final String STANDARD_SQL_FIELD_TYPE = "VARCHAR(128)";
     public static final String DEFAULT_NULL_VALUE = "UNASSIGNED";
 
     private String primaryKey; //field name of the identifying column
@@ -34,6 +33,8 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
     private String savedFields[]; //names of instance variables to save to database
     private boolean ignore_mode;
 
+
+    private HashMap<String, String> typeMap;
     private boolean ready;
 
     public CRUDHandler(String t, String p, boolean ig) {
@@ -44,6 +45,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         savedFields = new String[]{PRIMARY_KEY_STANDARD_NAME};
         ignore_mode = ig;
         ready = false;
+        typeMap = new HashMap<>();
     }
 
     public CRUDHandler(String t, String p) {
@@ -54,6 +56,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         savedFields = new String[]{PRIMARY_KEY_STANDARD_NAME};
         ignore_mode = false;
         ready = false;
+        typeMap = new HashMap<>();
     }
 
     /*public String[] syncedFields() {
@@ -65,6 +68,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
     //... yeahhhhh... i totally do -_-
     //fuck this im going home
     public void go() {
+
         initTable();
     }
 
@@ -128,6 +132,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                 String[] colTypes = c.split(";:;");
                 //System.out.println("the resulting structure is:\n"+structure_string(colNames,colTypes,true));
                 String classStructure = computeTableStructure();
+                System.out.println("CLASS STRUCTURE: "+classStructure);
                 String[] class_names = extractNamesFromStructure(classStructure);
                 String[] class_types = extractTypesFromStructure(classStructure);
                 String dbStructure = structure_string(colNames,colTypes,true);
@@ -147,7 +152,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                             Object[] xfields = Tools.subtract(class_names,colNames);
                             String[] queries = new String[xfields.length];
                             for (int i=0; i<xfields.length; i++) {
-                                queries[i] = xfields[i]+" "+STANDARD_SQL_FIELD_TYPE;
+                                queries[i] = xfields[i]+" "+getSQLTypeForField(xfields[i].toString());
                             }
                             System.out.println(tag()+" the differing fields are: "+Tools.string(xfields));
                             new AddColumnQuery(this.getUtil(),queries,"'"+DEFAULT_NULL_VALUE+"'") {
@@ -181,6 +186,17 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
                         }
                         else if (!structures_typesMatch(compare)) {
                             System.out.println("[UNHANDLED] type mismatch... at columns: "+Tools.string(compare[2]));
+                            //compare[2][i] = type mismatch at column i
+                            for (int i=0; i<compare[2].length; i++) {
+                                int index = compare[2][i];
+                                System.out.println("[Field="+colNames[index]+"] DB: "+colTypes[index]+" vs CLASS: "+class_types[index]+"");
+                                System.out.print("Update database? Y/N: ");
+                                Scanner s = new Scanner(System.in);
+                                String resp = s.nextLine();
+                                if (resp.contains("Y") || resp.contains("y")) {
+                                    new AlterColumnTypeQuery(this.getUtil(),colNames[index],class_types[index]);
+                                }
+                            }
                             finishInitPhase();
                         }
                     }
@@ -451,28 +467,72 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         debug("DB[n]: "+Tools.string(n2));
         debug("DB[t]: "+Tools.string(t2));
         if (n1.length!=n2.length)
-            /*Tools.append(out[0],n1.length-n2.length);*/ out[0][0] = n1.length-n2.length;
+            out[0][0] = n1.length - n2.length;
         else if (t1.length!=t2.length)
-           /* Tools.append(out[0],t1.length-t2.length);*/ out[0][0] = t1.length-t2.length;
-           if (out[0][0]!=0)
-               return out;
+            out[0][0] = t1.length - t2.length;
+
+        if (out[0][0] != 0)
+            return out;
+
+
+        int i_n = 0;
+        int j_n = 0;
+        int i_t = 0;
+        int j_t = 0;
+        for (int i=n1.length-1; i>=0; i--) {
+            if (!n1[i].equals(n2[i])) {
+                j_n++;
+            }
+            if (!t1[i].equalsIgnoreCase(t2[i])) {
+                j_t++;
+            }
+        }
+       // System.out.println("found "+j_t+" type mismatches");
+        int[] nmz;
+        int[] tpz;
+        if (j_n > 0)
+            nmz = new int[j_n];
+        else
+            nmz = new int[]{-1};
+
+        if (j_t > 0)
+            tpz = new int[j_t];
+        else
+            tpz = new int[]{-1};
 
         for (int i=n1.length-1; i>=0; i--) {
-            if (!n1[i].equals(n2[i]))
-                /*Tools.append(out[1],i);*/ out[1][0] = i;
-            if (!t1[i].equalsIgnoreCase(t2[i]))
-                /*Tools.append(out[2],i);*/ out[2][0] = i;
+            if (!n1[i].equals(n2[i])) {
+                /*Tools.append(out[1],i);*/
+                //out[1][0] = i;
+              //  System.out.println("name mismatch recorded at "+i);
+                nmz[i_n++] = i;
+            }
+            if (!t1[i].equalsIgnoreCase(t2[i])) {
+                /*Tools.append(out[2],i);*/
+               // out[2][0] = i;
+                tpz[i_t++] = i;
+               // System.out.println("type mismatch recorded at "+i);
+            }
         }
-        //System.out.println("comparison structure:\n"+Tools.string(out));
-        return out;
+        int[][] out2 = new int[][]{{0},nmz,tpz};
+       // out[1] = nmz;
+       // out[2] = tpz;
+       // System.out.println("comparison structure:\n"+Tools.string(out2));
+        return out2;
     }
     private boolean structures_sameSize(int[][] compare) {
+        if (compare.length == 0 || compare[0].length == 0)
+            return false;
         return compare[0][0] == 0;
     }
     private boolean structures_namesMatch(int[][] compare) {
+        if (compare.length < 2 || compare[1].length == 0)
+            return false;
         return compare[1][0] == -1 && compare[1].length==1;
     }
     private boolean structures_typesMatch(int[][] compare) {
+        if (compare.length < 3 || compare[2].length == 0)
+            return false;
         return compare[2][0] == -1 && compare[2].length==1;
     }
     private boolean structures_match(int[][] compare) {
@@ -483,6 +543,7 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
        // System.out.println("computing table structure!!!");
         if (classtype==null) {
             System.out.println(tag()+"class type has not been assigned for this handler.");
+            System.out.println(tag()+"Please assign class when you initialize CRUDHandler<X> object by using: handlerObject.assignClass(X.class);");
             return "null";
         }
         //TODO: add ignore mode option
@@ -522,6 +583,9 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
     }
 
     public String getSQLTypeForField(String field) {
+        if (typeMap.containsKey(field))
+            return typeMap.get(field);
+        System.out.println("assigned standard type to field "+field);
         return STANDARD_SQL_FIELD_TYPE;
     }
 
@@ -539,10 +603,24 @@ public class CRUDHandler<X extends CRUDObject> extends DatabaseUtility implement
         return savedFields;
     }
 
+    public void setTypeForField(String field, String type) {
+
+        if (typeMap.containsKey(field)) {
+            typeMap.replace(field, type);
+            System.out.println("Replaced type to "+type+" for field "+field);
+        }
+        else {
+            typeMap.put(field, type);
+            System.out.println("Set type to "+type+" for field "+field);
+        }
+    }
+
     public void setSaveFields(String[] ig) {
         savedFields = new String[ig.length];
         for (int i=0; i<ig.length; i++) {
             savedFields[i] = ig[i];
+            if (!typeMap.containsKey(ig[i]))
+                typeMap.put(ig[i],STANDARD_SQL_FIELD_TYPE);
         }
     }
 
