@@ -333,7 +333,8 @@ public class HTTP extends Protocol {
             String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
           //  System.out.println("route: "+r);
           //  System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
-            if (relURI.equalsIgnoreCase(r.getURI())) {
+            if (relURI.equalsIgnoreCase(r.getURI()) ||
+                    relURI.equalsIgnoreCase(r.getURI()+"/")) {
                 return r.getResource();
             }
         }
