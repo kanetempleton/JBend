@@ -277,6 +277,19 @@ public class Tools {
     public static String doubleString(String x) {
         return dblS.apply(x);
     }
+
+
+    public static boolean fieldValuePair(String[] fields, String[] values, String f, String v) {
+        if (fields.length!=values.length) {
+            System.out.println("field-value comparison but mismatch in length; returned false by default");
+            return false;
+        }
+        for (int i=0; i<fields.length; i++) {
+            if (fields[i].equals(f) && values[i].equals(v))
+                return true;
+        }
+        return false;
+    }
 }
 
 
