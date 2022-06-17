@@ -28,9 +28,6 @@ public class WebPackets {
         int packetType = -1;
         for (String p: pairs) {
             String[] ab = p.split("=");
-            if (ab.startsWith("end")) {
-                break;
-            }
             if (ab.length!=2) {
                 System.out.println("WEB PACKET PROCESSING ERROR FOR "+p);
                 c.disconnect();
