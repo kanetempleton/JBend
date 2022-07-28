@@ -41,6 +41,7 @@ public class Launcher {
 
     public HashMap<String,Integer> threadMap;
     public HashMap<Integer,String> threadMapInverse;
+    public HashMap<Integer,Server> serverMap;
 
     public Launcher() {
         stage=0;
@@ -62,6 +63,7 @@ public class Launcher {
         threadMapInverse = new HashMap<>();
         loadConfig();
         addConsole();
+        serverMap = new HashMap();
     }
 
 
@@ -85,6 +87,7 @@ public class Launcher {
         threadMapInverse = new HashMap<>();
         loadConfig();
         addConsole();
+        serverMap = new HashMap();
     }
 
     public Launcher(String settings) {
@@ -108,6 +111,7 @@ public class Launcher {
         if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
             loadConfig();
         addConsole();
+        serverMap = new HashMap();
     }
 
 
@@ -190,6 +194,9 @@ public class Launcher {
             threadMapInverse.put(numThreads, name);
         }
         threads[numThreads]=r;
+        if (r instanceof Server) {
+            serverMap.put(((Server)r).getPort(),(Server)r);
+        }
         if (r instanceof Console)
             console = (Console)threads[numThreads];
         if (r instanceof DatabaseManager) {
@@ -213,6 +220,13 @@ public class Launcher {
         }
         System.out.println("[LAUNCHER] Loaded thread["+numThreads+"]:"+threadMapInverse.get(numThreads));
         numThreads++;
+    }
+
+    public Server getServer(int port) {
+        if (serverMap.containsKey(port)) {
+            return serverMap.get(port);
+        }
+        return null;
     }
 
     public void startThreads() {

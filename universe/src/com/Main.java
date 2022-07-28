@@ -20,7 +20,7 @@ public class Main {
         }
 
         launcher = new Launcher();
-        launcher.addStandardThreads();
+        //launcher.addStandardThreads();
         launcher.startThreads();
     }
 
