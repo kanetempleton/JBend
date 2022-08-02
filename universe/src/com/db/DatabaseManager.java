@@ -267,7 +267,7 @@ public class DatabaseManager implements Runnable  {
                 disconnectFromDatabase();
             connection = DriverManager.getConnection(getFullURL(), dbuser, dbpass);
             Console.output("Connection opened successfully!");
-            runStartupDatabaseCheck();
+          //  runStartupDatabaseCheck();
             Main.launcher.nextStage();
         } catch (SQLException e) {
             Console.output("Error connecting to database.");

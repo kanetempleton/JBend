@@ -469,6 +469,7 @@ public class Launcher {
     public void nextStage() {
         stage++;
         //startNextThread();
+        System.out.println("[LAUNCHER] next stage...");
         startThreads();
     }
 
