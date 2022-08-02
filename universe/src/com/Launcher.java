@@ -68,8 +68,8 @@ public class Launcher {
             }
         }
         numThreads=0;
-        threads=new Runnable[10];
-        processes = new Thread[10];
+        threads=new Runnable[100];
+        processes = new Thread[100];
         databaseLock = new DatabaseLock();
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
@@ -282,7 +282,7 @@ public class Launcher {
         if (stage<numThreads) {
             String asdf = threadMapInverse.get(stage);
             System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
-            if (asdf.contains("atabase"))
+            if (asdf.contains("ataserver"))
                 dbProcess = stage;
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
