@@ -659,7 +659,7 @@ public class Launcher {
                 break;
             case "webserver":
 
-                HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-ip")));
+                HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-port")));
                 Server http = new Server(http_protocol,4096);
                 loadThread(http,"HTTP");
                 break;
@@ -707,7 +707,7 @@ public class Launcher {
             case "listen":
                 switch (def) {
                     case "proxy":
-                        System.out.println("[PLACEHOLDER] make proxy server listen on port "+Tools.space(f.args()));
+                     //   System.out.println("[PLACEHOLDER] make proxy server listen on port "+Tools.space(f.args()));
                         if (f.args().length == 1)
                             store("proxy-port",f.args(0));
                         break;
@@ -716,7 +716,7 @@ public class Launcher {
                         addConsole();
                         break;
                     case "webserver":
-                        System.out.println("[PLACEHOLDER] load webserver on port "+Tools.space(f.args()));
+                     //   System.out.println("[PLACEHOLDER] load webserver on port "+Tools.space(f.args()));
 
                         if (f.args().length == 1) {
                             int num_webservers = 0;
@@ -724,7 +724,7 @@ public class Launcher {
                                 num_webservers = Integer.parseInt(get("num-webservers"));
                             }
                             String tag = "webserver";//-"+num_webservers+"";
-                            store(tag+"-port",f.args(0));
+                            store("webserver-port",f.args(0));
                             // store("num-webservers",num_webservers+1); // DO THIS ELSEWHERE
 
                         }
@@ -737,7 +737,7 @@ public class Launcher {
             case "map":
                 switch (def) {
                     case "proxy":
-                        System.out.println("[PLACEHOLDER] define proxy mapping "+Tools.space(f.args()));
+                       // System.out.println("[PLACEHOLDER] define proxy mapping "+Tools.space(f.args()));
                         if (f.args().length == 2)
                             store("proxy-map-"+f.args(0), f.args(1));
                         break;
@@ -749,8 +749,8 @@ public class Launcher {
             case "home":
                 switch (def) {
                     case "webserver":
-                        //System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
-                        store("http-home",f.args(0));
+                        System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        store("webserver-home",f.args(0));
                         break;
                     default:
                         System.out.println("[func] "+function+": execution undefined for "+def+"");
