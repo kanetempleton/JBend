@@ -287,7 +287,7 @@ public class Launcher {
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
-            System.out.println("stage >= numThreads");
+            System.out.println("stage "+stage+" >= numThreads "+numThreads);
         }
     }
 
