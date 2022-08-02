@@ -82,7 +82,7 @@ public class TCPProxy extends Protocol {
          int kount = 0;
          for (int i=0; i<resp.getBytes().length; i++) {
              if (resp.getBytes()[i] == 0) {
-                 System.out.println("zero byte found");
+                 //System.out.println("zero byte found");
                  break;
              } else {
                  kount++;
@@ -96,13 +96,13 @@ public class TCPProxy extends Protocol {
          }
          String outstring = new String(outbyte);
          if (resp!=null) {
-             Console.output("got response of length " + resp.length());
-             Console.output("forwarding response of length " + outstring.length());
-             System.out.print("bytes = [");
-             for (int i=0; i<10; i++) {
-                 System.out.print(resp.getBytes()[outstring.getBytes().length-1-10+i]+", ");
-             }
-             System.out.println("]");
+            // Console.output("got response of length " + resp.length());
+            // Console.output("forwarding response of length " + outstring.length());
+            // System.out.print("bytes = [");
+            // for (int i=0; i<10; i++) {
+            //     System.out.print(resp.getBytes()[outstring.getBytes().length-1-10+i]+", ");
+            // }
+             //System.out.println("]");
              c.sendMessage(outstring);
              c.disconnect();
          }
