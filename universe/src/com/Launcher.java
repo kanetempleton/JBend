@@ -658,7 +658,7 @@ public class Launcher {
 
                 HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-ip")));
                 Server http = new Server(http_protocol,4096);
-                loadThread(http,"Webserver");
+                loadThread(http,"Web Server");
                 break;
             default:
                 break;
