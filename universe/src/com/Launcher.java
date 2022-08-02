@@ -660,7 +660,7 @@ public class Launcher {
                 loadThread(proxserver,"proxy");
                 break;
             case "webserver":
-                System.out.println(get("webserver-home")+" "+Integer.parseInt(get("webserver-port")));
+                System.out.println("[UNLOAD WEBSERVER] "+get("webserver-home")+" "+Integer.parseInt(get("webserver-port")));
                 HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-port")));
                 Server http = new Server(http_protocol,4096);
                 loadThread(http,"HTTP");
