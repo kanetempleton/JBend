@@ -5,8 +5,9 @@ import com.server.protocol.*;
 import com.db.crud.lang.*;
 //import com.game.*;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
+import com.func.*;
+
 
 import com.db.*;
 import com.console.*;
@@ -15,6 +16,7 @@ import java.io.BufferedReader;
 import com.server.login.*;
 import com.util.crypt.*;
 import com.util.*;
+import com.lang.conf.*;
 
 import javax.xml.crypto.Data;
 
@@ -43,12 +45,23 @@ public class Launcher {
     public HashMap<Integer,String> threadMapInverse;
     public HashMap<Integer,Server> serverMap;
 
+    // data
+
+    public HashMap<String,String> lookup;
+
+    // app info
+    public String app_id;
+    private String app_var_def;
+
     public Launcher() {
         stage=0;
         dbThread=0;
         dbProcess=0;
         numProcesses=0;
         cfg=new String[10][2];
+        app_id="undefined";
+        app_var_def="undefined";
+        lookup = new HashMap<>();
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
                 cfg[i][j]="DNE";
@@ -62,7 +75,7 @@ public class Launcher {
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
         loadConfig();
-        addConsole();
+      //  addConsole();
         serverMap = new HashMap();
     }
 
@@ -73,6 +86,9 @@ public class Launcher {
         dbProcess=0;
         numProcesses=0;
         cfg=new String[10][2];
+        app_id="undefined";
+        app_var_def="undefined";
+        lookup = new HashMap<>();
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
                 cfg[i][j]="DNE";
@@ -86,7 +102,7 @@ public class Launcher {
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
         loadConfig();
-        addConsole();
+       // addConsole();
         serverMap = new HashMap();
     }
 
@@ -96,6 +112,9 @@ public class Launcher {
         numProcesses=0;
         dbProcess=0;
         cfg=new String[10][2];
+        app_id="undefined";
+        app_var_def="undefined";
+        lookup = new HashMap<>();
         for (int i=0; i<cfg.length; i++) {
             for (int j=0; j<cfg[i].length; j++) {
                 cfg[i][j]="DNE";
@@ -110,16 +129,38 @@ public class Launcher {
         threadMapInverse = new HashMap<>();
         if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
             loadConfig();
-        addConsole();
+       // addConsole();
         serverMap = new HashMap();
     }
 
 
     public void loadConfig() {
         //Console.output("loading configuration...");
-        String conf = FileManager.fileDataAsString("env.cfg").replace("\n","");
-        int i=0;
-        if (!conf.equalsIgnoreCase("DNE")) {
+        String conf = FileManager.fileDataAsString("config/application.conf").replace("\r","");
+
+        String configtokens = ConfLexer.parse(conf);
+        System.out.println(configtokens);
+
+        System.out.println("lex'd. now doing parsing...");
+
+        String syntaxtokens = ConfParser.parse(configtokens);
+      //  System.out.println(syntaxtokens);
+
+        ArrayList<ConfFunction> program = ConfInterpreter.interpret(syntaxtokens.split("\n"));
+        execute(program);
+
+      //  ConfInterpreter interpreter = new ConfInterpreter(syntaxtokens.split("\n"));
+        //interpreter.interpret();
+       // System.out.println(interpreter.toString());
+      //  interpreter.execute();
+
+
+        //int i=0;
+        /*String lines[] = conf.split("\n");
+        for (String line: lines) {
+            System.out.println("line: "+line);
+        }*/
+       /* if (!conf.equalsIgnoreCase("DNE")) {
             String pairs[] = conf.split("=;");
             for (String p: pairs) {
                 String parts[] = p.split(":=");
@@ -142,7 +183,7 @@ public class Launcher {
             }
         } else {
             System.out.println("can't find config file:"+conf);
-        }
+        }*/
         System.out.println("config loaded.");
     }
 
@@ -179,7 +220,7 @@ public class Launcher {
     }
 
     public void loadThread(Runnable r, String name) {
-        Console.output("Loading thread "+name+" into queue...");
+        System.out.println("Loading thread "+name+" into queue...");
         if (numThreads>=threads.length) {
             System.out.println("Launcher cannot hold any more threads.");
             return;
@@ -534,4 +575,132 @@ public class Launcher {
     public void rebootDatabaseManager() {
 
     }
+
+    // functions from conf file
+
+    public void execute(ArrayList<ConfFunction> A) {
+        for (ConfFunction f: A) {
+            execute(f);
+        }
+    }
+
+    public void execute(ConfFunction f) {
+        if (f instanceof AppDef) {
+            setApplicationName(f.args(0));
+        }
+        else if (f instanceof Def) {
+            loadDef(f.args(0));
+        }
+        else if (f instanceof Fed) {
+            closeDef();
+        }
+        else if (f instanceof Func) {
+            execfunc((Func)f);
+        } else {
+            System.out.println("execution error");
+        }
+    }
+
+    public void setApplicationName(String n) {
+        app_id = n;
+    }
+
+    public void loadDef(String d) {
+        app_var_def=d;
+        store("def",d);
+        System.out.println(""+get("def")+":");
+    }
+
+    public boolean inDef(){return !get("def").equals("DNE");}
+
+    public void closeDef() {
+        System.out.println();
+    }
+
+    public void execfunc(Func f) {
+        String function = f.function_name();
+        if (f.function_name().startsWith("Func_"))
+            function = f.function_name().split("_")[1];
+        if (function.contains("-"))
+            function = function.split("-")[0];
+
+        String def = def();
+        if (def().contains("-"))
+            def=def().split("-")[0];
+
+        switch (function) {
+            case "source":
+                switch (def) {
+                    case "data":
+                        System.out.println("[PLACEHOLDER] load dataserver credentials "+Tools.tokenize(f.args()," "));
+                        break;
+                    case "login":
+                        System.out.println("[PLACEHOLDER] load loginserver credentials "+Tools.tokenize(f.args()," "));
+                        break;
+                    case "dataserver":
+                        System.out.println("[PLACEHOLDER] load database credentials "+Tools.tokenize(f.args()," "));
+                        break;
+                    default:
+                        System.out.println("[func] "+function+": execution undefined for "+def+"");
+                        break;
+                }
+            break;
+            case "listen":
+                switch (def) {
+                    case "proxy":
+                        System.out.println("[PLACEHOLDER] make proxy server listen on port "+Tools.space(f.args()));
+                        break;
+                    case "console":
+                       // System.out.println("[PLACEHOLDER] initialize console here.");
+                        addConsole();
+                        break;
+                    case "webserver":
+                        System.out.println("[PLACEHOLDER] load webserver on port "+Tools.space(f.args()));
+                        break;
+                    default:
+                        System.out.println("[func] "+function+": execution undefined for "+def+"");
+                        break;
+                }
+                break;
+            case "map":
+                switch (def) {
+                    case "proxy":
+                        System.out.println("[PLACEHOLDER] define proxy mapping "+Tools.space(f.args()));
+                        break;
+                    default:
+                        System.out.println("[func] "+function+": execution undefined for "+def+"");
+                        break;
+                }
+                break;
+            case "home":
+                switch (def) {
+                    case "webserver":
+                        System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        break;
+                    default:
+                        System.out.println("[func] "+function+": execution undefined for "+def+"");
+                        break;
+                }
+                break;
+            default:
+                System.out.println("[func] undefined function "+f);
+                break;
+        }
+    }
+
+    public String def(){return get("def");}
+
+    public String getApplicationName(){return app_id;}
+
+    public String get(String key) {
+        if (lookup.containsKey(key))
+            return lookup.get(key);
+        return "DNE";
+    }
+
+    public void store(String key, String value) {
+        lookup.put(key,value);
+      //  System.out.println("stored data entry for "+key);
+    }
+
 }

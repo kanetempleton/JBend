@@ -1,0 +1,31 @@
+line (len=27): app-id: kanetempleton.local
+line (len=0): 
+line (len=5): data:
+line (len=21): source 127.0.0.1 4343
+line (len=0): 
+line (len=6): login:
+line (len=21): source 127.0.0.1 6969
+line (len=0): 
+line (len=8): console:
+line (len=6): listen
+line (len=0): 
+line (len=7): proxy: 
+line (len=9): listen 80
+line (len=10): listen 443
+line (len=19): map 127.0.0.1 42069
+line (len=0): 
+line (len=15): webserver-kane:
+line (len=12): listen 42069
+line (len=15): home /res/front
+line (len=0): 
+line (len=12): loginserver:
+line (len=11): listen 6969
+line (len=0): 
+line (len=11): dataserver:
+line (len=11): listen 4343
+line (len=21): source 127.0.0.1 3303
+line (len=22): credentials root admin
+config loaded.
+[Console] Initialized!
+[CONSOLE:ERROR] problem with something
+[LAUNCHER] Loaded thread[0]:Console

@@ -1,0 +1,21 @@
+Error finding path application.conf
+java.nio.file.NoSuchFileException: application.conf
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:219)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:374)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:425)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3271)
+	at java.base/java.nio.file.Files.readString(Files.java:3349)
+	at java.base/java.nio.file.Files.readString(Files.java:3308)
+	at com.util.FileManager.fileDataAsString(FileManager.java:12)
+	at com.Launcher.loadConfig(Launcher.java:120)
+	at com.Launcher.<init>(Launcher.java:64)
+	at com.Main.main(Main.java:22)
+line: DNE
+can't find config file:DNE
+config loaded.
+[Console] Initialized!
+[CONSOLE:ERROR] problem with something
+[LAUNCHER] Loaded thread[0]:Console

@@ -1,0 +1,5 @@
+APPDEF kanetempleton.local BLANKLINE DEF data FUNC source 127.0.0.1 4343 BLANKLINE DEF login FUNC source 127.0.0.1 6969 BLANKLINE DEF console FUNC listen BLANKLINE DEF proxy FUNC listen 80 FUNC listen 443 FUNC map 127.0.0.1 42069 BLANKLINE DEF webserver-kane FUNC listen 42069 FUNC home /res/front BLANKLINE DEF loginserver FUNC listen 6969 BLANKLINE DEF dataserver FUNC listen 4343 FUNC source 127.0.0.1 3303 FUNC credentials root admin 
+config loaded.
+[Console] Initialized!
+[CONSOLE:ERROR] problem with something
+[LAUNCHER] Loaded thread[0]:Console

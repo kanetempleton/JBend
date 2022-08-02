@@ -1,0 +1,65 @@
+line: app-id: kanetempleton.local
+line: 
+line: data:
+line: source 127.0.0.1 4343
+line: 
+line: login:
+line: source 127.0.0.1 6969
+line: 
+line: console:
+line: listen
+line: 
+line: proxy: 
+line: listen 80
+line: listen 443
+line: map 127.0.0.1 42069
+line: 
+line: webserver-kane:
+line: listen 42069
+line: home /res/front
+line: 
+line: loginserver:
+line: listen 6969
+line: 
+line: dataserver:
+line: listen 4343
+line: source 127.0.0.1 3303
+line: credentials root admin
+misformatted line: app-id: kanetempleton.local
+
+data:
+source 127.0.0.1 4343
+
+login:
+source 127.0.0.1 6969
+
+console:
+listen
+
+proxy: 
+listen 80
+listen 443
+map 127.0.0.1 42069
+
+webserver-kane:
+listen 42069
+home /res/front
+
+loginserver:
+listen 6969
+
+dataserver:
+listen 4343
+source 127.0.0.1 3303
+credentials root admin
+
+
+
+
+
+
+
+config loaded.
+[Console] Initialized!
+[CONSOLE:ERROR] problem with something
+[LAUNCHER] Loaded thread[0]:Console

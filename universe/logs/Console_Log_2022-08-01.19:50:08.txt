@@ -1,0 +1,31 @@
+APPDEF kanetempleton.local BLANKLINE DEF data FUNC source 127.0.0.1 4343 BLANKLINE DEF login FUNC source 127.0.0.1 6969 BLANKLINE DEF console FUNC listen BLANKLINE DEF proxy FUNC listen 80 FUNC listen 443 FUNC map 127.0.0.1 42069 BLANKLINE DEF webserver-kane FUNC listen 42069 FUNC home /res/front BLANKLINE DEF loginserver FUNC listen 6969 BLANKLINE DEF dataserver FUNC listen 4343 FUNC source 127.0.0.1 3303 FUNC credentials root admin BLANKLINE EOF
+lex'd. now doing parsing...
+data:
+[PLACEHOLDER] load dataserver credentials 127.0.0.1 4343
+
+login:
+[PLACEHOLDER] load loginserver credentials 127.0.0.1 6969
+
+console:
+[Console] Initialized!
+Loading thread Console into queue...
+[LAUNCHER] Loaded thread[0]:Console
+
+proxy:
+[PLACEHOLDER] make proxy server listen on port 80
+[PLACEHOLDER] make proxy server listen on port 443
+[PLACEHOLDER] define proxy mapping 127.0.0.1 42069
+
+webserver-kane:
+[PLACEHOLDER] load webserver on port 42069
+[PLACEHOLDER] define http home directory /res/front
+
+loginserver:
+[func] listen: execution undefined for loginserver
+
+dataserver:
+[func] listen: execution undefined for dataserver
+[PLACEHOLDER] load database credentials 127.0.0.1 3303
+[func] undefined function Func_credentials(root admin)
+
+config loaded.

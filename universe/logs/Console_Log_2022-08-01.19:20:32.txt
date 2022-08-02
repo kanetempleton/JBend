@@ -1,0 +1,32 @@
+APPDEF kanetempleton.local BLANKLINE DEF data FUNC source 127.0.0.1 4343 BLANKLINE DEF login FUNC source 127.0.0.1 6969 BLANKLINE DEF console FUNC listen BLANKLINE DEF proxy FUNC listen 80 FUNC listen 443 FUNC map 127.0.0.1 42069 BLANKLINE DEF webserver-kane FUNC listen 42069 FUNC home /res/front BLANKLINE DEF loginserver FUNC listen 6969 BLANKLINE DEF dataserver FUNC listen 4343 FUNC source 127.0.0.1 3303 FUNC credentials root admin BLANKLINE EOF
+lex'd. now doing parsing...
+[DEF data:
+[func-source] execution undefined for data
+/data]
+[DEF login:
+[func-source] execution undefined for login
+/login]
+[DEF console:
+[func] undefined function Func_listen()
+/console]
+[DEF proxy:
+[func] undefined function Func_listen(80)
+[func] undefined function Func_listen(443)
+[func] undefined function Func_map(127.0.0.1 42069)
+/proxy]
+[DEF webserver-kane:
+[func] undefined function Func_listen(42069)
+[func] undefined function Func_home(/res/front)
+/webserver-kane]
+[DEF loginserver:
+[func] undefined function Func_listen(6969)
+/loginserver]
+[DEF dataserver:
+[func] undefined function Func_listen(4343)
+[func-source] execution undefined for dataserver
+[func] undefined function Func_credentials(root admin)
+/dataserver]
+config loaded.
+[Console] Initialized!
+[CONSOLE:ERROR] problem with something
+[LAUNCHER] Loaded thread[0]:Console

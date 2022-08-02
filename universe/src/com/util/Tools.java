@@ -74,8 +74,20 @@ public class Tools {
         }
     }
 
+
     public static void append(Object[][] A, Object B, int row) {
         append(A[row],B);
+    }
+
+    public static String tokenize(String[] X, String token) {
+        String out = "";
+        for (int i=0; i<X.length; i++) {
+            if (i==X.length-1)
+                out+=X[i];
+            else
+                out+=X[i]+""+token;
+        }
+        return out;
     }
 
 
@@ -142,6 +154,10 @@ public class Tools {
             out[i] = ""+A[i].toString();
         }
         return out;
+    }
+
+    public static String space(String[] A) {
+        return tokenize(A," ");
     }
 
     public static String comma_string(Object[] A) {
@@ -255,6 +271,15 @@ public class Tools {
     public static Object[] A(Object x) {
         Object[] out = new Object[1];
         out[0]=x;
+        return out;
+    }
+
+    public static String[] substring_array(String[] X, int start, int end) {
+        String[] out = new String[end-start+1];
+        int j=0;
+        for (int i=start; i<=end; i++) {
+            out[j++]=X[i];
+        }
         return out;
     }
 
