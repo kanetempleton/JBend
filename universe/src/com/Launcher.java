@@ -655,6 +655,10 @@ public class Launcher {
                 loadThread(proxserver,"proxy");
                 break;
             case "webserver":
+
+                HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-ip")));
+                Server http = new Server(http_protocol,4096);
+                loadThread(http,"Webserver");
                 break;
             default:
                 break;
@@ -716,7 +720,7 @@ public class Launcher {
                             if (!get("num-webservers").equals("DNE")) {
                                 num_webservers = Integer.parseInt(get("num-webservers"));
                             }
-                            String tag = "webserver-"+num_webservers+"";
+                            String tag = "webserver";//-"+num_webservers+"";
                             store(tag+"-port",f.args(0));
                             // store("num-webservers",num_webservers+1); // DO THIS ELSEWHERE
 
@@ -742,7 +746,8 @@ public class Launcher {
             case "home":
                 switch (def) {
                     case "webserver":
-                        System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        //System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        store("http-home",f.args(0));
                         break;
                     default:
                         System.out.println("[func] "+function+": execution undefined for "+def+"");
