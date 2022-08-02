@@ -300,16 +300,20 @@ public class Launcher {
         }
     }
     public void addDatabaseManager() {
+        addDatabaseManager("localhost","jbend","root","admin");
+    }
+    public void addDatabaseManager(String addr, String name, String user, String pass) {
         DatabaseManager m = new DatabaseManager();
 
+        //outdated:
         String dbURL = getConfig("db_addr").equalsIgnoreCase("DNE") ? "localhost" : getConfig("db_addr");
         String dbName = getConfig("db_name").equalsIgnoreCase("DNE") ? "jbend" : getConfig("db_name");
         String dbUser = getConfig("db_user").equalsIgnoreCase("DNE") ? "root" : getConfig("db_user");
         String dbPass = getConfig("db_pass").equalsIgnoreCase("DNE") ? "admin" : getConfig("db_pass");
-        m.setDB_url(dbURL);
-        m.setDB_name(dbName);
-        m.setDB_user(dbUser);
-        m.setDB_pass(dbPass);
+        m.setDB_url(addr);
+        m.setDB_name(name);
+        m.setDB_user(user);
+        m.setDB_pass(pass);
         loadThread(m,"DatabaseManager");
     }
     public void realoadDatabaseManager() {
@@ -365,6 +369,7 @@ public class Launcher {
     }
 
 
+    //pretty sure this method is outdated and unused...
     public void launch() {
         Scanner s = new Scanner(System.in);
         Protocol httpProtocol, wssProtocol, tcpProtocol;
@@ -614,6 +619,21 @@ public class Launcher {
     public boolean inDef(){return !get("def").equals("DNE");}
 
     public void closeDef() {
+
+        String def = get("def");
+        switch (def) {
+            case "dataserver":
+                if (!is("database-url","DNE") && !is("database-name","DNE")
+                    && !is("database-cred-user","DNE") && !is("database-cred-pass","DNE")) {
+                    addDatabaseManager(get("database-url"),get("database-name"),get("database-cred-user"),get("database-cred-pass"));
+                } else {
+                    System.out.println("database config incomplete, using defaults...");
+                    addDatabaseManager();
+                }
+                break;
+            default:
+                break;
+        }
         System.out.println();
     }
 
@@ -638,7 +658,14 @@ public class Launcher {
                         System.out.println("[PLACEHOLDER] load loginserver credentials "+Tools.tokenize(f.args()," "));
                         break;
                     case "dataserver":
-                        System.out.println("[PLACEHOLDER] load database credentials "+Tools.tokenize(f.args()," "));
+                       // System.out.println("[PLACEHOLDER] load database credentials "+Tools.tokenize(f.args()," "));
+                      //  addDatabaseManager();
+                        if (f.args().length<2) {
+                            System.out.println("dataserver.source: misformat");
+                            break;
+                        }
+                        store("database-url",f.args(0));
+                        store("database-name",f.args(1));
                         break;
                     default:
                         System.out.println("[func] "+function+": execution undefined for "+def+"");
@@ -682,6 +709,28 @@ public class Launcher {
                         break;
                 }
                 break;
+            case "credentials":
+                switch (def) {
+                    case "dataserver":
+                     //   System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        if (f.args().length<2) {
+                            System.out.println("dataserver.credentials: misformat");
+                            break;
+                        }
+                        if (f.args().length==2) {
+                            store("database-cred-user", f.args(0));
+                            store("database-cred-pass", f.args(1));
+                        } else if (f.args().length==3) {
+                            String encrypt_method = f.args(2);
+                            System.out.println("[func] "+function+": encrypt mode "+encrypt_method+" not supported yet");
+                            store("database-encrypt-pass",f.args(2));
+                        }
+                        break;
+                    default:
+                        System.out.println("[func] "+function+": execution undefined for "+def+"");
+                        break;
+                }
+                break;
             default:
                 System.out.println("[func] undefined function "+f);
                 break;
@@ -701,6 +750,10 @@ public class Launcher {
     public void store(String key, String value) {
         lookup.put(key,value);
       //  System.out.println("stored data entry for "+key);
+    }
+
+    public boolean is(String key,String x) {
+        return get(key).equals(x);
     }
 
 }
