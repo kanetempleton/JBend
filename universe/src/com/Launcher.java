@@ -286,6 +286,8 @@ public class Launcher {
                 dbProcess = stage;
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
+        } else {
+            System.out.println("stage >= numThreads");
         }
     }
 
@@ -659,7 +661,7 @@ public class Launcher {
 
                 HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-ip")));
                 Server http = new Server(http_protocol,4096);
-                loadThread(http,"Web Server");
+                loadThread(http,"HTTP");
                 break;
             default:
                 break;
