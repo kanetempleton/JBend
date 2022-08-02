@@ -267,7 +267,7 @@ public class Launcher {
             if (s.getAPI().getName().equals("WebSocket"))
                 websocketserver = (Server) threads[numThreads];
         }
-        System.out.println("[LAUNCHER] Loaded thread["+numThreads+"]:"+threadMapInverse.get(numThreads));
+        System.out.println("[LAUNCHER] Loaded thread["+numThreads+"] "+name+":"+threadMapInverse.get(numThreads));
         numThreads++;
     }
 
