@@ -279,17 +279,17 @@ public class Launcher {
     }
 
     public void startThreads() {
-        if (stage<numThreads) {
+        if (stage<50) {
             String asdf = threadMapInverse.get(stage);
             System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
-            if (asdf.contains("ataserver"))
+            if (asdf.contains("atabase"))
                 dbProcess = stage;
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
             System.out.println("stage "+stage+" >= numThreads "+numThreads);
-            processes[numProcesses] = new Thread(threads[stage]);
-            processes[numProcesses++].start();
+          //  processes[numProcesses] = new Thread(threads[stage]);
+            //processes[numProcesses++].start();
         }
     }
 
