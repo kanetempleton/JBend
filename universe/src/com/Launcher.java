@@ -279,7 +279,7 @@ public class Launcher {
     }
 
     public void startThreads() {
-        if (stage<50) {
+        if (stage<numThreads) {
             String asdf = threadMapInverse.get(stage);
             System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
             if (asdf.contains("atabase"))
