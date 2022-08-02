@@ -1,7 +1,6 @@
 package com.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.function.Function;
 
 public class Tools {
@@ -294,6 +293,38 @@ public class Tools {
     public Object[] map(Object[] X, Function F) {
         return Arrays.stream(X).map(F).toArray();
     }
+
+    public static Function<String[],String> chop = (
+            x -> x[0].startsWith(x[1]) ? x[0].substring(x[1].length(),x[0].length()) : ""
+    );
+    public static Function<String[],String> chop_matches_only = (
+            x -> x[0].startsWith(x[1]) ? x[0].substring(x[1].length(),x[0].length()) : x[0]
+    );
+    public static void testchop() {
+        HashMap<String,String>test=new HashMap<>();
+        test.put("a","1");
+        test.put("b","2");
+        test.put("c-config","a");
+        test.put("c-data","b");
+        String out = "";
+        System.out.println("chopped keys = "+string(filter_keys_prefix(test,"c-")));
+
+    }
+
+    public static String[] filter_keys_prefix(HashMap<String, String> X, String start) {
+        String[] keys = new String[X.keySet().size()];
+        int i=0;
+        for (String k : X.keySet()) {
+        //    System.out.println("keyset element: {"+k+"}");
+            String ck = chop.apply(new String[]{k,start});
+            if (ck.length()>0) {
+                keys[i++] = ck;
+        //        System.out.println("madekey {"+ck+"}");
+            }
+        }
+        return substring_array(keys,0,i-1);
+    }
+
 
     public static Function<Integer, Integer> dbl = x -> x*2;
     public static Function<String, String> dblS = (

@@ -28,6 +28,8 @@ public class ConfLexer {
      //   ArrayList<ConfToken> tokens = new ArrayList<>();
         boolean firstline=true;
         for (int i=0; i<lines.length; i++) {
+            if (lines[i].startsWith("#"))
+                continue;
            // System.out.println("line (len="+lines[i].length()+"): "+lines[i]);
             if (firstline) {
                 if (lines[i].startsWith("app-id:")) {

@@ -74,9 +74,10 @@ public class Launcher {
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
-        loadConfig();
+       // loadConfig();
       //  addConsole();
         serverMap = new HashMap();
+        loadConfig();
     }
 
 
@@ -101,9 +102,10 @@ public class Launcher {
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
-        loadConfig();
+       // loadConfig();
        // addConsole();
         serverMap = new HashMap();
+        loadConfig();
     }
 
     public Launcher(String settings) {
@@ -131,6 +133,7 @@ public class Launcher {
             loadConfig();
        // addConsole();
         serverMap = new HashMap();
+        loadConfig();
     }
 
 
@@ -236,6 +239,11 @@ public class Launcher {
         }
         threads[numThreads]=r;
         if (r instanceof Server) {
+            if (serverMap==null)
+                System.out.println("servermap");
+            if (r==null)
+                System.out.println("r");
+           // System.out.println("servermap");
             serverMap.put(((Server)r).getPort(),(Server)r);
         }
         if (r instanceof Console)
@@ -631,6 +639,23 @@ public class Launcher {
                     addDatabaseManager();
                 }
                 break;
+            case "proxy":
+                int pport = Integer.parseInt(get("proxy-port"));
+                TCPProxy prox = new TCPProxy(pport);
+
+
+                String[] proxymaps = getKeys_byPrefix("proxy-map-");
+                for (String ipkey : proxymaps) {
+                    String ip = ipkey.split("-map-")[1];
+                    String ipval = get(ipkey);
+                    prox.mapPort(ip,Integer.parseInt(ipval));
+                    System.out.println("mapping: "+ip+" -> "+ipval);
+                }
+                Server proxserver = new Server(prox,4096);
+                loadThread(proxserver,"proxy");
+                break;
+            case "webserver":
+                break;
             default:
                 break;
         }
@@ -676,6 +701,8 @@ public class Launcher {
                 switch (def) {
                     case "proxy":
                         System.out.println("[PLACEHOLDER] make proxy server listen on port "+Tools.space(f.args()));
+                        if (f.args().length == 1)
+                            store("proxy-port",f.args(0));
                         break;
                     case "console":
                        // System.out.println("[PLACEHOLDER] initialize console here.");
@@ -683,6 +710,17 @@ public class Launcher {
                         break;
                     case "webserver":
                         System.out.println("[PLACEHOLDER] load webserver on port "+Tools.space(f.args()));
+
+                        if (f.args().length == 1) {
+                            int num_webservers = 0;
+                            if (!get("num-webservers").equals("DNE")) {
+                                num_webservers = Integer.parseInt(get("num-webservers"));
+                            }
+                            String tag = "webserver-"+num_webservers+"";
+                            store(tag+"-port",f.args(0));
+                            // store("num-webservers",num_webservers+1); // DO THIS ELSEWHERE
+
+                        }
                         break;
                     default:
                         System.out.println("[func] "+function+": execution undefined for "+def+"");
@@ -693,6 +731,8 @@ public class Launcher {
                 switch (def) {
                     case "proxy":
                         System.out.println("[PLACEHOLDER] define proxy mapping "+Tools.space(f.args()));
+                        if (f.args().length == 2)
+                            store("proxy-map-"+f.args(0), f.args(1));
                         break;
                     default:
                         System.out.println("[func] "+function+": execution undefined for "+def+"");
@@ -755,5 +795,20 @@ public class Launcher {
     public boolean is(String key,String x) {
         return get(key).equals(x);
     }
+
+    public String[] getKeys(String keyspec) {
+        String out = "";
+        return null;
+    }
+
+    public String[] getKeys_byPrefix(String p) {
+        String[] k = new String[Tools.filter_keys_prefix(lookup,p).length];
+        int i=0;
+        for (String newkey : Tools.filter_keys_prefix(lookup,p)) {
+            k[i++] = p+""+newkey;
+        }
+        return k;
+    }
+
 
 }
