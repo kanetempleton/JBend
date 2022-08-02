@@ -23,6 +23,8 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.console.*;
+
 
 public class Client implements Runnable {
 
@@ -71,7 +73,7 @@ public class Client implements Runnable {
         ByteBuffer readBytes = ByteBuffer.allocate(mesg.getBytes().length*10);
 
         try {
-            System.out.println("Attempting to connect to "+ServerIP+":"+ServerPort);
+            Console.output("Attempting to connect to "+ServerIP+":"+ServerPort);
             socketChannel = SocketChannel.open();
             socketChannel.connect(new InetSocketAddress(ServerIP,ServerPort));
             socketChannel.configureBlocking(false);
@@ -79,7 +81,7 @@ public class Client implements Runnable {
             selector = Selector.open();
             socketChannel.register(selector, SelectionKey.OP_READ);
 
-            System.out.println("Successfully connected to "+ServerIP+":"+ServerPort);
+            Console.output("Successfully connected to "+ServerIP+":"+ServerPort);
             connected=true;
            // outputHandler = new OutputHandler(socketChannel);
 
@@ -141,7 +143,7 @@ public class Client implements Runnable {
                             sc.read(readBytes);
                             readBytes.flip();
                             String data = new String( readBytes.array(), Charset.forName("UTF-8") );
-                            System.out.println("Client Received data: "+data.length());
+                     //       System.out.println("Client Received data: "+data.length());
                             responseData=data;
                             closeConnection=true;
 
@@ -252,16 +254,16 @@ public class Client implements Runnable {
     //    ByteBuffer bytebuf = ByteBuffer.wrap(mes.getBytes());
      //   s.getChannel().write(bytebuf);
         ByteBuffer bytebuf = ByteBuffer.wrap(fin);
-        System.out.println("Sending to "+ServerIP+":"+ServerPort+": size="+fin.length+"\nbytes=[");
-        for (int i=0; i<10; i++) {
-            System.out.print(fin[i]+", ");
-        }
-        System.out.print("... ");
+        //System.out.println("Sending to "+ServerIP+":"+ServerPort+": size="+fin.length+"\nbytes=[");
+       // for (int i=0; i<10; i++) {
+           // System.out.print(fin[i]+", ");
+      //  }
+        /*System.out.print("... ");
         for (int i=0; i<9; i++) {
             System.out.print(fin[fin.length-1-9+i]+", ");
         }
         System.out.println(fin[fin.length-1]+" ]");
-
+*/
         try {
             socketChannel.write(bytebuf);
         } catch (IOException ex) {
