@@ -288,6 +288,9 @@ public class Launcher {
             processes[numProcesses++].start();
         } else {
             System.out.println("stage "+stage+" >= numThreads "+numThreads);
+            for (String name : threadMap.keySet()) {
+                System.out.println("Thread["+threads[threadMap.get(name)]+"]="+name);
+            }
           //  processes[numProcesses] = new Thread(threads[stage]);
             //processes[numProcesses++].start();
         }
