@@ -3,26 +3,20 @@ package com;
 import com.server.Server;
 import com.server.protocol.*;
 import com.db.crud.lang.*;
-//import com.game.*;
-
 import java.util.*;
 import com.func.*;
-
-
 import com.db.*;
 import com.console.*;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import java.io.*;
 import com.server.login.*;
 import com.util.crypt.*;
 import com.util.*;
 import com.lang.conf.*;
-
 import javax.xml.crypto.Data;
 
 public class Launcher {
 
-    public static final String JBEND_VERSION = "1.5";
+    public static final String JBEND_VERSION = "1.5.1";
 
 
     private Server server,websocketserver,webserver;
@@ -141,7 +135,7 @@ public class Launcher {
 
 
     public void start() {
-        System.out.println("Welcome. You are using JBend version "+fetchVersion("config/version.conf"));
+        System.out.println("Welcome. You are using JBend version "+JBEND_VERSION);//fetchVersion("config/version.conf"));
 
         initialDataStores();
         loadConfig("config/application.conf");
@@ -149,7 +143,7 @@ public class Launcher {
         loadThread(new Console(br),"Console");
     }
 
-    public String fetchVersion(String versionfile) {
+    public String fetchVersion(String versionfile, boolean onServer) {
         String v = FileManager.fileDataAsString(versionfile).replace("\r","").replace("\n","");
         String n[] = v.split(".");
         if (n.length==3) {
