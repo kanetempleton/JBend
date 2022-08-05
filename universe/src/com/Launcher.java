@@ -132,7 +132,7 @@ public class Launcher implements Runnable {
 
         String configtokens = ConfLexer.parse(conf);
         String syntaxtokens = ConfParser.parse(configtokens);
-        System.out.println("parsed config: "+filename);
+        //System.out.println("parsed config: "+filename);
 
         ArrayList<ConfFunction> program = ConfInterpreter.interpret(syntaxtokens.split("\n"));
         execute(program);
@@ -396,7 +396,7 @@ public class Launcher implements Runnable {
                     String ip = ipkey.split("-map-")[1];
                     String ipval = get(ipkey);
                     prox.mapPort(ip,Integer.parseInt(ipval));
-                    System.out.println("mapping: "+ip+" -> "+ipval);
+                    //System.out.println("mapping: "+ip+" -> "+ipval);
                 }
                 Server proxserver = new Server(prox,4096);
                 loadThread(proxserver,"proxy");

@@ -24,6 +24,7 @@ public class TCPProxy extends Protocol {
     private static final String WELCOME_GREETING = "supnoob";
 
     public void mapPort(String host, int port) {
+        Console.output("Added mapping for "+host+" to "+port);
         portMap.put(host,port);
     }
 
