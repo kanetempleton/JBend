@@ -2,6 +2,8 @@ package com.util;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class FileManager {
 
@@ -16,5 +18,18 @@ public class FileManager {
             e.printStackTrace();
         }
         return "DNE";
+    }
+
+    public static void writeFile(String file, String text) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(text);
+            writer.close();
+            System.out.println("Wrote to file: "+file);
+        }
+        catch (Exception ex) {
+            System.out.println("Error writing file: "+file);
+            ex.printStackTrace();
+        }
     }
 }

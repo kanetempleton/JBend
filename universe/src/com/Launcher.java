@@ -15,9 +15,9 @@ import com.util.*;
 import com.lang.conf.*;
 import javax.xml.crypto.Data;
 
-public class Launcher {
+public class Launcher implements Runnable {
 
-    public static final String JBEND_VERSION = "1.5.2";
+    public static final String JBEND_VERSION = "1.5.8";
 
 
     private Server server,websocketserver,webserver;
@@ -29,6 +29,7 @@ public class Launcher {
     private String cfg[][];
     public static int stage;
     public static DatabaseLock databaseLock;
+    private boolean running;
 
     private Runnable threads[];
     private Thread processes[];
@@ -71,96 +72,30 @@ public class Launcher {
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
-       // loadConfig();
-      //  addConsole();
         serverMap = new HashMap();
-        start();
+        startLauncher();
     }
 
-
-    public Launcher(int maxThreads) {
-        stage=0;
-        dbThread=0;
-        dbProcess=0;
-        numProcesses=0;
-        cfg=new String[10][2];
-        app_id="undefined";
-        app_var_def="undefined";
-        lookup = new HashMap<>();
-        for (int i=0; i<cfg.length; i++) {
-            for (int j=0; j<cfg[i].length; j++) {
-                cfg[i][j]="DNE";
-            }
-        }
-        numThreads=0;
-        threads=new Runnable[maxThreads];
-        processes = new Thread[maxThreads];
-        databaseLock = new DatabaseLock();
-        cryptoHandler = new CryptoHandler();
-        threadMap = new HashMap<>();
-        threadMapInverse = new HashMap<>();
-       // loadConfig();
-       // addConsole();
-        serverMap = new HashMap();
-        start();
-    }
-
-    public Launcher(String settings) {
-        dbThread=0;
-        stage=0;
-        numProcesses=0;
-        dbProcess=0;
-        cfg=new String[10][2];
-        app_id="undefined";
-        app_var_def="undefined";
-        lookup = new HashMap<>();
-        for (int i=0; i<cfg.length; i++) {
-            for (int j=0; j<cfg[i].length; j++) {
-                cfg[i][j]="DNE";
-            }
-        }
-        numThreads=0;
-        threads=new Runnable[10];
-        processes = new Thread[10];
-        databaseLock = new DatabaseLock();
-        cryptoHandler = new CryptoHandler();
-        threadMap = new HashMap<>();
-        threadMapInverse = new HashMap<>();
-       // if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
-       //     loadConfig();
-       // addConsole();
-        serverMap = new HashMap();
-        start();
+    public void run() {
+        startLauncher();
     }
 
 
 
-    public void start() {
-        System.out.println("Welcome. You are using JBend version "+JBEND_VERSION);//fetchVersion("config/version.conf"));
+    public void startLauncher() {
+        running=true;
+        System.out.println("Welcome. You are using JBend version "+fetchVersion("config/version.conf"));
 
-        initialDataStores();
-        loadConfig("config/application.conf");
+        //start the console
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         loadThread(new Console(br),"Console");
-    }
+        //startThreads();
+        //nextStage();
+        //configuration
+        initialDataStores();
+        loadConfig("config/application.conf");
+        startThreads();
 
-    public String fetchVersion(String versionfile, boolean onServer) {
-        String v = FileManager.fileDataAsString(versionfile).replace("\r","").replace("\n","");
-        String n[] = v.split(".");
-        if (n.length==3) {
-            int x = Integer.parseInt(n[0]);
-            int y = Integer.parseInt(n[1]);
-            int z = Integer.parseInt(n[3]);
-            String vur = x+"."+y+"."+(z+1);
-            try {
-                Runtime.getRuntime().exec("echo " + vur + " > " + versionfile);
-                return vur;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return vur;
-            }
-        }
-        return null;
     }
 
 
@@ -169,57 +104,25 @@ public class Launcher {
     }
 
 
+    /* loadConfig
+        path to app config file; default is config/application.conf
+
+     */
     public void loadConfig(String filename) {
-        //Console.output("loading configuration...");
         String conf = FileManager.fileDataAsString(filename).replace("\r","");
 
         String configtokens = ConfLexer.parse(conf);
-        System.out.println(configtokens);
-       // System.out.println("lex'd. now doing parsing...");
-
         String syntaxtokens = ConfParser.parse(configtokens);
-        System.out.println("Loaded application config: "+syntaxtokens);
+        System.out.println("parsed config: "+filename);
 
         ArrayList<ConfFunction> program = ConfInterpreter.interpret(syntaxtokens.split("\n"));
         execute(program);
-        System.out.println("config loaded.");
+      //  System.out.println("config params loaded.");
     }
 
-
-    public String getConfig(String s) {
-        if (cfg==null)
-            return "DNE";
-        for (String[] c: cfg) {
-            if (c==null || c[0]==null || c[1]==null)
-                return "DNE";
-            if (c[0].equals(s))
-                return c[1];
-        }
-        return "DNE";
-    }
-
-    public Server getHTTPServer(int port) {
-        for (int i=0; i<numThreads; i++) {
-            Runnable r = threads[i];
-            if (threads[i]==null)
-                continue;
-            if (r instanceof Server) {
-                if (((Server)r).getAPI().getName().equals("HTTP")){
-                    if (((Server) r).getPort() == port)
-                        return (Server) r;
-                }
-            }
-        }
-        return null;
-    }
-
-    //TODO: bounds check
-    public Runnable getThread(String name) {
-        return threads[threadMap.get(name)];
-    }
 
     public void loadThread(Runnable r, String name) {
-        System.out.println("Loading thread "+name+" into queue...");
+       // System.out.println("Loading thread "+name+" into queue...");
         if (numThreads>=threads.length) {
             System.out.println("Launcher cannot hold any more threads.");
             return;
@@ -263,16 +166,17 @@ public class Launcher {
             if (s.getAPI().getName().equals("WebSocket"))
                 websocketserver = (Server) threads[numThreads];
         }
-        System.out.println("[LAUNCHER] Loaded thread["+numThreads+"] "+name+":"+threadMapInverse.get(numThreads));
+        System.out.println("[LAUNCHER] Loaded thread["+numThreads+"] "+name);
         numThreads++;
     }
 
-    public Server getServer(int port) {
-        if (serverMap.containsKey(port)) {
-            return serverMap.get(port);
-        }
-        return null;
+    public void nextStage() {
+        stage++;
+        //startNextThread();
+        System.out.println("[LAUNCHER] next stage...");
+        startThreads();
     }
+
 
     public void startThreads() {
         if (stage<numThreads) {
@@ -283,27 +187,28 @@ public class Launcher {
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
-            System.out.println("stage "+stage+" >= numThreads "+numThreads);
-            for (String name : threadMap.keySet()) {
-                System.out.println("Thread["+threads[threadMap.get(name)]+"]="+name);
+            System.out.println("Successfully started "+numThreads+" Launcher threads:");
+            for (int i=0; i<numThreads; i++) {
+                System.out.println("Thread["+i+"]="+threadMapInverse.get(i));
             }
-          //  processes[numProcesses] = new Thread(threads[stage]);
-            //processes[numProcesses++].start();
+            System.out.println("> Type 'help' for list of Console commands");
         }
     }
 
-    public void addStandardThreads() {
-        //addConsole();
-        addDatabaseManager();
-        addLoginHandler();
-        addCareTaker(1800000);
-        addTCPServer(43594);
-        addHTTPServer(8069);
-        addWebSocketServer(42069);
-        //addCareTaker(1800000);
+
+
+    //TODO: bounds check
+    public Runnable getThread(String name) {
+        return threads[threadMap.get(name)];
     }
 
 
+    public Server getServer(int port) {
+        if (serverMap.containsKey(port)) {
+            return serverMap.get(port);
+        }
+        return null;
+    }
     public void addConsole() {
         if (console==null) {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -327,192 +232,7 @@ public class Launcher {
         m.setDB_pass(pass);
         loadThread(m,"DatabaseManager");
     }
-    public void realoadDatabaseManager() {
-        Console.output("Restarting database manager...");
-        databaseManager = null;
-        processes[dbProcess].stop();
-        threads[dbThread] = null;
-        processes[dbProcess] = null;
-        DatabaseManager m = new DatabaseManager();
 
-        String dbURL = getConfig("db_addr").equalsIgnoreCase("DNE") ? "localhost" : getConfig("db_addr");
-        String dbName = getConfig("db_name").equalsIgnoreCase("DNE") ? "jbend" : getConfig("db_name");
-        String dbUser = getConfig("db_user").equalsIgnoreCase("DNE") ? "root" : getConfig("db_user");
-        String dbPass = getConfig("db_pass").equalsIgnoreCase("DNE") ? "admin" : getConfig("db_pass");
-        m.setDB_url(dbURL);
-        m.setDB_name(dbName);
-        m.setDB_user(dbUser);
-        m.setDB_pass(dbPass);
-
-        threads[dbThread] = m;
-        String asdf = threadMapInverse.get(dbThread);
-        System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
-        processes[dbProcess] = new Thread(threads[dbThread]);
-        processes[dbProcess].start();
-
-       // String asdf = threadMapInverse.get(stage);
-       // System.out.println("[LAUNCHER] Starting thread["+stage+"]:"+asdf+"...");
-       // new Thread(threads[stage]).start();
-
-      //  loadThread(m,"DatabaseManager");
-    }
-    public void addLoginHandler() {
-        loadThread(new LoginHandler(),"LoginHandler");
-    }
-    public void addCareTaker(long delay) {
-        loadThread(new CareTaker(delay),"CareTaker");
-    }
-    public void addTCPServer(int port) {
-        TCP tcp = new TCP(port);
-        loadThread(new Server(tcp),"TCP");
-    }
-    public void addHTTPServer(int port) {
-        HTTP http = new HTTP(HTTP.DEFAULT_HOME_DIRECTORY,port);
-        loadThread(new Server(http),"HTTP");
-    }
-    public void addHTTPServer(String homeDir, int port) {
-        HTTP http = new HTTP(homeDir,port);
-        loadThread(new Server(http),"HTTP");
-    }
-    public void addWebSocketServer(int port) {
-        WebSocket ws = new WebSocket(port);
-        loadThread(new Server(ws),"WebSocket");
-    }
-
-
-    //pretty sure this method is outdated and unused...
-    public void launch() {
-        Scanner s = new Scanner(System.in);
-        Protocol httpProtocol, wssProtocol, tcpProtocol;
-        httpProtocol = new HTTP(HTTP.DEFAULT_HOME_DIRECTORY,8069);
-        wssProtocol = new WebSocket(42069);
-        tcpProtocol = new TCP(43594);
-
-        databaseLock = new DatabaseLock();
-        cryptoHandler = new CryptoHandler();
-       /* String z = String.format("%16s", Integer.toBinaryString(458)).replace(" ", "0");
-        System.out.println("ws message ;; "+z);
-        String b = "";
-        String c = "";
-        for (int i=0; i<z.length(); i++) {
-            if (i<8) {
-                b+=z.charAt(i);
-            } else {
-                c+=z.charAt(i);
-            }
-        }
-        byte len1 =  (byte)Integer.parseInt(b, 2);
-        byte len2 =  (byte)Integer.parseInt(c, 2);
-        System.out.println("len1="+len1+";len2="+cryptoHandler.bytesToHex(len3));
-        if (1+1==2)
-            return;*/
-
-
-
-    /*    byte[] M = (new String("hillary clinton riggedthe2016elections")).getBytes();
-        byte[] k = (new String("jjf8943hr203hfao")).getBytes();//new byte[16]; //key size = size of one msg block (16 bytes)
-        byte[] IV = (new String("1234567890abcdef")).getBytes();//new byte[16];
-
-        byte[] C = cryptoHandler.cbcEncrypt(M,k,IV);
-        byte[] D = cryptoHandler.cbcDecrypt(C,k,IV);
-        System.out.println("newc:"+new String(C));
-        System.out.println("newd:<"+new String(D)+">");
-
-        if (1+1==2)
-            return;*/
-
-        //byte[] D = cryptoHandler.elGamalEncrypt(3,(new String("whats up noob")).getBytes());
-        //byte[] E = cryptoHandler.elGamalDecrypt(D);
-        //try with p=199, q=193
-/*        int p = 199;
-        int q = 193;
-        byte[] F = cryptoHandler.rsaEncrypt(cryptoHandler.find_e_value(p,q),p*q,(new String("hello sir")).getBytes());
-        System.out.println("F="+(new String(F)));
-        byte[] G = cryptoHandler.rsaDecrypt(p,q,F);
-        System.out.println("G="+(new String(G)));
-*/
-
-      //  if (1+1==2)
-        //    return;
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        console = new Console(br);
-        //new Thread(console).start();
-
-        server = new Server(tcpProtocol);
-        //new Thread(server).start();
-
-        webserver = new Server(httpProtocol);
-        //new Thread(webserver).start();
-
-        websocketserver = new Server(wssProtocol);
-        //new Thread(websocketserver).start();
-
-        databaseManager = new DatabaseManager();
-        //if (cfg.equalsIgnoreCase("local")) {
-            databaseManager.setDB_url("localhost");
-            databaseManager.setDB_name("jbend");
-            databaseManager.setDB_user("root");
-            databaseManager.setDB_pass("admin");
-        //}
-        //new Thread(databaseManager).start();
-
-        loginHandler = new LoginHandler();
-        //new Thread(loginHandler).start();
-
-        //new Thread(game).start();
-
-        caretaker= new CareTaker(1800000); //check for database connection every 30mins
-        //new Thread(caretaker).start();
-
-        startNextThread();
-
-    }
-
-    public void nextStage() {
-        stage++;
-        //startNextThread();
-        System.out.println("[LAUNCHER] next stage...");
-        startThreads();
-    }
-
-
-    private void startNextThread() {
-        switch (stage) {
-            case 0:
-                new Thread(console).start();
-                break;
-            case 1:
-                new Thread(databaseManager).start();
-                break;
-            case 3:
-                new Thread(server).start();
-                break;
-            case 4:
-                new Thread(webserver).start();
-                break;
-            case 5:
-                new Thread(websocketserver).start();
-                break;
-            case 2:
-                new Thread(loginHandler).start();
-                break;
-            case 7:
-              //  new Thread(game).start();
-               /* System.out.println("testing lexer...");
-                String[] testInput = {"task=[name:text;p,complete:bool]"};
-                Lexer L = new Lexer(testInput);
-                L.processLine();
-                System.out.println("lexer test done.");*/
-               // Parser P = new Parser(L.outputData(),L.outputTokens());
-                //P.processInput();
-                //System.out.println("parser test done.");
-                break;
-            case 6:
-                new Thread(caretaker).start();
-                break;
-        }
-    }
 
 
 
@@ -625,12 +345,14 @@ public class Launcher {
     public void loadDef(String d) {
         app_var_def=d;
         store("def",d);
-        System.out.println(""+get("def")+":");
+       // System.out.println(""+get("def")+":");
     }
 
 
 
     public boolean inDef(){return !get("def").equals("DNE");}
+
+    public static boolean INTERPRETER_OUTPUT = false;
 
     public void closeDef() {
 
@@ -669,7 +391,7 @@ public class Launcher {
             default:
                 break;
         }
-        System.out.println();
+      //  System.out.println();
     }
 
     public void execfunc(Func f) {
@@ -753,7 +475,7 @@ public class Launcher {
             case "home":
                 switch (def) {
                     case "webserver":
-                        System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
+                        //System.out.println("[PLACEHOLDER] define http home directory "+Tools.space(f.args()));
                         store("webserver-home",f.args(0));
                         break;
                     default:
@@ -808,6 +530,24 @@ public class Launcher {
         return get(key).equals(x);
     }
 
+
+    // annoying access methods
+
+    public Server getHTTPServer(int port) {
+        for (int i=0; i<numThreads; i++) {
+            Runnable r = threads[i];
+            if (threads[i]==null)
+                continue;
+            if (r instanceof Server) {
+                if (((Server)r).getAPI().getName().equals("HTTP")){
+                    if (((Server) r).getPort() == port)
+                        return (Server) r;
+                }
+            }
+        }
+        return null;
+    }
+
     public String[] getKeys(String keyspec) {
         String out = "";
         return null;
@@ -820,6 +560,78 @@ public class Launcher {
             k[i++] = p+""+newkey;
         }
         return k;
+    }
+
+    public String fetchVersion(String versionfile) {
+        try {
+            String v = FileManager.fileDataAsString(versionfile).replace("\r", "").replace("\n", "").replace(".",";;;");
+        //    System.out.println("version file: "+versionfile+": "+v);
+            String[] n = v.split(";;;");
+         //   System.out.println("len:"+v.split(";;;").length);
+            if (n.length >= 3) {
+                int x = Integer.parseInt(n[0]);
+                int y = Integer.parseInt(n[1]);
+                int z = Integer.parseInt(n[2]);
+                String vur = x + "." + y + "." + (z + 1);
+                try {
+                    FileManager.writeFile(versionfile,vur);
+                    //Runtime.getRuntime().exec("echo " + vur + " > " + versionfile);
+                    return vur;
+                } catch (Exception e) {
+                    System.out.println("Exception writing file "+versionfile);
+                    e.printStackTrace();
+                    return vur;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Processing exception fetching version from "+versionfile);
+            return JBEND_VERSION;
+        }
+        System.out.println("No case found for "+versionfile);
+        return JBEND_VERSION;
+    }
+
+    public String getConfig(String s) {
+        if (cfg==null)
+            return "DNE";
+        for (String[] c: cfg) {
+            if (c==null || c[0]==null || c[1]==null)
+                return "DNE";
+            if (c[0].equals(s))
+                return c[1];
+        }
+        return "DNE";
+    }
+
+
+
+
+
+
+
+
+
+    public void addLoginHandler() {
+        loadThread(new LoginHandler(),"LoginHandler");
+    }
+    public void addCareTaker(long delay) {
+        loadThread(new CareTaker(delay),"CareTaker");
+    }
+    public void addTCPServer(int port) {
+        TCP tcp = new TCP(port);
+        loadThread(new Server(tcp),"TCP");
+    }
+    public void addHTTPServer(int port) {
+        HTTP http = new HTTP(HTTP.DEFAULT_HOME_DIRECTORY,port);
+        loadThread(new Server(http),"HTTP");
+    }
+    public void addHTTPServer(String homeDir, int port) {
+        HTTP http = new HTTP(homeDir,port);
+        loadThread(new Server(http),"HTTP");
+    }
+    public void addWebSocketServer(int port) {
+        WebSocket ws = new WebSocket(port);
+        loadThread(new Server(ws),"WebSocket");
     }
 
 
