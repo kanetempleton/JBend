@@ -17,7 +17,7 @@ import javax.xml.crypto.Data;
 
 public class Launcher implements Runnable {
 
-    public static final String JBEND_VERSION = "1.5.8";
+    public static final String JBEND_VERSION = "1.5.0";
     /* releases for version 1
         1.0: Initial JBend (tcp,http,ws,messy database+login+security+encryption) ok this needs cleaned up
         1.1: JBend Jar + Custom App stuff (via ServerQuery + DatabaseUtility)
