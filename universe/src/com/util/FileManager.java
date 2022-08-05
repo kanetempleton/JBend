@@ -14,8 +14,8 @@ public class FileManager {
             String str = Files.readString(Paths.get(path));
             return str;
         } catch (Exception e) {
-            System.out.println("Error finding path "+path);
-            e.printStackTrace();
+            System.out.println("[FileManager] Error finding path "+path);
+            //e.printStackTrace();
         }
         return "DNE";
     }
