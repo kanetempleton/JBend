@@ -18,6 +18,25 @@ import javax.xml.crypto.Data;
 public class Launcher implements Runnable {
 
     public static final String JBEND_VERSION = "1.5.8";
+    /* releases for version 1
+        1.0: Initial JBend (tcp,http,ws,messy database+login+security+encryption) ok this needs cleaned up
+        1.1: JBend Jar + Custom App stuff (via ServerQuery + DatabaseUtility)
+        1.2: Web server: fixing POST etc and route support
+        1.3: CRUD auto-management and database schema checking
+        1.4: proxy server
+     -> 1.5: full configuration
+        1.6: data management + security
+         - local cache
+         - encryption modes
+         - access control
+         - enable encryption mode for specified communication link
+        1.7: database server
+         - backup/restore
+        1.8: login server
+        1.9: html generator
+        2.0: FULL DISTRIBUTED JBEND RELEASE
+             (distribution + documentation)
+     */
 
 
     private Server server,websocketserver,webserver;
@@ -579,7 +598,7 @@ public class Launcher implements Runnable {
                     return vur;
                 } catch (Exception e) {
                     System.out.println("Exception writing file "+versionfile);
-                    e.printStackTrace();
+                   // e.printStackTrace();
                     return vur;
                 }
             }
