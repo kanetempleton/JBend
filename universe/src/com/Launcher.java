@@ -192,7 +192,7 @@ public class Launcher implements Runnable {
     public void nextStage() {
         stage++;
         //startNextThread();
-        System.out.println("[LAUNCHER] next stage...");
+       // System.out.println("[LAUNCHER] next stage...");
         startThreads();
     }
 
@@ -206,7 +206,7 @@ public class Launcher implements Runnable {
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
-            System.out.println("Successfully started "+numThreads+" Launcher threads:");
+            System.out.println("[Launcher] Successfully started sequence of "+numThreads+" threads:");
             for (int i=0; i<numThreads; i++) {
                 System.out.println("Thread["+i+"]="+threadMapInverse.get(i));
             }
