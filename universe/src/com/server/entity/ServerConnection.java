@@ -60,6 +60,11 @@ public class ServerConnection {
                 +" ping="+ping+" pong="+pong+" ttr="+(ttrdisp)+" nextPing="+nxtpingdisp+" ";
     }
 
+    public String toShortString() {
+        String ip=(((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress()).toString().replace(":",".");
+        return "[Connection: "+connectionID+", "+ip+"]";
+    }
+
     private String getStateString() {
         switch (state) {
             case WebSocket.AWAITING_REGISTRATION:

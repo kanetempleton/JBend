@@ -331,16 +331,16 @@ public class Server implements Runnable {
             System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
             return;
         }
-        Console.output(activeProtocol.getName()+"","Attempting to register connection for "+s.toString());
+        Console.output(activeProtocol.getName()+"","Attempting to register connection for "+s.toString()+"...");
         ServerConnection c = new ServerConnection(this,s);
         numConnections++;
-        System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
+        //System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
         if (nextConnectionID<MAX_CONNECTIONS) {
             connections[nextConnectionID] = c;
             c.setConnectionID(nextConnectionID++);
             if (this.getAPI().getName().equals("WebSocket"))
                 c.setState(WebSocket.HANDSHAKE_INCOMPLETE);
-            System.out.println("Registered new connectionID="+c.getConnectionID()+" to "+s.toString());
+            Console.output(activeProtocol.getName()+"","Registered new connectionID="+c.getConnectionID()+" to "+s.toString());
             c.setNextPing(System.currentTimeMillis()+DEFAULT_PING_GAP_TIME);
         }
         else if (recycledIDs.size() > 0) { //all ids will be recycled at this point
@@ -389,7 +389,7 @@ public class Server implements Runnable {
                 recycledIDs.addLast(x);
             }
 
-            System.out.println("Disconnecting "+s.toString());
+            Console.output(activeProtocol.getName()+"","Disconnecting "+s.toString());
             s.close();
         } catch (NullPointerException e) {
             System.out.println("Error disconnecting client "+s.toString());

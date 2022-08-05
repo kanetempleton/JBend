@@ -171,9 +171,9 @@ public class HTTP extends Protocol {
                 }
                 else {
                     //System.out.println("notIMAGE REQUEST");
-                    System.out.println("showing cookies for GET:");
+                  //  System.out.println("showing cookies for GET:");
                     for (Cookie z: c.getCookies()) {
-                        System.out.println("Cookie:"+z);
+                      //  System.out.println("Cookie:"+z);
                     }
                     response = response_GET(c, words[1], words[2]);
                 }
@@ -197,7 +197,7 @@ public class HTTP extends Protocol {
         }
         //System.out.println("<response>"+response+"</response>");
         if (!response.equals(WAIT_FOR_RESPONSE)) {
-            System.out.println("sending reply to "+c);
+           // System.out.println("sending reply to "+c);
             sendMessage(c, response);
         }
     }
@@ -225,12 +225,12 @@ public class HTTP extends Protocol {
         for (String p: params) {
             String[] dat = p.split("=");
             if (dat.length>1) {
-                System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
+             //   System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
                 pf+=dat[0]+",;,";
                 pv+=dat[1]+",;,";
             }
         }
-        Console.output("[Request] GET "+path+" from "+c);
+        Console.output("[Request] GET "+path+" from "+c.toShortString());
         if (uri.equals("/")) {
             Response R = new Response(fileContents(INDEX_PATH));
             return R.response();// return fileResponse(HTTP_OK, INDEX_PATH);
@@ -343,13 +343,13 @@ public class HTTP extends Protocol {
 
     // private GET methods
     private String checkRoutes(String uri) {
-        System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
+    //    System.out.println("checking route: "+uri.replace(DEFAULT_HOME_DIRECTORY,""));
         for (Route r: routes) {
             String relURI = uri.replace(DEFAULT_HOME_DIRECTORY,"");
-            System.out.println("route: "+r);
-            System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
+          //  System.out.println("route: "+r);
+          //  System.out.println("relURI="+relURI+" ; r.uri = "+r.getURI());
             if (relURI.equalsIgnoreCase(r.getURI())) {
-                System.out.println("checking fullpath: "+fullPath(r.getResource()));
+            //    System.out.println("checking fullpath: "+fullPath(r.getResource()));
                 return HTTP_OK+"\r\n"+fileData(fullPath(r.getResource()));
             }
         }
@@ -360,7 +360,7 @@ public class HTTP extends Protocol {
 
     protected byte[] response_GET_image(ServerConnection c,String uri, String version) {
         uri = uri.replace("//","/");
-        Console.output("[Request IMG] GET "+uri+" from "+c);
+        Console.output("[Request IMG] GET "+uri+" from "+c.toShortString());
         if (uri.equals("/")) {
             return (new String(HTTP_NOT_FOUND+"\r\n"+fileContents(NOT_FOUND_PATH))).getBytes();
         }
@@ -384,7 +384,7 @@ public class HTTP extends Protocol {
                 for (int i=0; i<fr.length; i++) {
                     sendme[j++]=fr[i];
                 }
-                System.out.println("sendme=\n"+(new String(sendme)).substring(0,hdr.length+1));
+              //  System.out.println("sendme=\n"+(new String(sendme)).substring(0,hdr.length+1));
                 return sendme;
             }
             else {
@@ -396,7 +396,7 @@ public class HTTP extends Protocol {
     }
 
     protected String response_POST(ServerConnection c, String uri, String[] lines) {
-        Console.output("[Request] POST "+uri+" from "+c);
+        Console.output("[Request] POST "+uri+" from "+c.toShortString());
         String[] buildMeDaddy = new String[69420];
         int howmany = 0;
         int startReading = 0;
@@ -416,7 +416,7 @@ public class HTTP extends Protocol {
         if (c==null) {
             return "null";
         }
-        Console.output("[Request] PUT "+uri+" from "+c);
+        Console.output("[Request] PUT "+uri+" from "+c.toShortString());
         for (String L: lines) {
             if (L.startsWith("packet=")) {
                 Console.output("[PUT] '"+L+"'");

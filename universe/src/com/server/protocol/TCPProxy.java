@@ -4,6 +4,7 @@ import com.server.entity.ServerConnection;
 import com.console.*;
 import java.util.*;
 import com.server.*;
+import com.Launcher;
 
 public class TCPProxy extends Protocol {
 
@@ -44,7 +45,10 @@ public class TCPProxy extends Protocol {
         currently functions as a simple echo server
      */
     public void processMessage(ServerConnection c, String data) {
-         Console.output("message received: "+data);
+         Console.output("message received from "+c.toShortString()+" ; length = "+data.length());
+         if (Launcher.DEBUG_SERVER_LEVEL >= 1) {
+             Console.output("data: "+data);
+         }
 
          String[] lines = data.split("\\r\\n");
          String uri = "/";
@@ -52,7 +56,7 @@ public class TCPProxy extends Protocol {
          if (lines.length>0 && lines[0].split(" ").length>=2) {
              if (lines[0].split(" ")[0].equals("GET")) {
                  uri = lines[0].split(" ")[1];
-                 Console.output("uri identified: "+uri);
+           //      Console.output("uri identified: "+uri);
              } else {
                  method = lines[0].split(" ")[0];
                  uri = lines[0].split(" ")[1];
@@ -63,14 +67,14 @@ public class TCPProxy extends Protocol {
              if (l.contains("Host: "))
                  host = l.replace(" ","").split(":")[1];
          }
-         Console.output("proxying http host: "+host+" : "+method+" "+uri);
+       //  Console.output("proxying http host: "+host+" : "+method+" "+uri);
          int pport = forwardPort(host);
          if (pport!=this.portNum) {
-             Console.output("found mapping: "+pport);
+             Console.output("found mapping: "+host+": "+method+" "+uri+" ---> "+pport);
          }
          proxyClient = new Client(host,pport);
          proxyClient.connectToServer(data);
-         Console.output("escape line");
+         //Console.output("escape line");
          String resp = "";
          String dat = proxyClient.getResponseData();
          if (uri.contains(".js")) {
