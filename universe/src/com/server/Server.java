@@ -125,10 +125,14 @@ public class Server implements Runnable {
      */
     public void startServer() {
 
+
         boolean killServer = false;
         int xx=0;
 
         try {
+            if (activeProtocol instanceof HTTP) {
+                ((HTTP)activeProtocol).loadRoutes();
+            }
             Console.output(activeProtocol.getName()+"","Attempting to start server on port "+port+"...");
 
             socketChannel = ServerSocketChannel.open();

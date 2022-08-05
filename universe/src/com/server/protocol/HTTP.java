@@ -69,10 +69,10 @@ public class HTTP extends Protocol {
         port=prt;
         cookies = new ArrayList<Cookie>();
         routes = new ArrayList<Route>();
-        loadRoutes();
+       // loadRoutes();
     }
 
-    private void loadRoutes() {
+    public void loadRoutes() {
         String[] lines = FileManager.fileDataAsString("routes.cfg").split("\n");
         for (String l: lines) {
             String[] keyval = l.replace(" ","").split("->");

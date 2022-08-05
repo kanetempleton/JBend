@@ -99,6 +99,7 @@ public class Console implements Runnable {
             Main.launcher.console().needsRefresh=true;
         } catch (Exception e) {
             System.out.println("[CONSOLE.output("+msg+")] ERROR outputting to console.");
+            e.printStackTrace();
         }
     }
 

@@ -22,6 +22,8 @@ import javax.xml.crypto.Data;
 
 public class Launcher {
 
+    public static final String JBEND_VERSION = "1.5";
+
 
     private Server server,websocketserver,webserver;
     private DatabaseManager databaseManager;
@@ -77,7 +79,7 @@ public class Launcher {
        // loadConfig();
       //  addConsole();
         serverMap = new HashMap();
-        loadConfig();
+        start();
     }
 
 
@@ -105,7 +107,7 @@ public class Launcher {
        // loadConfig();
        // addConsole();
         serverMap = new HashMap();
-        loadConfig();
+        start();
     }
 
     public Launcher(String settings) {
@@ -129,66 +131,65 @@ public class Launcher {
         cryptoHandler = new CryptoHandler();
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
-        if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
-            loadConfig();
+       // if (!(settings.equalsIgnoreCase("local") || settings.equalsIgnoreCase("development")))
+       //     loadConfig();
        // addConsole();
         serverMap = new HashMap();
-        loadConfig();
+        start();
     }
 
 
-    public void loadConfig() {
+
+    public void start() {
+        System.out.println("Welcome. You are using JBend version "+fetchVersion("config/version.conf"));
+
+        initialDataStores();
+        loadConfig("config/application.conf");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        loadThread(new Console(br),"Console");
+    }
+
+    public String fetchVersion(String versionfile) {
+        String v = FileManager.fileDataAsString(versionfile).replace("\r","").replace("\n","");
+        String n[] = v.split(".");
+        if (n.length==3) {
+            int x = Integer.parseInt(n[0]);
+            int y = Integer.parseInt(n[1]);
+            int z = Integer.parseInt(n[3]);
+            String vur = x+"."+y+"."+(z+1);
+            try {
+                Runtime.getRuntime().exec("echo " + vur + " > " + versionfile);
+                return vur;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return vur;
+            }
+        }
+        return null;
+    }
+
+
+    public void initialDataStores() {
+        store("console-on","true");
+    }
+
+
+    public void loadConfig(String filename) {
         //Console.output("loading configuration...");
-        String conf = FileManager.fileDataAsString("config/application.conf").replace("\r","");
+        String conf = FileManager.fileDataAsString(filename).replace("\r","");
 
         String configtokens = ConfLexer.parse(conf);
         System.out.println(configtokens);
-
-        System.out.println("lex'd. now doing parsing...");
+       // System.out.println("lex'd. now doing parsing...");
 
         String syntaxtokens = ConfParser.parse(configtokens);
-      //  System.out.println(syntaxtokens);
+        System.out.println("Loaded application config: "+syntaxtokens);
 
         ArrayList<ConfFunction> program = ConfInterpreter.interpret(syntaxtokens.split("\n"));
         execute(program);
-
-      //  ConfInterpreter interpreter = new ConfInterpreter(syntaxtokens.split("\n"));
-        //interpreter.interpret();
-       // System.out.println(interpreter.toString());
-      //  interpreter.execute();
-
-
-        //int i=0;
-        /*String lines[] = conf.split("\n");
-        for (String line: lines) {
-            System.out.println("line: "+line);
-        }*/
-       /* if (!conf.equalsIgnoreCase("DNE")) {
-            String pairs[] = conf.split("=;");
-            for (String p: pairs) {
-                String parts[] = p.split(":=");
-                if (parts.length==2) {
-                    String field = parts[0];
-                    String value = parts[1];
-                    if (field.startsWith("#")) {
-                        field = "DNE";
-                        value = "DNE";
-                    }
-                    if (i<cfg.length) {
-                        cfg[i][0] = field;
-                        cfg[i][1] = value;
-                        System.out.println("loaded configuration for: "+field+"");
-                        i++;
-                    }
-                } else {
-                    System.out.println("misformatted line: "+p);
-                }
-            }
-        } else {
-            System.out.println("can't find config file:"+conf);
-        }*/
         System.out.println("config loaded.");
     }
+
 
     public String getConfig(String s) {
         if (cfg==null)
@@ -632,6 +633,8 @@ public class Launcher {
         System.out.println(""+get("def")+":");
     }
 
+
+
     public boolean inDef(){return !get("def").equals("DNE");}
 
     public void closeDef() {
@@ -718,7 +721,8 @@ public class Launcher {
                         break;
                     case "console":
                        // System.out.println("[PLACEHOLDER] initialize console here.");
-                        addConsole();
+                       // addConsole();
+                        store("console-on","true");
                         break;
                     case "webserver":
                      //   System.out.println("[PLACEHOLDER] load webserver on port "+Tools.space(f.args()));
