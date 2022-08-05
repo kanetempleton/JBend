@@ -7,7 +7,8 @@ import java.util.*;
 import com.func.*;
 import com.db.*;
 import com.console.*;
-import java.io.*;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import com.server.login.*;
 import com.util.crypt.*;
 import com.util.*;
@@ -16,7 +17,7 @@ import javax.xml.crypto.Data;
 
 public class Launcher {
 
-    public static final String JBEND_VERSION = "1.5.1";
+    public static final String JBEND_VERSION = "1.5.2";
 
 
     private Server server,websocketserver,webserver;
