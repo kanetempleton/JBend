@@ -1,17 +1,32 @@
 package com;
 
-public abstract class NetApplication {
+public abstract class NetApplication implements Runnable {
 
     private String configFile;
     private Launcher launcher;
-    public NetApplication(String config) {
-        configFile=config;
-        launcher=null;
+    public NetApplication() {
+       // configFile=config;
+        launcher=new Launcher();
     }
 
     public void startApplication() {
-        launcher = new Launcher();
+        launcher.startThreads();
+        (new Thread(this)).start();
     }
+
+    public void run() {
+        System.out.println("Starting application...");
+        while (true) {
+            try {
+                runApplication();
+               // Thread.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public abstract void runApplication();
 
 
 }
