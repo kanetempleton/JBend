@@ -236,12 +236,13 @@ public class Launcher implements Runnable {
                 loadThread(app, app.getAppName());
                 appLoaded = true;
                 nextStage();
+            } else {
+                System.out.println("[Launcher] Successfully started sequence of " + numThreads + " threads:");
+                for (int i = 0; i < numThreads; i++) {
+                    System.out.println("Thread[" + i + "]=" + threadMapInverse.get(i));
+                }
+                System.out.println("> Type 'help' for list of Console commands");
             }
-            System.out.println("[Launcher] Successfully started sequence of "+numThreads+" threads:");
-            for (int i=0; i<numThreads; i++) {
-                System.out.println("Thread["+i+"]="+threadMapInverse.get(i));
-            }
-            System.out.println("> Type 'help' for list of Console commands");
         }
     }
 
