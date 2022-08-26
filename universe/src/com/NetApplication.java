@@ -12,7 +12,7 @@ public abstract class NetApplication implements Runnable {
     }
 
     public void startApplication() {
-       // launcher.loadThread(this,appName);
+        launcher.loadThread(this,appName);
         launcher.startThreads();
        // (new Thread(this)).start();
     }
