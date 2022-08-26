@@ -2,23 +2,13 @@ package com;
 
 public abstract class NetApplication implements Runnable {
 
-    private String configFile;
-    private Launcher launcher;
     private String appName;
     public NetApplication(String appname) {
-       // configFile=config;
-        launcher=new Launcher();
         appName=appname;
     }
 
-    public void startApplication() {
-        launcher.loadThread(this,appName);
-        launcher.startThreads();
-       // (new Thread(this)).start();
-    }
-
     public void run() {
-        System.out.println("Starting application...");
+        System.out.println("Starting application: "+appName);
         while (true) {
             try {
                 runApplication();
@@ -30,6 +20,8 @@ public abstract class NetApplication implements Runnable {
     }
 
     public abstract void runApplication();
+
+    public String getAppName() {return appName;}
 
 
 }

@@ -83,7 +83,13 @@ public class Launcher implements Runnable {
     public String app_id;
     private String app_var_def;
 
-    public Launcher() {
+    private NetApplication app;
+    private boolean appLoaded;
+
+
+    public Launcher(NetApplication a) {
+        app=a;
+        appLoaded =false;
         stage=0;
         dbThread=0;
         dbProcess=0;
@@ -226,6 +232,11 @@ public class Launcher implements Runnable {
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
+            if (!appLoaded) {
+                loadThread(app, app.getAppName());
+                appLoaded = true;
+                nextStage();
+            }
             System.out.println("[Launcher] Successfully started sequence of "+numThreads+" threads:");
             for (int i=0; i<numThreads; i++) {
                 System.out.println("Thread["+i+"]="+threadMapInverse.get(i));

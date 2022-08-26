@@ -26,7 +26,7 @@ public class Main {
             }
         }
 
-        launcher = new Launcher();
+      //  launcher = new Launcher();
         //new Thread(launcher).start();
         //launcher.addStandardThreads();
        // launcher.startThreads();
