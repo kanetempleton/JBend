@@ -17,25 +17,38 @@ import javax.xml.crypto.Data;
 
 public class Launcher implements Runnable {
 
-    public static final String JBEND_VERSION = "1.5.0";
+    public static final String JBEND_VERSION = "1.4.0";
     /* releases for version 1
         1.0: Initial JBend (tcp,http,ws,messy database+login+security+encryption) ok this needs cleaned up
         1.1: JBend Jar + Custom App stuff (via ServerQuery + DatabaseUtility)
-        1.2: Web server: fixing POST etc and route support
-        1.3: CRUD auto-management and database schema checking
-        1.4: proxy server
-     -> 1.5: full configuration
-        1.6: data management + security
+         - how to make custom with config?
+         - fix the stupid webpackets thing that should never have existed
+        1.2: CRUD auto-management and database schema checking
+        1.3: proxy server
+         - behaving weirdly
+     -> 1.4: full configuration
+         - routes in application.conf
+        1.5: data management + security
+         - JSON support
          - local cache
          - encryption modes
          - access control
          - enable encryption mode for specified communication link
-        1.7: database server
+        1.6: database server
          - backup/restore
-        1.8: login server
+        1.7: login server
+        1.8: caretaker
+         - reboot servers + database regularly
         1.9: html generator
         2.0: FULL DISTRIBUTED JBEND RELEASE
              (distribution + documentation)
+             - generate config files
+             - readme and use cases
+             - documentation
+             - simple install scripts
+             - app shell
+             - version releases
+             - live todo list
      */
 
 
@@ -92,17 +105,24 @@ public class Launcher implements Runnable {
         threadMap = new HashMap<>();
         threadMapInverse = new HashMap<>();
         serverMap = new HashMap();
-        startLauncher();
+        initLauncher();
     }
 
     public void run() {
-        startLauncher();
+
+        initLauncher();
+    }
+
+    public void startLauncher() {
+        running = true;
+
     }
 
 
 
-    public void startLauncher() {
-        running=true;
+
+    public void initLauncher() {
+       // running=true;
         System.out.println("Welcome. You are using JBend version "+fetchVersion("config/version.conf"));
 
         //start the console
@@ -113,7 +133,7 @@ public class Launcher implements Runnable {
         //configuration
         initialDataStores();
         loadConfig("config/application.conf");
-        startThreads();
+        //startThreads();
 
     }
 
