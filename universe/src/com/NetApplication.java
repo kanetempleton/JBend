@@ -4,14 +4,17 @@ public abstract class NetApplication implements Runnable {
 
     private String configFile;
     private Launcher launcher;
-    public NetApplication() {
+    private String appName;
+    public NetApplication(String appname) {
        // configFile=config;
         launcher=new Launcher();
+        appName=appname;
     }
 
     public void startApplication() {
+       // launcher.loadThread(this,appName);
         launcher.startThreads();
-        (new Thread(this)).start();
+       // (new Thread(this)).start();
     }
 
     public void run() {
