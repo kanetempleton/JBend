@@ -139,6 +139,7 @@ public class Launcher implements Runnable {
         //configuration
         initialDataStores();
         loadConfig("config/application.conf");
+        loadThread(app, app.getAppName());
         //startThreads();
 
     }
@@ -232,20 +233,20 @@ public class Launcher implements Runnable {
             processes[numProcesses] = new Thread(threads[stage]);
             processes[numProcesses++].start();
         } else {
-            if (!appLoaded) {
+           /* if (!appLoaded) {
                 loadThread(app, app.getAppName());
                 appLoaded = true;
                 stage++;
                 processes[numProcesses] = new Thread(threads[stage]);
                 processes[numProcesses++].start();
                 nextStage();
-            } else {
+            } else {*/
                 System.out.println("[Launcher] Successfully started sequence of " + numThreads + " threads:");
                 for (int i = 0; i < numThreads; i++) {
                     System.out.println("Thread[" + i + "]=" + threadMapInverse.get(i));
                 }
                 System.out.println("> Type 'help' for list of Console commands");
-            }
+            //}
         }
     }
 
