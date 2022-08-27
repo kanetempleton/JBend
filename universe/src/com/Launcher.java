@@ -238,7 +238,7 @@ public class Launcher implements Runnable {
                 stage++;
                 processes[numProcesses] = new Thread(threads[stage]);
                 processes[numProcesses++].start();
-                //nextStage();
+                nextStage();
             } else {
                 System.out.println("[Launcher] Successfully started sequence of " + numThreads + " threads:");
                 for (int i = 0; i < numThreads; i++) {
