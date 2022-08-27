@@ -235,7 +235,10 @@ public class Launcher implements Runnable {
             if (!appLoaded) {
                 loadThread(app, app.getAppName());
                 appLoaded = true;
-                nextStage();
+                stage++;
+                processes[numProcesses] = new Thread(threads[stage]);
+                processes[numProcesses++].start();
+                //nextStage();
             } else {
                 System.out.println("[Launcher] Successfully started sequence of " + numThreads + " threads:");
                 for (int i = 0; i < numThreads; i++) {

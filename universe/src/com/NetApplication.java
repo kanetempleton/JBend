@@ -9,6 +9,7 @@ public abstract class NetApplication implements Runnable {
 
     public void run() {
         System.out.println("Starting application: "+appName);
+        Main.launcher.nextStage();
         while (true) {
             try {
                 runApplication();
