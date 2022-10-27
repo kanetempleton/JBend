@@ -187,7 +187,7 @@ public class Server implements Runnable {
                             sc.register(selector, SelectionKey.OP_READ);
 
 
-                            if (!this.activeProtocol().getName().equals("HTTP"))
+                            if (!activeProtocol.getName().equals("HTTP"))
                                 registerConnection(s); //register the connection with server
 
                         } else if ((key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ) { //incoming data
@@ -203,7 +203,7 @@ public class Server implements Runnable {
 
                                 //read data from buffer
                                 if (buffer.limit() != 0) {
-                                    if (this.activeProtocol().getName().equals("HTTP")) {
+                                    if (activeProtocol.getName().equals("HTTP")) {
                                         Socket s = sc.socket();
                                         registerConnection(s);
                                     }
@@ -330,7 +330,7 @@ public class Server implements Runnable {
 
     private void debug(int l, String m) {
         if (DEBUG_LEVEL>=l)
-            Console.output(m);
+            Console.output(activeProtocol.getName()+"",m);
     }
     
     private void registerConnection(Socket s) {
@@ -339,7 +339,7 @@ public class Server implements Runnable {
             System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
             return;
         }
-        debug(1,activeProtocol.getName()+"","Attempting to register connection for "+s.toString()+"...");
+        debug(1,"Attempting to register connection for "+s.toString()+"...");
         ServerConnection c = new ServerConnection(this,s);
         numConnections++;
         //System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
