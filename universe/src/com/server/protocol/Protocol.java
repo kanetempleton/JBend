@@ -118,8 +118,9 @@ public abstract class Protocol {
 
 
     public void sendBytes(ServerConnection c, byte[] bytes) {
+        Server.debug_global(2,"Sending "+bytes.length+" bytes...");
         try {
-            if (Launcher.DEBUG_SERVER_LEVEL>=1) {
+            if (Launcher.DEBUG_SERVER_LEVEL>=3) {
                 Console.output("sending message:\n"+new String(bytes));
             }
             c.getServer().messageToClient(c.getSocket(), bytes);
