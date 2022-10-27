@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import com.server.web.*;
 import com.console.*;
 import com.util.FileManager;
+import com.server.*;
 
 class Response {
     ArrayList<String> headers;
@@ -386,6 +387,8 @@ public class HTTP extends Protocol {
                     sendme[j++]=fr[i];
                 }
               //  System.out.println("sendme=\n"+(new String(sendme)).substring(0,hdr.length+1));
+                Server.debug_global(1,"Image Response length: "+sendme.length);
+                Server.debug_global(2,"Image Response header: "+head);
                 return sendme;
             }
             else {

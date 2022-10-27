@@ -328,9 +328,13 @@ public class Server implements Runnable {
 
     public static final int DEBUG_LEVEL = 1;
 
-    private void debug(int l, String m) {
+    public void debug(int l, String m) {
         if (DEBUG_LEVEL>=l)
             Console.output(activeProtocol.getName()+"",m);
+    }
+    public static void debug_global(int l, String m) {
+        if (DEBUG_LEVEL>=l)
+            Console.output(m);
     }
     
     private void registerConnection(Socket s) {
