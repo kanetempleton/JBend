@@ -440,7 +440,7 @@ public class Launcher implements Runnable {
             case "webserver":
                 System.out.println("[UNLOAD WEBSERVER] "+get("webserver-home")+" "+Integer.parseInt(get("webserver-port")));
                 HTTP http_protocol = new HTTP(get("webserver-home"),Integer.parseInt(get("webserver-port")));
-                Server http = new Server(http_protocol,4096);
+                Server http = new Server(http_protocol,Server.MESSAGE_BUFFER_SIZE);
                 loadThread(http,"HTTP");
                 break;
             default:
