@@ -187,7 +187,7 @@ public class Server implements Runnable {
                             sc.register(selector, SelectionKey.OP_READ);
 
 
-                            if (!this.getAPI().getName().equals("HTTP"))
+                            if (!this.activeProtocol().getName().equals("HTTP"))
                                 registerConnection(s); //register the connection with server
 
                         } else if ((key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ) { //incoming data
@@ -203,7 +203,7 @@ public class Server implements Runnable {
 
                                 //read data from buffer
                                 if (buffer.limit() != 0) {
-                                    if (this.getAPI().getName().equals("HTTP")) {
+                                    if (this.activeProtocol().getName().equals("HTTP")) {
                                         Socket s = sc.socket();
                                         registerConnection(s);
                                     }
@@ -325,13 +325,21 @@ public class Server implements Runnable {
         should probably change id system to something based on
         hashing client ports
      */
+
+    public static final int DEBUG_LEVEL = 1;
+
+    private void debug(int l, String m) {
+        if (DEBUG_LEVEL>=l)
+            Console.output(m);
+    }
+    
     private void registerConnection(Socket s) {
         if (s==null || nextConnectionID<0) {
             System.out.println("register connect failure");
             System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
             return;
         }
-        Console.output(activeProtocol.getName()+"","Attempting to register connection for "+s.toString()+"...");
+        debug(1,activeProtocol.getName()+"","Attempting to register connection for "+s.toString()+"...");
         ServerConnection c = new ServerConnection(this,s);
         numConnections++;
         //System.out.println("nextCon,numCon,MAXCON:"+nextConnectionID+","+numConnections+","+MAX_CONNECTIONS);
@@ -388,8 +396,8 @@ public class Server implements Runnable {
                // nextConnectionID=x;
                 recycledIDs.addLast(x);
             }
-
-            Console.output(activeProtocol.getName()+"","Disconnecting "+s.toString());
+            if (!activeProtocol.getName().equals("HTTP"))
+                Console.output(activeProtocol.getName()+"","Disconnecting "+s.toString());
             s.close();
         } catch (NullPointerException e) {
             System.out.println("Error disconnecting client "+s.toString());
