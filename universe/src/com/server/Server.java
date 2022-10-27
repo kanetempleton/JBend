@@ -326,7 +326,7 @@ public class Server implements Runnable {
         hashing client ports
      */
 
-    public static final int DEBUG_LEVEL = 1;
+    public static final int DEBUG_LEVEL = 2;
 
     public void debug(int l, String m) {
         if (DEBUG_LEVEL>=l)
