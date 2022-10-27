@@ -201,6 +201,7 @@ public class HTTP extends Protocol {
         if (!response.equals(WAIT_FOR_RESPONSE)) {
            // System.out.println("sending reply to "+c);
             sendMessage(c, response);
+            c.disconnect();
         }
     }
 

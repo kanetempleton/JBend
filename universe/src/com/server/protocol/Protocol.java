@@ -88,15 +88,15 @@ public abstract class Protocol {
                     Console.output("</message>");
                 }
                 c.getServer().messageToClient(c.getSocket(), send);
-                if (this.getName().equals("HTTP"))
-                    c.disconnect();
+            //    if (this.getName().equals("HTTP"))
+              //      c.disconnect();
             } else {
                 if (Launcher.DEBUG_SERVER_LEVEL >= 1) {
                     Console.output("sending message:\n"+data);
                 }
                 c.getServer().messageToClient(c, data);
-                if (this.getName().equals("HTTP"))
-                    c.disconnect();
+              //  if (this.getName().equals("HTTP"))
+                //    c.disconnect();
             }
         } catch (Exception e) {
             e.printStackTrace();
