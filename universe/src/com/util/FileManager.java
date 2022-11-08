@@ -41,6 +41,11 @@ public class FileManager {
         } else {
             System.out.println("good to go");
         }
+        if (folder.listFiles()==null) {
+            System.out.println("null File.listFiles");
+        }else {
+            System.out.println("good to go 2");
+        }
         return Tools.string_array(folder.listFiles());
     }
 }

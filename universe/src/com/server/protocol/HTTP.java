@@ -86,7 +86,7 @@ public class HTTP extends Protocol {
             String rsc = keyval[1];
 
             if (uri.contains("*")) {
-                for (String f: FileManager.listFiles(rsc.split("/")[1])) {
+                for (String f: FileManager.listFiles(DEFAULT_HOME_DIRECTORY+""+rsc.split("/")[1])) {
                     System.out.println("file name: "+f.split(".")[0]);
                     System.out.println("file extension: "+f.split(".")[1]);
                     if (Regex.match(f,Regex.FILE_NAME,false)) { // syntax of line: /* -> /dirname/*.html
