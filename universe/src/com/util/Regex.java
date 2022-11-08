@@ -38,6 +38,8 @@ public class Regex {
     public static Regex word() {
         return new Regex("^[a-z]+$");
     }
+    public static Regex fileName() {return new Regex("\\A[a-zA-Z]*\\.[a-zA-Z]*\\z");}
+    public static String FILE_NAME = "\\A[a-z]*\\.[a-z]*\\z";
 
 
 

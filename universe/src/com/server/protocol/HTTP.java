@@ -12,6 +12,7 @@ import com.server.web.*;
 import com.console.*;
 import com.util.FileManager;
 import com.server.*;
+import com.util.Regex;
 
 class Response {
     ArrayList<String> headers;
@@ -83,6 +84,19 @@ public class HTTP extends Protocol {
             }
             String uri = keyval[0];
             String rsc = keyval[1];
+
+            if (uri.contains("*")) {
+                for (String x: rsc.split("/")) {
+                    System.out.println("rscsplit: "+x);
+                }
+                for (String f: FileManager.listFiles(rsc.split("/")[0])) {
+                    System.out.println("file name: "+f.split(".")[0]);
+                    System.out.println("file extension: "+f.split(".")[1]);
+                    if (Regex.match(f,Regex.FILE_NAME,false)) { // syntax of line: /* -> /dirname/*.html
+                        addRoute(uri.replace("*",f.split(".")[0]),rsc.replace("*",f));
+                    }
+                }
+            }
             addRoute(uri,rsc);
             Console.output("Added route: "+uri+"");
         }

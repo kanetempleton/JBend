@@ -1,9 +1,9 @@
 package com.util;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.File;
 
 public class FileManager {
 
@@ -31,5 +31,10 @@ public class FileManager {
             System.out.println("Error writing file: "+file);
             ex.printStackTrace();
         }
+    }
+
+    public static String[] listFiles(String directory) {
+        File folder = new File(directory);
+        return Tools.string_array(folder.listFiles());
     }
 }
