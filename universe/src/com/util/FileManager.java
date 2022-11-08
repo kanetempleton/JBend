@@ -34,7 +34,13 @@ public class FileManager {
     }
 
     public static String[] listFiles(String directory) {
+        System.out.println("Listing files for "+directory);
         File folder = new File(directory);
+        if (folder==null) {
+            System.out.println("null");
+        } else {
+            System.out.println("good to go");
+        }
         return Tools.string_array(folder.listFiles());
     }
 }
