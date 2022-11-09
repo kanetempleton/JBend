@@ -91,7 +91,7 @@ public class PageBuilder {
     private void replaceBuilderFunctions() {
         String[] lines = ui.split("\n");
         for (int i=0; i<lines.length; i++) {
-            if (lines[i].startsWith("$[") && lines[i].endsWith("]")) {
+            if (lines[i].startsWith("$[")) {
                 lines[i] = translateCode(lines[i].substring(2,lines[i].length()-2));
             }
         }
@@ -99,6 +99,7 @@ public class PageBuilder {
     }
 
     private String translateCode(String code) {
+        System.out.println("translating code: "+code);
         String F = "";
         String A = "";
         String function = "";
