@@ -13,6 +13,7 @@ import com.console.*;
 import com.util.FileManager;
 import com.server.*;
 import com.util.Regex;
+import com.server.web.pages.PageBuilder;
 
 class Response {
     ArrayList<String> headers;
@@ -282,9 +283,7 @@ public class HTTP extends Protocol {
                     String rsp = rspHead+rspIPLine+rspBody;
                     return rsp;
                 } else {
-                    if ( route.contains("menu.js") || route.contains("player.js")
-                            || route.contains("sprite.js") || route.contains("spritestore.js") || route.contains("button.js")
-                            || route.contains("text.js") || route.contains(".js") ) {
+                    if ( route.contains(".js") ) {
                         String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
                        // System.out.println(dx);
                         return dx;
@@ -294,6 +293,11 @@ public class HTTP extends Protocol {
                        // System.out.println(dx);
                         return dx;
                     }
+                    if (route.contains(".ui")) {
+                        return PageBuilder.load(route);
+                    }
+
+                    // default: standard 200 OK response with an html page
                     return fileResponse(HTTP_OK, route);
                 }
             }

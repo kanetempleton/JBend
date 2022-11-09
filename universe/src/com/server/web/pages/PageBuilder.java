@@ -6,6 +6,12 @@ public class PageBuilder {
     private String ui,html;
     private String title,desc;
 
+    public static String load(String filename) {
+        PageBuilder page = new PageBuilder(filename);
+        page.process();
+        return page.html;
+    }
+
     public PageBuilder(String filename) {
         ui = FileManager.fileDataAsString(filename);
         html = "<!DOCTYPE html>\n" +
