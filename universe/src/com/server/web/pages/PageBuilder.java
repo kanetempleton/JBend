@@ -13,7 +13,7 @@ public class PageBuilder {
     }
 
     public PageBuilder(String filename) {
-        ui = FileManager.fileDataAsString(filename);
+        ui = FileManager.fileDataAsString("res/front/"+filename);
         html = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n";
         title=null;
