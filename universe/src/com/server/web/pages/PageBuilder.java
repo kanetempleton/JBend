@@ -92,7 +92,7 @@ public class PageBuilder {
         String[] lines = ui.split("\n");
         for (int i=0; i<lines.length; i++) {
             if (lines[i].startsWith("$[")) {
-                lines[i] = translateCode(lines[i].substring(2,lines[i].length()-2));
+                lines[i] = translateCode(lines[i].substring(2,lines[i].length()-1));
             }
         }
         ui = StringUtils.linesToText(lines);
