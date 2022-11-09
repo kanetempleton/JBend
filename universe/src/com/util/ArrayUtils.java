@@ -59,4 +59,19 @@ public class ArrayUtils {
     }
 
 
+    /// Array Combination Methods
+
+    public static Object[] merge(Object[] A, Object[] B) {
+        Object[] output = new Object[A.length+B.length];
+        int z=0;
+        for (int i=0; i<A.length; i++) {
+            output[z++]=A[i];
+        }
+        for (int i=0; i<B.length; i++) {
+            output[z++]=B[i];
+        }
+        return output;
+    }
+
+
 }
