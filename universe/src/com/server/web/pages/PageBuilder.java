@@ -84,6 +84,7 @@ public class PageBuilder {
     }
 
     private void loadBodyHTML() {
+        replaceBuilderFunctions();
         html += ui;
     }
 
@@ -94,6 +95,7 @@ public class PageBuilder {
                 lines[i] = translateCode(lines[i].substring(2,lines[i].length()-2));
             }
         }
+        ui = StringUtils.linesToText(lines);
     }
 
     private String translateCode(String code) {
