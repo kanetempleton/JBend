@@ -110,10 +110,12 @@ public class PageBuilder {
             }
             else if (code.charAt(i) == ')') {
                 open = false;
+                System.out.println("found a function: "+function+"("+args+")");
                 F = F.length() == 0 ? function : F + "," + function;
                 A = A.length() == 0 ? args : A + ","+args;
                 function = "";
                 args = "";
+
             }
             else if (open) {
                 args += code.charAt(i);
