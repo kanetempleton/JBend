@@ -176,6 +176,11 @@ public class HTTP extends Protocol {
             imageRequest=true;
         }
 
+        boolean pdfRequest = false;
+        if (words[1].contains(".pdf")) {
+            pdfRequest = true;
+        }
+
         switch (words[0]) {
             case "GET":
                 if (imageRequest) {
@@ -183,6 +188,10 @@ public class HTTP extends Protocol {
                     sendBytes(c, resp);
                     c.disconnect();
                     return;
+                }
+                else if (pdfRequest) {
+                    byte[] resp = response_GET_pdf(c, words[1], words[2]);
+                    sendBytes(c,resp);
                 }
                 else {
                     //System.out.println("notIMAGE REQUEST");
@@ -415,6 +424,43 @@ public class HTTP extends Protocol {
         }
 
     }
+
+    protected byte[] response_GET_pdf(ServerConnection c,String uri, String version) {
+        uri = uri.replace("//","/");
+        Console.output("[Request PDF] GET "+uri+" from "+c.toShortString());
+        if (uri.equals("/")) {
+            return (new String(HTTP_NOT_FOUND+"\r\n"+fileContents(NOT_FOUND_PATH))).getBytes();
+        }
+        else {
+            String filePath = "res/front/"+uri;
+            File f = new File(filePath);
+            if (f.exists()) {
+//Transfer-Encoding: chunked
+                byte[] fr = imageData(filePath);
+                String head = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: Keep-Alive\r\nContent-Length: "+fr.length+"\r\n\r\n";
+                // String head = "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\n\r\n";
+                byte[] hdr = head.getBytes();
+                byte[] sendme = new byte[fr.length+hdr.length];
+                int j=0;
+                for (int i=0; i<hdr.length; i++) {
+                    sendme[j++]=hdr[i];
+                }
+                for (int i=0; i<fr.length; i++) {
+                    sendme[j++]=fr[i];
+                }
+                //  System.out.println("sendme=\n"+(new String(sendme)).substring(0,hdr.length+1));
+                Server.debug_global(1,"PDF Response length: "+sendme.length);
+                Server.debug_global(2,"PDF Response header: "+head);
+                return sendme;
+            }
+            else {
+                Console.log("resource not found: "+filePath);
+                return (new String(HTTP_NOT_FOUND + "\r\n" + fileContents(NOT_FOUND_PATH))).getBytes();
+            }
+        }
+
+    }
+
 
     protected String response_POST(ServerConnection c, String uri, String[] lines) {
         Console.output("[Request] POST "+uri+" from "+c.toShortString());
