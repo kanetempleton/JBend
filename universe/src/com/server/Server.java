@@ -49,7 +49,7 @@ public class Server implements Runnable {
 
     private int messageBufferSize;
 
-    public static final int MESSAGE_BUFFER_SIZE = 1000000; //THIS IS EXTREMELY IMPORTANT!!!!!!
+    public static final int MESSAGE_BUFFER_SIZE = 2147000000; //THIS IS EXTREMELY IMPORTANT!!!!!!
 
 
     public Server(Protocol protocol) {
