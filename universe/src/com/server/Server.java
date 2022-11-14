@@ -49,7 +49,7 @@ public class Server implements Runnable {
 
     private int messageBufferSize;
 
-    public static final int MESSAGE_BUFFER_SIZE = 2147000000; //THIS IS EXTREMELY IMPORTANT!!!!!!
+    public static final int MESSAGE_BUFFER_SIZE = 16384; //max buffer size per HTTP standard
 
 
     public Server(Protocol protocol) {
@@ -516,8 +516,8 @@ public class Server implements Runnable {
         long now = System.currentTimeMillis();
         if (now>=TIME_BETWEEN_PING_PONG_CHECKS+lastTickTime) {
             for (ServerConnection c: connections) {
-                pingCheck(c);
-                pongCheck(c);
+             //   pingCheck(c);
+              //  pongCheck(c);
             }
             lastTickTime=System.currentTimeMillis();
         }
