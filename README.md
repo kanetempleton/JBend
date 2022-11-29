@@ -1,5 +1,8 @@
 JBend - Java Backend
 
+Written completely from scratch by myself.
+Live website hosted off this framework: https://kanetempleton.com
+
 
 Functions:
 - server (TCP)
