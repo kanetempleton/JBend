@@ -227,13 +227,13 @@ public class HTTP extends Protocol {
         }
     }
 
-    private static String protectedResources0 = ["timeline","blog"];
-    private static String protectedAccessNames = ["naomi","anne"];
+    private static String protectedResources0[] = {"timeline","blog"};
+    private static String protectedAccessNames[] = {"kane","naomi","anne"};
 
     protected String response_GET(ServerConnection c,String uri, String version) {
 
 
-        uri = uri.replace("//","/");
+        uri = uri.replace("//", "/");
         String paramString = "";
         if (uri.contains("?")) {
             String[] split = uri.split("\\?");
@@ -243,100 +243,103 @@ public class HTTP extends Protocol {
             }
         }
         String path = fullPath(uri);
-        path = path.replace("//","/");
+        path = path.replace("//", "/");
         String[] params = new String[]{};
-        if (paramString.length()>0) {
+        if (paramString.length() > 0) {
             params = paramString.split("&");
         }
         String pf = "";
         String pv = "";
         boolean permitted = true;
-        for (String p: params) {
+        for (int i = 0; i < protectedResources0.length; i++) {
+            if (path.contains(protectedResources0[i])) {
+                permitted = false;
+            }
+        }
+        for (String p : params) {
             String[] dat = p.split("=");
-            if (dat.length>1) {
-                System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
-                pf+=dat[0]+",;,";
-                pv+=dat[1]+",;,";
-                if (path.contains(protectedResources0[i])) {
-                    permitted=false;
-                }
+            if (dat.length > 1) {
+                System.out.println("GET params found: " + dat[0] + " = " + dat[1]);
+                pf += dat[0] + ",;,";
+                pv += dat[1] + ",;,";
+            }
+
                 if (!permitted) {
-                    for (int j=0; j<protectedAccessNames.length; j++) {
-                        if (dat[0].equalsIgnoreCase("user") && dat[1].equalsIgnoreCase(protectedAccessNames[i]) {
-                            permitted=true;
-                            System.out.println("Access granted to user "+dat[1]+" to resource: "+uri);
+                    for (int j = 0; j < protectedAccessNames.length; j++) {
+                        if (dat[0].equalsIgnoreCase("user") && dat[1].equalsIgnoreCase(protectedAccessNames[j])) {
+                            permitted = true;
+                            System.out.println("Access granted to user " + dat[1] + " to resource: " + uri);
                         } else {
-                            System.out.println("Access denied to user "+dat[1]+" to resource: "+uri)+". Custom login response sent.";
-                            return head+"\r\n"+"The file you tried to access either does not exist, or you are not logged in as an authorized user to view this page.<br>" +
-                                    "If you are an authorized user with access, please try revisiting this page with the following link: https://kanetempleton.com/"+uri+"?user=YOUR_USER_ID<br>" +
+                            System.out.println("Access denied to user " + dat[1] + " to resource: " + uri + ". Custom login response sent.");
+                            return HTTP_BAD_REQUEST + "\r\n" + "The file you tried to access either does not exist, or you are not logged in as an authorized user to view this page.<br>" +
+                                    "If you are an authorized user with access, please try revisiting this page with the following link: https://kanetempleton.com/" + uri + "?user=YOUR_USER_ID<br>" +
                                     "Replace the YOUR_USER_ID with the user ID you were given to log in with. This is temporary until I get an actual login system re-working.<br>" +
                                     "You will be able to view your permitted access pages if you access them in this fashion.";
 
                         }
 
+                    }
                 }
             }
-        }
-        Console.output("[Request] GET "+path+" from "+c.toShortString());
-        if (uri.equals("/")) {
-            Response R = new Response(fileContents(INDEX_PATH));
-            return R.response();// return fileResponse(HTTP_OK, INDEX_PATH);
-        }
-        else {
-            if (uri.contains("favicon")) {
-                return HTTP_OK+"\r\nnofavicon";
-            }
+
+            Console.output("[Request] GET " + path + " from " + c.toShortString());
+            if (uri.equals("/")) {
+                Response R = new Response(fileContents(INDEX_PATH));
+                return R.response();// return fileResponse(HTTP_OK, INDEX_PATH);
+            } else {
+                if (uri.contains("favicon")) {
+                    return HTTP_OK + "\r\nnofavicon";
+                }
            /* String routes = checkRoutes(uri);
             if (routes!=null) {
                 return routes;
             }*/
-           String route = route(uri);
-           // uri = route(uri); //use routes
-            path = fullPath(route);
-            File f = new File(path);
-            if (f.exists()) { //only do this if we allow direct GETs
-                byte[] custResponse;
-                if (pf.split(",;,").length>0 && pf.split(",;,")[0].length()>0 && pv.split(",;,").length>0 && pv.split(",;,")[0].length()>0) {
-                    custResponse = processGET(c,uri,route,pf.split(",;,"),pv.split(",;,"));
-                } else {
-                    custResponse = processGET(c,uri,route,new String[]{},new String[]{});
-                }
-               // byte[] custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
-                if (custResponse!=null) {
-                    return new String(custResponse);
-                }
-                if (uri.contains("play.js")) {
-                    String rspHead =  HTTP_OK_JS+"\r\n";
-                    String adr = Main.launcher.getConfig("ws_addr");
-                    String rspIPLine = adr.equalsIgnoreCase("DNE") ? "ws://127.0.0.1:"+Main.launcher.getWebsocketServer().getPort()+"/ws" : adr;
-                    rspIPLine = "var wsUri = \""+rspIPLine+"\";";
-                    String rspBody = fileData(fullPath(uri));
-                    String rsp = rspHead+rspIPLine+rspBody;
-                    return rsp;
-                } else {
-                    if ( route.contains(".js") ) {
-                        String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
-                       // System.out.println(dx);
-                        return dx;
+                String route = route(uri);
+                // uri = route(uri); //use routes
+                path = fullPath(route);
+                File f = new File(path);
+                if (f.exists()) { //only do this if we allow direct GETs
+                    byte[] custResponse;
+                    if (pf.split(",;,").length > 0 && pf.split(",;,")[0].length() > 0 && pv.split(",;,").length > 0 && pv.split(",;,")[0].length() > 0) {
+                        custResponse = processGET(c, uri, route, pf.split(",;,"), pv.split(",;,"));
+                    } else {
+                        custResponse = processGET(c, uri, route, new String[]{}, new String[]{});
                     }
-                    if (route.contains(".css")) {
-                        String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, route);
-                       // System.out.println(dx);
-                        return dx;
+                    // byte[] custResponse = processGET(c,uri,pf.split(",;,"),pv.split(",;,"));
+                    if (custResponse != null) {
+                        return new String(custResponse);
                     }
-                    if (route.contains(".ui")) {
-                        return PageBuilder.load(route);
-                    }
+                    if (uri.contains("play.js")) {
+                        String rspHead = HTTP_OK_JS + "\r\n";
+                        String adr = Main.launcher.getConfig("ws_addr");
+                        String rspIPLine = adr.equalsIgnoreCase("DNE") ? "ws://127.0.0.1:" + Main.launcher.getWebsocketServer().getPort() + "/ws" : adr;
+                        rspIPLine = "var wsUri = \"" + rspIPLine + "\";";
+                        String rspBody = fileData(fullPath(uri));
+                        String rsp = rspHead + rspIPLine + rspBody;
+                        return rsp;
+                    } else {
+                        if (route.contains(".js")) {
+                            String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
+                            // System.out.println(dx);
+                            return dx;
+                        }
+                        if (route.contains(".css")) {
+                            String dx = fileResponse(HTTP_OK_CSS/*+"Content-Type: text/javascript\r\n"*/, route);
+                            // System.out.println(dx);
+                            return dx;
+                        }
+                        if (route.contains(".ui")) {
+                            return PageBuilder.load(route);
+                        }
 
-                    // default: standard 200 OK response with an html page
-                    return fileResponse(HTTP_OK, route);
+                        // default: standard 200 OK response with an html page
+                        return fileResponse(HTTP_OK, route);
+                    }
+                } else {
+                    Console.output("Resource not found! " + path);
+                    return fileResponse(HTTP_NOT_FOUND, NOT_FOUND_PATH);
                 }
             }
-            else {
-                Console.output("Resource not found! "+path);
-                return fileResponse(HTTP_NOT_FOUND, NOT_FOUND_PATH);
-            }
-        }
 
     }
 
