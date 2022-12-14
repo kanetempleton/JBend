@@ -227,6 +227,9 @@ public class HTTP extends Protocol {
         }
     }
 
+    private static String protectedResources0 = ["timeline","blog"];
+    private static String protectedAccessNames = ["naomi","anne"];
+
     protected String response_GET(ServerConnection c,String uri, String version) {
 
 
@@ -247,12 +250,31 @@ public class HTTP extends Protocol {
         }
         String pf = "";
         String pv = "";
+        boolean permitted = true;
         for (String p: params) {
             String[] dat = p.split("=");
             if (dat.length>1) {
                 System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
                 pf+=dat[0]+",;,";
                 pv+=dat[1]+",;,";
+                if (path.contains(protectedResources0[i])) {
+                    permitted=false;
+                }
+                if (!permitted) {
+                    for (int j=0; j<protectedAccessNames.length; j++) {
+                        if (dat[0].equalsIgnoreCase("user") && dat[1].equalsIgnoreCase(protectedAccessNames[i]) {
+                            permitted=true;
+                            System.out.println("Access granted to user "+dat[1]+" to resource: "+uri);
+                        } else {
+                            System.out.println("Access denied to user "+dat[1]+" to resource: "+uri)+". Custom login response sent.";
+                            return head+"\r\n"+"The file you tried to access either does not exist, or you are not logged in as an authorized user to view this page.<br>" +
+                                    "If you are an authorized user with access, please try revisiting this page with the following link: https://kanetempleton.com/"+uri+"?user=YOUR_USER_ID<br>" +
+                                    "Replace the YOUR_USER_ID with the user ID you were given to log in with. This is temporary until I get an actual login system re-working.<br>" +
+                                    "You will be able to view your permitted access pages if you access them in this fashion.";
+
+                        }
+
+                }
             }
         }
         Console.output("[Request] GET "+path+" from "+c.toShortString());
