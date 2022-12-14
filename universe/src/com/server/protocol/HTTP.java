@@ -250,7 +250,7 @@ public class HTTP extends Protocol {
         for (String p: params) {
             String[] dat = p.split("=");
             if (dat.length>1) {
-             //   System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
+                System.out.println("GET params found: "+dat[0]+" = "+dat[1]);
                 pf+=dat[0]+",;,";
                 pv+=dat[1]+",;,";
             }
