@@ -172,7 +172,7 @@ public class HTTP extends Protocol {
         //@TODO: add all of the image formats
         //https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
         if (words[1].contains(".png")||words[1].contains(".jpg")
-            || words[1].contains(".JPG")||words[1].contains("jpeg") || words[1].contins("favicon")) {
+            || words[1].contains(".JPG")||words[1].contains("jpeg") || words[1].contains("favicon")) {
             imageRequest=true;
         }
 
