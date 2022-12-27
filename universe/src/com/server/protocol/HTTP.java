@@ -318,6 +318,11 @@ public class HTTP extends Protocol {
                         String rsp = rspHead + rspIPLine + rspBody;
                         return rsp;
                     } else {
+                        if (route.startsWith("http://") || route.startsWith("https://")) {
+                            String dd = HTML_RedirectPage(uri,route);
+                            System.out.println("Creating HTML redirect page for "+route);
+                            return dd;
+                        }
                         if (route.contains(".js")) {
                             String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
                             // System.out.println(dx);
@@ -616,6 +621,11 @@ public class HTTP extends Protocol {
         return "HTTP";
     }
 
+    public static String HTML_RedirectPage(String title, String redirectTo) {
+        return "HTTP/1.1 200 OK\r\n\r\n"+
+                "<html><head><title>"+title+"</title><meta http-equiv=\"refresh\" content=\"0; URL="+redirectTo+"\" /><link href=\"/stylemain\" rel=\"stylesheet\" /></head><body></body>";
+    }
+
     private static final String INDEX_PATH = "index.html";
     private static final String BAD_REQUEST_PATH = "pages/status/400.html";
     private static final String NOT_FOUND_PATH = "pages/status/404.html";
@@ -626,5 +636,6 @@ public class HTTP extends Protocol {
     public static final String HTTP_OK_CSS = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n";
     public static final String HTTP_BAD_REQUEST = "HTTP/1.1 400 BAD REQUEST\r\nContent-Type: text/html\r\n";
     public static final String HTTP_NOT_FOUND = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n";
+
 
 }
