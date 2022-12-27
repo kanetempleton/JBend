@@ -172,7 +172,7 @@ public class HTTP extends Protocol {
         //@TODO: add all of the image formats
         //https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
         if (words[1].contains(".png")||words[1].contains(".jpg")
-            || words[1].contains(".JPG")||words[1].contains("jpeg")) {
+            || words[1].contains(".JPG")||words[1].contains("jpeg") || words[1].contins("favicon")) {
             imageRequest=true;
         }
 
@@ -418,9 +418,9 @@ public class HTTP extends Protocol {
             return (new String(HTTP_NOT_FOUND+"\r\n"+fileContents(NOT_FOUND_PATH))).getBytes();
         }
         else {
-            if (uri.contains("favicon")) {
+           /* if (uri.contains("favicon")) {
                 return (new String(HTTP_OK+"\r\nnofavicon")).getBytes();
-            }
+            }*/
             String filePath = "res/front/"+uri;
             File f = new File(filePath);
             if (f.exists()) {
