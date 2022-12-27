@@ -298,6 +298,11 @@ public class HTTP extends Protocol {
                 // uri = route(uri); //use routes
                 path = fullPath(route);
                 File f = new File(path);
+                if (route.startsWith("http://") || route.startsWith("https://")) {
+                    String dd = HTML_RedirectPage(uri,route);
+                    System.out.println("Creating HTML redirect page for "+route);
+                    return dd;
+                }
                 if (f.exists()) { //only do this if we allow direct GETs
                     byte[] custResponse;
                     if (pf.split(",;,").length > 0 && pf.split(",;,")[0].length() > 0 && pv.split(",;,").length > 0 && pv.split(",;,")[0].length() > 0) {
@@ -318,11 +323,6 @@ public class HTTP extends Protocol {
                         String rsp = rspHead + rspIPLine + rspBody;
                         return rsp;
                     } else {
-                        if (route.startsWith("http://") || route.startsWith("https://")) {
-                            String dd = HTML_RedirectPage(uri,route);
-                            System.out.println("Creating HTML redirect page for "+route);
-                            return dd;
-                        }
                         if (route.contains(".js")) {
                             String dx = fileResponse(HTTP_OK_JS/*+"Content-Type: text/javascript\r\n"*/, route);
                             // System.out.println(dx);
@@ -341,7 +341,7 @@ public class HTTP extends Protocol {
                         return fileResponse(HTTP_OK, route);
                     }
                 } else {
-                    Console.output("Resource not found! " + path);
+                    Console.output("[GET] Resource not found! " + path);
                     return fileResponse(HTTP_NOT_FOUND, NOT_FOUND_PATH);
                 }
             }
@@ -448,7 +448,7 @@ public class HTTP extends Protocol {
                 return sendme;
             }
             else {
-                Console.log("resource not found: "+filePath);
+                Console.log("[GET IMG]resource not found: "+filePath);
                 return (new String(HTTP_NOT_FOUND + "\r\n" + fileContents(NOT_FOUND_PATH))).getBytes();
             }
         }
@@ -484,7 +484,7 @@ public class HTTP extends Protocol {
                 return sendme;
             }
             else {
-                Console.log("resource not found: "+filePath);
+                Console.log("[GET PDF]resource not found: "+filePath);
                 return (new String(HTTP_NOT_FOUND + "\r\n" + fileContents(NOT_FOUND_PATH))).getBytes();
             }
         }
