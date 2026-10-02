@@ -83,6 +83,12 @@ Edit `universe/routes.cfg` to define HTTP routes:
 
 ### Build & Run
 
+Make sure to first run the initialization script before running the project:
+```bash
+# From the repository root
+./init.sh
+```
+
 ```bash
 # From the repository root
 ./build.sh          # or use the provided makejar / init scripts
